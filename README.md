@@ -1,4 +1,5 @@
-A service to track feline colonies
+A service to track cat colonies
+===============================
 
 GitHub repository: https://github.com/libercv/ColoniasFelinas
 
