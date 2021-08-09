@@ -1,0 +1,36 @@
+version: "3.2"
+
+services:
+  database:
+    container_name: database
+    image: postgres:9.6.20-alpine
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d/
+
+  backend:
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: "no"
+    volumes:
+      - ./data:/usr/local/app/data
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+    external: false
