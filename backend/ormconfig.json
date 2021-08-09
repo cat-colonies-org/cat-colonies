@@ -2,8 +2,8 @@
   "type": "postgres",
   "host": "database",
   "port": 5432,
-  "username": "user",
-  "password": "password",
+  "username": "appuser",
+  "password": "appuser-pass!",
   "database": "cats",
   "entities": ["dist/**/*.entity{.ts,.js}"],
   "synchronize": true

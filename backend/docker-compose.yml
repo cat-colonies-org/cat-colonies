@@ -25,8 +25,6 @@ services:
     env_file:
       - .env
     restart: "no"
-    volumes:
-      - ./data:/usr/local/app/data
     depends_on:
       database:
         condition: service_healthy
