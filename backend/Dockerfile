@@ -6,12 +6,12 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY tsconfig.build.json ./
 COPY ormconfig.json ./
+COPY .env ./
 COPY ./src ./
-# COPY .env .
 
 #RUN npm install --production
 RUN npm install
-RUN npm run build
+# RUN npm run build
 
-CMD [ "node", "./dist/main.js" ]
-USER node
+CMD [ "npm", "run", "start:dev" ]
+#USER node
