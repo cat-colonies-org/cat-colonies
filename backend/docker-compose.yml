@@ -30,6 +30,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    ports:
+      - 8080:3000
 
 volumes:
   postgres-data:
