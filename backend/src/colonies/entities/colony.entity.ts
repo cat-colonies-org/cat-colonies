@@ -1,5 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { LocationType } from './location-type.entity';
 
 @Entity()
@@ -9,7 +15,7 @@ export class Colony {
   @Field(() => Int)
   id: number;
 
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdAt: Date;
 

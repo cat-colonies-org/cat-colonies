@@ -13,11 +13,7 @@ export class CatsService {
   ) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
-    const cat: Cat = Cat.create({
-      createdAt: new Date(),
-      ...createCatInput,
-    });
-
+    const cat: Cat = Cat.create(createCatInput);
     return Cat.save(cat);
   }
 
