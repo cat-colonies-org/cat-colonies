@@ -10,11 +10,3 @@ export class AppController {
     return this.appService.getHello();
   }
 }
-
-interface ICat {
-  name: string;
-}
-
-export class Cat implements ICat {
-  name: string;
-}
