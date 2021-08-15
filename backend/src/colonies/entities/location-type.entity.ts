@@ -20,5 +20,6 @@ export class LocationType extends BaseEntity {
   description: string;
 
   @OneToMany(() => Colony, (colony) => colony.locationType)
-  colonies: Colony[];
+  @Field(() => [Colony], { nullable: true })
+  colonies?: Colony[];
 }
