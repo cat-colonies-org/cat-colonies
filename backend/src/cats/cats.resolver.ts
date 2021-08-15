@@ -6,20 +6,36 @@ import {
   Int,
   ResolveField,
   Parent,
+  Subscription,
 } from '@nestjs/graphql';
-import { CatsService } from './cats.service';
 import { Cat } from './entities/cat.entity';
-import { CreateCatInput } from './dto/create-cat.input';
-import { UpdateCatInput } from './dto/update-cat.input';
+import { CatsService } from './cats.service';
 import { Colony } from 'src/colonies/entities/colony.entity';
+import { CreateCatInput } from './dto/create-cat.input';
+import { Inject } from '@nestjs/common';
+import { PUB_SUB } from 'src/pubsub.module';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdateCatInput } from './dto/update-cat.input';
+
+const CAT_ADDED_EVENT = 'catAdded';
 
 @Resolver(() => Cat)
 export class CatsResolver {
-  constructor(private readonly catsService: CatsService) {}
+  constructor(
+    private readonly catsService: CatsService,
+    @Inject(PUB_SUB) private pubSub: RedisPubSub,
+  ) {}
+
+  @Subscription(() => Cat)
+  catAdded() {
+    return this.pubSub.asyncIterator(CAT_ADDED_EVENT);
+  }
 
   @Mutation(() => Cat)
-  createCat(@Args('createCatInput') createCatInput: CreateCatInput) {
-    return this.catsService.create(createCatInput);
+  async createCat(@Args('createCatInput') createCatInput: CreateCatInput) {
+    const cat = await this.catsService.create(createCatInput);
+    this.pubSub.publish(CAT_ADDED_EVENT, { catAdded: cat });
+    return cat;
   }
 
   @Query(() => [Cat], { name: 'cats' })

@@ -1,3 +1,4 @@
+import { PubSubModule } from './pubsub.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Module } from '@nestjs/common';
@@ -10,12 +11,14 @@ import { join } from 'path';
 
 @Module({
   imports: [
+    PubSubModule,
     TypeOrmModule.forRoot(config),
     GraphQLModule.forRoot({
       include: [CatsModule, ColoniesModule],
       debug: true,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      installSubscriptionHandlers: true,
     }),
 
     CatsModule,

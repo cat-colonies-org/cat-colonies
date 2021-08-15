@@ -69,3 +69,7 @@ input UpdateColonyInput {
   exampleField: Int
   id: Int!
 }
+
+type Subscription {
+  catAdded: Cat!
+}
