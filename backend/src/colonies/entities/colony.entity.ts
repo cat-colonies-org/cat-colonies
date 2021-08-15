@@ -25,6 +25,6 @@ export class Colony extends BaseEntity {
   address: string;
 
   @ManyToOne(() => LocationType, (locationType) => locationType.colonies)
-  @Field(() => String)
+  @Field(() => LocationType)
   locationType: LocationType;
 }
