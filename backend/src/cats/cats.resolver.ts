@@ -60,7 +60,6 @@ export class CatsResolver {
 
   @ResolveField('colony', () => Colony)
   async colony(@Parent() cat: Cat) {
-    console.log(cat);
     return await cat.colony;
   }
 }
