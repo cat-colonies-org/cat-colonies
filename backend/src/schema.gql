@@ -5,9 +5,9 @@
 type Cat {
   id: Int!
   createdAt: DateTime!
-  deletedAt: DateTime!
-  birthYear: Int!
-  sterilized: Boolean!
+  deletedAt: DateTime
+  birthYear: Int
+  sterilized: Boolean
 }
 
 """

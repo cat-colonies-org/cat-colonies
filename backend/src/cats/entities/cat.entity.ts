@@ -19,14 +19,14 @@ export class Cat extends BaseEntity {
   createdAt: Date;
 
   @Column({ nullable: true })
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   deletedAt?: Date;
 
   @Column({ nullable: true })
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   birthYear?: number;
 
   @Column({ nullable: true })
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   sterilized?: boolean;
 }
