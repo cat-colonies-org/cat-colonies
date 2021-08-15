@@ -1,8 +1,17 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { CatsService } from './cats.service';
 import { Cat } from './entities/cat.entity';
 import { CreateCatInput } from './dto/create-cat.input';
 import { UpdateCatInput } from './dto/update-cat.input';
+import { Colony } from 'src/colonies/entities/colony.entity';
 
 @Resolver(() => Cat)
 export class CatsResolver {
@@ -31,5 +40,11 @@ export class CatsResolver {
   @Mutation(() => Cat)
   removeCat(@Args('id', { type: () => Int }) id: number) {
     return this.catsService.remove(id);
+  }
+
+  @ResolveField('colony', () => Colony)
+  async colony(@Parent() cat: Cat) {
+    console.log(cat);
+    return await cat.colony;
   }
 }

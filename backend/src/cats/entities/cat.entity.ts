@@ -1,9 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Colony } from 'src/colonies/entities/colony.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -29,4 +31,8 @@ export class Cat extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Boolean, { nullable: true })
   sterilized?: boolean;
+
+  @ManyToOne(() => Colony, (colony) => colony.cats)
+  @Field(() => Colony, { nullable: true })
+  colony?: Promise<Colony>;
 }

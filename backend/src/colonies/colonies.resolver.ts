@@ -35,8 +35,8 @@ export class ColoniesResolver {
   }
 
   @ResolveField('locationType', () => LocationType)
-  async getLocationType(@Parent() colony: Colony) {
-    return colony.locationType;
+  async locationType(@Parent() colony: Colony) {
+    return await colony.locationType;
   }
 
   @Mutation(() => Colony)

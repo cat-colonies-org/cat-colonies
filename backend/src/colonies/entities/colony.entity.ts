@@ -1,10 +1,12 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Cat } from 'src/cats/entities/cat.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { LocationType } from './location-type.entity';
@@ -26,5 +28,9 @@ export class Colony extends BaseEntity {
 
   @ManyToOne(() => LocationType, (locationType) => locationType.colonies)
   @Field(() => LocationType)
-  locationType: LocationType;
+  locationType: Promise<LocationType>;
+
+  @OneToMany(() => Cat, (cat) => cat.colony)
+  @Field(() => [Cat], { nullable: true })
+  cats?: Promise<Cat[]>;
 }

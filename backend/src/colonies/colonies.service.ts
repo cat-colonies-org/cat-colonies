@@ -17,7 +17,7 @@ export class ColoniesService {
   }
 
   findAll(): Promise<Colony[]> {
-    return this.colonyRepository.find({ relations: ['locationType'] });
+    return this.colonyRepository.find();
   }
 
   findOne(id: number) {
