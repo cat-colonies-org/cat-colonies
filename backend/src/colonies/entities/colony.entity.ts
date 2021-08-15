@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,7 +11,7 @@ import { LocationType } from './location-type.entity';
 
 @Entity()
 @ObjectType()
-export class Colony {
+export class Colony extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
@@ -24,5 +25,6 @@ export class Colony {
   address: string;
 
   @ManyToOne(() => LocationType, (locationType) => locationType.colonies)
+  @Field(() => String)
   locationType: LocationType;
 }
