@@ -10,7 +10,7 @@ import {
 @Entity()
 @ObjectType()
 export class Cat extends BaseEntity {
-  @PrimaryGeneratedColumn() // TODO: why the column is not "primary" on postgres database?
+  @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
 
