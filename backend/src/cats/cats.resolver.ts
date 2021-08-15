@@ -25,7 +25,6 @@ export class CatsResolver {
 
   @Mutation(() => Cat)
   updateCat(@Args('updateCatInput') updateCatInput: UpdateCatInput) {
-    console.log('******* updateCat *********');
     return this.catsService.update(updateCatInput.id, updateCatInput);
   }
 
