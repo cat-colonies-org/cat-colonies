@@ -32,6 +32,10 @@ export class Cat extends BaseEntity {
   @Field(() => Boolean, { nullable: true })
   sterilized?: boolean;
 
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  colonyId?: number;
+
   @ManyToOne(() => Colony, (colony) => colony.cats)
   @Field(() => Colony, { nullable: true })
   colony?: Promise<Colony>;

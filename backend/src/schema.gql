@@ -27,6 +27,7 @@ type Cat {
   deletedAt: DateTime
   birthYear: Int
   sterilized: Boolean
+  colonyId: Int
   colony: Colony
 }
 
