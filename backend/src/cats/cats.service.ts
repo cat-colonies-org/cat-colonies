@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
-import { PartialType } from '@nestjs/graphql';
 
 @Injectable()
 export class CatsService {
@@ -13,8 +12,7 @@ export class CatsService {
   ) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
-    const cat: Cat = Cat.create(createCatInput);
-    return Cat.save(cat);
+    return Cat.save(Cat.create(createCatInput));
   }
 
   findAll() {
@@ -31,7 +29,7 @@ export class CatsService {
     return cat.save();
   }
 
-  async remove(id: number): Promise<Boolean> {
+  async remove(id: number): Promise<boolean> {
     const result = await this.catsRepository.delete({ id }); // TODO: Return our result
     return result.affected > 0;
   }
