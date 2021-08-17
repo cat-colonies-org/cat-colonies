@@ -32,8 +32,8 @@ type Cat {
 }
 
 type Query {
-  cats: [Cat!]!
-  cat(id: Int!): Cat!
+  cats(birthYear: Int, sterilized: Boolean, colonyId: Int): [Cat!]
+  cat(id: Int!): Cat
   colonies: [Colony!]!
   colony(id: Int!): Colony!
 }

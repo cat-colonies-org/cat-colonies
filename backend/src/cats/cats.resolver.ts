@@ -1,13 +1,4 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-  Subscription,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, Subscription } from '@nestjs/graphql';
 import { Cat } from './entities/cat.entity';
 import { CatsService } from './cats.service';
 import { Colony } from 'src/colonies/entities/colony.entity';
@@ -16,15 +7,13 @@ import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { UpdateCatInput } from './dto/update-cat.input';
+import { FindAllCatsArgs } from './dto/find-all-cats.args';
 
 const CAT_ADDED_EVENT = 'catAdded';
 
 @Resolver(() => Cat)
 export class CatsResolver {
-  constructor(
-    private readonly catsService: CatsService,
-    @Inject(PUB_SUB) private pubSub: RedisPubSub,
-  ) {}
+  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private pubSub: RedisPubSub) {}
 
   @Subscription(() => Cat)
   catAdded() {
@@ -38,12 +27,12 @@ export class CatsResolver {
     return cat;
   }
 
-  @Query(() => [Cat], { name: 'cats' })
-  findAll() {
-    return this.catsService.findAll();
+  @Query(() => [Cat], { name: 'cats', nullable: true })
+  findAll(@Args() filter: FindAllCatsArgs): Promise<Cat[]> {
+    return this.catsService.findAll(filter);
   }
 
-  @Query(() => Cat, { name: 'cat' })
+  @Query(() => Cat, { name: 'cat', nullable: true })
   findOne(@Args('id', { type: () => Int }) id: number): Promise<Cat> {
     return this.catsService.findOne(id);
   }

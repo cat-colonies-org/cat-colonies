@@ -4,19 +4,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
+import { FindAllCatsArgs } from './dto/find-all-cats.args';
 
 @Injectable()
 export class CatsService {
-  constructor(
-    @InjectRepository(Cat) private readonly catsRepository: Repository<Cat>,
-  ) {}
+  constructor(@InjectRepository(Cat) private readonly catsRepository: Repository<Cat>) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
     return Cat.save(Cat.create(createCatInput));
   }
 
-  findAll() {
-    return this.catsRepository.find();
+  findAll(filter: FindAllCatsArgs) {
+    let filterClause = filter ? { where: filter } : undefined;
+    return this.catsRepository.find(filterClause);
   }
 
   findOne(id: number): Promise<Cat> {
