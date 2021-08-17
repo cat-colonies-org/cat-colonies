@@ -1,14 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Cat } from 'src/cats/entities/cat.entity';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { LocationType } from './location-type.entity';
 
 @Entity()
