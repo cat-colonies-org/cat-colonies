@@ -2,13 +2,12 @@ import { Cat } from './entities/cat.entity';
 import { CreateCatInput } from './dto/create-cat.input';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { FindAllCatsArgs } from './dto/find-all-cats.args';
-
+import { CatsRepository } from './cats.repository';
 @Injectable()
 export class CatsService {
-  constructor(@InjectRepository(Cat) private readonly catsRepository: Repository<Cat>) {}
+  constructor(@InjectRepository(Cat) private readonly catsRepository: CatsRepository) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
     return Cat.save(Cat.create(createCatInput));
