@@ -1,5 +1,6 @@
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { Global, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 export const PUB_SUB = 'PUB_SUB';
 
@@ -8,11 +9,12 @@ export const PUB_SUB = 'PUB_SUB';
   providers: [
     {
       provide: PUB_SUB,
-      useFactory: () =>
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =>
         new RedisPubSub({
           connection: {
-            host: 'redis', // TODO: move to config
-            port: 6379,
+            host: config.get<string>('redis.host'),
+            port: config.get<number>('redis.port'),
           },
         }),
     },
