@@ -1,4 +1,4 @@
-name: NodeJS with Gulp
+name: Build backend image
 
 on:
   push:
@@ -29,10 +29,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build backend
+      - name: Build backend image
         run: |
-          echo *******************
-          pwd
-          echo *******************
-          npm install
-          gulp
+          npm run docker:build
