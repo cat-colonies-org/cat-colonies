@@ -9,8 +9,7 @@ COPY ormconfig.ts ./
 COPY ./src ./src
 
 #RUN npm install --production
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build && rm -R ./src
 
 CMD [ "npm", "run", "start:prod" ]
 #USER node
