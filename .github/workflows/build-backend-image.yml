@@ -3,11 +3,11 @@ name: Build backend image
 on:
   push:
     branches: ["main", "ci-cd"]
-    # paths: [".github", "backend/**"]
+    paths: [".github/**", "backend/**"]
 
-  pull_request:
-    branches: ["main", "ci-cd"]
-    # paths: [".github", "backend/**"]
+  # pull_request:
+  #   branches: ["main", "ci-cd"]
+  #   paths: [".github/**", "backend/**"]
 
 defaults:
   run:
