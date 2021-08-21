@@ -8,8 +8,10 @@ COPY tsconfig.build.json ./
 COPY ormconfig.ts ./
 COPY ./src ./src
 
-#RUN npm install --production
-RUN npm install && npm run build && rm -R ./src
+RUN npm install && \
+  npm run build && \
+  rm -R ./src ./node_modules && \
+  npm install --production
 
 CMD [ "npm", "run", "start:prod" ]
 #USER node
