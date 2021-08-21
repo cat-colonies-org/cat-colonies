@@ -2,12 +2,12 @@ name: NodeJS with Gulp
 
 on:
   push:
-    branches: [main, ci-cd]
-    paths: ["backend/**"]
+    branches: ["main", "ci-cd"]
+    paths: [".github", "backend/**"]
 
   pull_request:
-    branches: [main, ci-cd]
-    paths: ["backend/**"]
+    branches: ["main", "ci-cd"]
+    paths: [".github", "backend/**"]
 
 jobs:
   build:
