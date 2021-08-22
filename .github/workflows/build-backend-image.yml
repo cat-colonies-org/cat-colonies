@@ -33,12 +33,12 @@ jobs:
         run: |
           npm run docker:build
 
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      # - name: Push backend image
-      #   run: |
-      #     npm run docker:push
+      - name: Push backend image
+        run: |
+          npm run docker:push
