@@ -8,6 +8,7 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { PubSubModule } from './pubsub.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TownsModule } from './towns/towns.module';
 import appConfig from './config/configuration';
 import ormConfig from '../ormconfig';
 
@@ -25,6 +26,7 @@ import ormConfig from '../ormconfig';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
     }),
+    TownsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
