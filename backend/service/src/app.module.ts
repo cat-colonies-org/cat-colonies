@@ -12,14 +12,13 @@ import { TownsModule } from './towns/towns.module';
 import { UsersModule } from './users/users.module';
 import appConfig from './config/configuration';
 import ormConfig from '../ormconfig';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
     CatsModule,
     ColoniesModule,
     ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true, load: [appConfig] }),
-    PubSubModule,
-    TypeOrmModule.forRoot(ormConfig),
     GraphQLModule.forRoot({
       include: [CatsModule, ColoniesModule],
       debug: true,
@@ -27,7 +26,10 @@ import ormConfig from '../ormconfig';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
     }),
+    PubSubModule,
+    SeederModule,
     TownsModule,
+    TypeOrmModule.forRoot(ormConfig),
     UsersModule,
   ],
   controllers: [AppController],

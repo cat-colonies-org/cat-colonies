@@ -24,6 +24,7 @@ type Colony {
   id: Int!
   createdAt: DateTime!
   address: String!
+  locationTypeId: Int
   locationType: LocationType!
   cats: [Cat!]
   environmentId: Int

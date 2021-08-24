@@ -20,6 +20,10 @@ export class Colony extends BaseEntity {
   @Field(() => String)
   address: string;
 
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  locationTypeId?: number;
+
   @ManyToOne(() => LocationType, (locationType) => locationType.colonies)
   @Field(() => LocationType)
   locationType: Promise<LocationType>;
