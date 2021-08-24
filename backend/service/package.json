@@ -1,8 +1,8 @@
 {
-  "name": "backend",
+  "name": "cat-colonies-service",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "cat-colonies-org",
   "private": true,
   "license": "BSD 3-Clause License",
   "scripts": {
