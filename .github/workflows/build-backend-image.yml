@@ -3,15 +3,15 @@ name: Build backend image
 on:
   push:
     branches: ["main", "ci-cd"]
-    paths: [".github/**", "backend/**"]
+    paths: [".github/**", "backend/service/**"]
 
   # pull_request:
   #   branches: ["main", "ci-cd"]
-  #   paths: [".github/**", "backend/**"]
+  #   paths: [".github/**", "backend/service/**"]
 
 defaults:
   run:
-    working-directory: ./backend
+    working-directory: ./backend/service
 
 jobs:
   build:
