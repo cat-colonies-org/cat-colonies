@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Town {
+  id: Int!
+  name: String!
+  colonies: [Colony!]!
+}
+
+type Environment {
+  id: Int!
+  description: String!
+  colonies: [Colony!]!
+}
+
 type LocationType {
   id: Int!
   description: String!
@@ -14,6 +26,10 @@ type Colony {
   address: String!
   locationType: LocationType!
   cats: [Cat!]
+  environmentId: Int
+  environment: Environment!
+  townId: Int!
+  town: Town!
 }
 
 """
@@ -21,14 +37,57 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Annotation {
+  id: Int!
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
+}
+
+type CeaseCause {
+  id: Int!
+  name: String!
+  cats: [Cat!]!
+}
+
+type Coat {
+  id: Int!
+  name: String!
+  cats: [Cat!]!
+}
+
+type Eyes {
+  id: Int!
+  name: String!
+  cats: [Cat!]!
+}
+
 type Cat {
   id: Int!
   createdAt: DateTime!
-  deletedAt: DateTime
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  ceaseCause: CeaseCause
   birthYear: Int
   sterilized: Boolean
+  sterilizedAt: DateTime
   colonyId: Int
   colony: Colony
+  coatId: Int
+  coat: Coat
+  gender: Gender
+  kitten: Boolean
+  eyesId: Int
+  eyes: Eyes
+  imageURL: String
+  annotations: [Annotation!]
+}
+
+""""""
+enum Gender {
+  Male
+  Female
 }
 
 type Query {
