@@ -4,44 +4,42 @@ services:
   database:
     container_name: database
     image: postgres:9.6.20-alpine
-    # build:
-    # context: ./database
-    # dockerfile: Dockerfile
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./database/initdb/01-init.sh:/docker-entrypoint-initdb.d/01-init.sh
     env_file:
-      - .env
-    ports:
-      - 5432:5432
+      - .env.prod
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d/ # TODO: puede que esto esté mal
 
   redis:
     container_name: redis
     image: redis:6.2.5-alpine
-    ports:
-      - 6379:6379
 
   service:
     container_name: service
-    build:
-      context: ./service
-      dockerfile: Dockerfile
-    volumes:
-      - ./service/src:/usr/local/app/src
+    image: daviddq/cat-colonies:latest
+    restart: "always"
+    environment:
+      - NODE_ENV=production
+      - PORT
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+      - DB_SYNCHRONIZE
+      - DB_USER
+      - DB_PASS
     depends_on:
       redis:
         condition: service_started
       database:
         condition: service_healthy
-    restart: "no"
     ports:
       - 8080:8080
 
 volumes:
   postgres-data:
-    external: false
+    external: false # TODO: revisar cómo debe estar esto en prod
