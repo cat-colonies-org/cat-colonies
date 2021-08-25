@@ -18,9 +18,10 @@ import { SeederModule } from './seeder/seeder.module';
   imports: [
     CatsModule,
     ColoniesModule,
+    UsersModule,
     ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true, load: [appConfig] }),
     GraphQLModule.forRoot({
-      include: [CatsModule, ColoniesModule],
+      include: [CatsModule, ColoniesModule, UsersModule],
       debug: true,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -30,7 +31,6 @@ import { SeederModule } from './seeder/seeder.module';
     SeederModule,
     TownsModule,
     TypeOrmModule.forRoot(ormConfig),
-    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

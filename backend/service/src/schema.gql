@@ -91,11 +91,25 @@ enum Gender {
   Female
 }
 
+type User {
+  id: Int!
+  name: String!
+  surNames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+}
+
 type Query {
   cats(birthYear: Int, sterilized: Boolean, colonyId: Int): [Cat!]
   cat(id: Int!): Cat
   colonies: [Colony!]!
   colony(id: Int!): Colony!
+  users: [User!]!
+  user(id: Int!): User!
 }
 
 type Mutation {
@@ -105,6 +119,9 @@ type Mutation {
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
   removeColony(id: Int!): Colony!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
 }
 
 input CreateCatInput {
@@ -128,6 +145,25 @@ input CreateColonyInput {
 input UpdateColonyInput {
   """Example field (placeholder)"""
   exampleField: Int
+  id: Int!
+}
+
+input CreateUserInput {
+  name: String!
+  surNames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  authorizesWhatsApp: Boolean
+}
+
+input UpdateUserInput {
+  name: String
+  surNames: String
+  idCard: String
+  phoneNumber: Int
+  email: String
+  authorizesWhatsApp: Boolean
   id: Int!
 }
 
