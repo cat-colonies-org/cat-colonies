@@ -2,8 +2,8 @@ name: Build backend image
 
 on:
   push:
-    branches: ["main", "ci-cd"]
-    paths: [".github/**", "backend/service/**"]
+    branches: ['main', 'ci-cd']
+    paths: ['.github/**', 'backend/service/**']
 
   # pull_request:
   #   branches: ["main", "ci-cd"]
