@@ -25,10 +25,10 @@ const getNumber = (key: string, defaultValue: number): number => {
 };
 
 export default (): Configuration => ({
-  port: getNumber(process.env.PORT, 8080),
+  port: getNumber('PORT', 8080),
   database: {
     host: process.env.DB_HOST || 'database',
-    port: getNumber(process.env.DB_PORT, 5432),
+    port: getNumber('DB_PORT', 5432),
     user: process.env.DB_USER || 'appuser',
     password: process.env.DB_PASS || 'appuser-pass!',
     name: process.env.DB_NAME || 'cats',
@@ -36,6 +36,6 @@ export default (): Configuration => ({
   },
   redis: {
     host: process.env.REDIS_HOST || 'redis',
-    port: getNumber(process.env.REDIS_PORT, 6379),
+    port: getNumber('REDIS_PORT', 6379),
   },
 });

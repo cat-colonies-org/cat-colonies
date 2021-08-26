@@ -7,5 +7,7 @@ import { AppModule } from './app.module';
 
   const config: ConfigService = app.get(ConfigService);
 
-  await app.listen(config.get<number>('port'));
+  const port: number = config.get<number>('port');
+  await app.listen(port);
+  console.log(`Service listening on port ${port}`);
 })();
