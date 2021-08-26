@@ -4,7 +4,14 @@ services:
   database:
     image: daviddq/cat-colonies-database:latest
     container_name: database
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - DB_NAME
+      - DB_PASS
+      - DB_USER
     restart: unless-stopped
+
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready']
       interval: 10s
@@ -20,6 +27,15 @@ services:
   service:
     image: daviddq/cat-colonies-service:latest
     container_name: service
+    environment:
+      - NODE_ENV
+      - PORT
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+      - DB_SYNCHRONIZE
+      - DB_USER
+      - DB_PASS
     restart: unless-stopped
     depends_on:
       redis:
@@ -27,7 +43,7 @@ services:
       database:
         condition: service_healthy
     ports:
-      - 80:80
+      - ${PORT}:${PORT}
 
 volumes:
   postgres-data:
