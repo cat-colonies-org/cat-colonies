@@ -22,5 +22,4 @@ COPY --from=builder /usr/local/app ./
 
 CMD [ "npm", "run", "start:prod" ]
 
-USER node
-
+#USER node
