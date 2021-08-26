@@ -2,8 +2,9 @@ version: '3.2'
 
 services:
   database:
-    container_name: database
     image: daviddq/cat-colonies-database:latest
+    container_name: database
+    restart: unless-stopped
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready']
       interval: 10s
@@ -17,16 +18,16 @@ services:
     image: redis:6.2.5-alpine
 
   service:
-    container_name: service
     image: daviddq/cat-colonies-service:latest
-    restart: 'always'
+    container_name: service
+    restart: unless-stopped
     depends_on:
       redis:
         condition: service_started
       database:
         condition: service_healthy
     ports:
-      - ${PORT}:${PORT}
+      - 80:80
 
 volumes:
   postgres-data:
