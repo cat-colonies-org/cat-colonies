@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:16-alpine AS builder
 
 WORKDIR /usr/local/app
 
@@ -10,8 +10,17 @@ COPY ./src ./src
 
 RUN npm install && \
   npm run build && \
-  rm -R ./src ./node_modules && \
-  npm install --production
+  npm prune --production
+
+# ---------------------------------------------------
+
+FROM node:16-alpine
+
+WORKDIR /usr/local/app
+
+COPY --from=builder /usr/local/app ./
 
 CMD [ "npm", "run", "start:prod" ]
-#USER node
+
+USER node
+
