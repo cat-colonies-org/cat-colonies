@@ -11,7 +11,7 @@ export class CeaseCause extends BaseEntity {
 
   @Column()
   @Field(() => String)
-  name: string;
+  description: string;
 
   @OneToMany(() => Cat, (cat) => cat.ceaseCause)
   @Field(() => [Cat])

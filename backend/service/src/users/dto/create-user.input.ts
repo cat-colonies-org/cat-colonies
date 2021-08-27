@@ -6,7 +6,7 @@ export class CreateUserInput {
   name: string;
 
   @Field(() => String)
-  surNames: string;
+  surnames: string;
 
   @Field(() => String)
   idCard: string;

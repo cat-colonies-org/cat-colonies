@@ -85,7 +85,9 @@ type Cat {
   annotations: [Annotation!]
 }
 
-""""""
+"""
+
+"""
 enum Gender {
   Male
   Female
@@ -94,7 +96,7 @@ enum Gender {
 type User {
   id: Int!
   name: String!
-  surNames: String!
+  surnames: String!
   idCard: String!
   phoneNumber: Int!
   email: String!
@@ -138,19 +140,23 @@ input UpdateCatInput {
 }
 
 input CreateColonyInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
 input UpdateColonyInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int
   id: Int!
 }
 
 input CreateUserInput {
   name: String!
-  surNames: String!
+  surnames: String!
   idCard: String!
   phoneNumber: Int!
   email: String!
@@ -159,7 +165,7 @@ input CreateUserInput {
 
 input UpdateUserInput {
   name: String
-  surNames: String
+  surnames: String
   idCard: String
   phoneNumber: Int
   email: String

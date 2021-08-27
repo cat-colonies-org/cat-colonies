@@ -37,35 +37,35 @@ export class SeederService implements OnModuleInit {
 
   private async seedCoats(): Promise<any> {
     return Promise.all([
-      Coat.create({ id: 1, name: 'Azul Ruso' }).save(),
-      Coat.create({ id: 2, name: 'Bengalí' }).save(),
-      Coat.create({ id: 3, name: 'Europeo de pelo corto' }).save(),
-      Coat.create({ id: 4, name: 'Himalayo' }).save(),
-      Coat.create({ id: 5, name: 'Persa' }).save(),
-      Coat.create({ id: 6, name: 'Selkirk Rex' }).save(),
-      Coat.create({ id: 7, name: 'Rex' }).save(),
-      Coat.create({ id: 8, name: 'Bosque de Noruega' }).save(),
-      Coat.create({ id: 9, name: 'Maine Coon' }).save(),
-      Coat.create({ id: 10, name: 'Sphynx' }).save(),
-      Coat.create({ id: 11, name: 'Peterbald' }).save(),
+      Coat.create({ id: 1, description: 'Azul Ruso' }).save(),
+      Coat.create({ id: 2, description: 'Bengalí' }).save(),
+      Coat.create({ id: 3, description: 'Europeo de pelo corto' }).save(),
+      Coat.create({ id: 4, description: 'Himalayo' }).save(),
+      Coat.create({ id: 5, description: 'Persa' }).save(),
+      Coat.create({ id: 6, description: 'Selkirk Rex' }).save(),
+      Coat.create({ id: 7, description: 'Rex' }).save(),
+      Coat.create({ id: 8, description: 'Bosque de Noruega' }).save(),
+      Coat.create({ id: 9, description: 'Maine Coon' }).save(),
+      Coat.create({ id: 10, description: 'Sphynx' }).save(),
+      Coat.create({ id: 11, description: 'Peterbald' }).save(),
     ]);
   }
 
   private async seedEyes(): Promise<any> {
     return Promise.all([
-      Eyes.create({ id: 1, name: 'Ojos 1' }).save(),
-      Eyes.create({ id: 2, name: 'Ojos 2' }).save(),
-      Eyes.create({ id: 3, name: 'Ojos 3' }).save(),
-      Eyes.create({ id: 4, name: 'Ojos 4' }).save(),
+      Eyes.create({ id: 1, description: 'Ojos 1' }).save(),
+      Eyes.create({ id: 2, description: 'Ojos 2' }).save(),
+      Eyes.create({ id: 3, description: 'Ojos 3' }).save(),
+      Eyes.create({ id: 4, description: 'Ojos 4' }).save(),
     ]);
   }
 
   private async seedCeaseCauses(): Promise<any> {
     return Promise.all([
-      CeaseCause.create({ id: 1, name: 'Adoptado' }).save(),
-      CeaseCause.create({ id: 2, name: 'Desaparecido' }).save(),
-      CeaseCause.create({ id: 3, name: 'Atropellado' }).save(),
-      CeaseCause.create({ id: 4, name: 'Abducido' }).save(),
+      CeaseCause.create({ id: 1, description: 'Adoptado' }).save(),
+      CeaseCause.create({ id: 2, description: 'Desaparecido' }).save(),
+      CeaseCause.create({ id: 3, description: 'Atropellado' }).save(),
+      CeaseCause.create({ id: 4, description: 'Abducido' }).save(),
     ]);
   }
 
