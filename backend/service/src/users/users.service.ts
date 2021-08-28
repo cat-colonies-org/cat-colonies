@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
+import { FindAllUsersArgs } from './dto/find-all-users.args';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 
@@ -16,16 +17,19 @@ export class UsersService {
     return User.save(User.create(createUserInput));
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(filter: FindAllUsersArgs) {
+    let filterClause = filter ? { where: filter } : undefined;
+    return this.userRepository.find(filterClause);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: number): Promise<User> {
+    return this.userRepository.findOne(id);
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
+    const user = await this.userRepository.findOne({ id });
+    Object.assign(user, updateUserInput);
+    return user.save();
   }
 
   remove(id: number) {

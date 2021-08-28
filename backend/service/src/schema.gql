@@ -48,19 +48,19 @@ type Annotation {
 
 type CeaseCause {
   id: Int!
-  name: String!
+  description: String!
   cats: [Cat!]!
 }
 
 type Coat {
   id: Int!
-  name: String!
+  description: String!
   cats: [Cat!]!
 }
 
 type Eyes {
   id: Int!
-  name: String!
+  description: String!
   cats: [Cat!]!
 }
 
@@ -85,9 +85,7 @@ type Cat {
   annotations: [Annotation!]
 }
 
-"""
-
-"""
+""""""
 enum Gender {
   Male
   Female
@@ -110,7 +108,7 @@ type Query {
   cat(id: Int!): Cat
   colonies: [Colony!]!
   colony(id: Int!): Colony!
-  users: [User!]!
+  users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!
 }
 
@@ -140,16 +138,12 @@ input UpdateCatInput {
 }
 
 input CreateColonyInput {
-  """
-  Example field (placeholder)
-  """
+  """Example field (placeholder)"""
   exampleField: Int!
 }
 
 input UpdateColonyInput {
-  """
-  Example field (placeholder)
-  """
+  """Example field (placeholder)"""
   exampleField: Int
   id: Int!
 }
@@ -164,11 +158,11 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  name: String
-  surnames: String
-  idCard: String
-  phoneNumber: Int
-  email: String
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
   authorizesWhatsApp: Boolean
   id: Int!
 }

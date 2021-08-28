@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindAllUsersArgs } from './dto/find-all-users.args';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,9 +15,9 @@ export class UsersResolver {
     return this.usersService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.usersService.findAll();
+  @Query(() => [User], { name: 'users', nullable: true })
+  findAll(@Args() filter: FindAllUsersArgs): Promise<User[]> {
+    return this.usersService.findAll(filter);
   }
 
   @Query(() => User, { name: 'user' })
