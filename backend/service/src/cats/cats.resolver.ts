@@ -23,7 +23,7 @@ export class CatsResolver {
   @Mutation(() => Cat)
   async createCat(@Args('createCatInput') createCatInput: CreateCatInput) {
     const cat = await this.catsService.create(createCatInput);
-    this.pubSub.publish(CAT_ADDED_EVENT, { catAdded: cat });
+    this.pubSub.publish(CAT_ADDED_EVENT, { cat });
     return cat;
   }
 
