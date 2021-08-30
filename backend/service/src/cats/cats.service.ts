@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { FindAllCatsArgs } from './dto/find-all-cats.args';
 import { CatsRepository } from './cats.repository';
+
 @Injectable()
 export class CatsService {
   constructor(@InjectRepository(Cat) private readonly catsRepository: CatsRepository) {}
@@ -19,7 +20,7 @@ export class CatsService {
   }
 
   findOne(id: number): Promise<Cat> {
-    return this.catsRepository.findOne({ id });
+    return this.catsRepository.findOne(id);
   }
 
   async update(id: number, updateCatInput: UpdateCatInput): Promise<Cat> {
