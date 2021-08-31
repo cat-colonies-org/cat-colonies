@@ -14,7 +14,7 @@ export class CatsService {
     return Cat.save(Cat.create(createCatInput));
   }
 
-  find(filter: FindCatsArgs) {
+  find(filter: FindCatsArgs): Promise<Cat[]> {
     let filterClause = filter ? { where: filter } : undefined;
     return this.catsRepository.find(filterClause);
   }
@@ -30,7 +30,7 @@ export class CatsService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const result = await this.catsRepository.delete({ id }); // TODO: Return our result
+    const result = await this.catsRepository.delete({ id });
     return result.affected > 0;
   }
 }

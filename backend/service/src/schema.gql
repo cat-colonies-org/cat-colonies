@@ -116,10 +116,10 @@ type User {
 }
 
 type Query {
-  cats(birthYear: Int, sterilized: Boolean, colonyId: Int): [Cat!]
+  cats(birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
-  colonies: [Colony!]!
-  colony(id: Int!): Colony!
+  colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
+  colony(id: Int!): Colony
   colors: [Color!]!
   color(id: Int!): Color!
   patterns: [Pattern!]!
@@ -149,24 +149,40 @@ type Mutation {
 input CreateCatInput {
   birthYear: Int
   sterilized: Boolean
+  sterilizedAt: DateTime
   colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
 }
 
 input UpdateCatInput {
   birthYear: Int
   sterilized: Boolean
+  sterilizedAt: DateTime
   colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
   id: Int!
 }
 
 input CreateColonyInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  address: String!
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int!
 }
 
 input UpdateColonyInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  address: String
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int
   id: Int!
 }
 
@@ -211,4 +227,7 @@ type Subscription {
   catAdded: Cat!
   catUpdated: Cat!
   catRemoved: Cat!
+  colonyAdded: Colony!
+  colonyUpdated: Colony!
+  colonyRemoved: Colony!
 }
