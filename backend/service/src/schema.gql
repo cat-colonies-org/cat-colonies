@@ -91,6 +91,10 @@ enum Gender {
   Female
 }
 
+type RemoveCatResult {
+  result: Boolean!
+}
+
 type User {
   id: Int!
   name: String!
@@ -115,7 +119,7 @@ type Query {
 type Mutation {
   createCat(createCatInput: CreateCatInput!): Cat!
   updateCat(updateCatInput: UpdateCatInput!): Cat!
-  removeCat(id: Int!): Cat!
+  removeCat(id: Int!): RemoveCatResult!
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
   removeColony(id: Int!): Colony!
@@ -169,4 +173,6 @@ input UpdateUserInput {
 
 type Subscription {
   catAdded: Cat!
+  catUpdated: Cat!
+  catRemoved: Cat!
 }

@@ -3,7 +3,7 @@ import { CreateCatInput } from './dto/create-cat.input';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
-import { FindAllCatsArgs } from './dto/find-all-cats.args';
+import { FindCatsArgs } from './dto/find-cats.args';
 import { CatsRepository } from './cats.repository';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class CatsService {
     return Cat.save(Cat.create(createCatInput));
   }
 
-  findAll(filter: FindAllCatsArgs) {
+  find(filter: FindCatsArgs) {
     let filterClause = filter ? { where: filter } : undefined;
     return this.catsRepository.find(filterClause);
   }

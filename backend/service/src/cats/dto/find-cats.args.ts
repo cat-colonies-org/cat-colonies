@@ -1,7 +1,7 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 @ArgsType()
-export class FindAllCatsArgs {
+export class FindCatsArgs {
   @Field(() => Int, { nullable: true })
   birthYear?: number;
 
