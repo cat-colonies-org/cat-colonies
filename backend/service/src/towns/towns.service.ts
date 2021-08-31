@@ -1,30 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateTownInput } from './dto/create-town.input';
+import { FindTownsArgs } from './dto/find-towns.args';
 import { UpdateTownInput } from './dto/update-town.input';
 import { Town } from './entities/town.entity';
 
 @Injectable()
 export class TownsService {
-  constructor(@InjectRepository(Town) private readonly townsRepository) {}
+  constructor(@InjectRepository(Town) private readonly townsRepository: Repository<Town>) {}
 
-  create(createTownInput: CreateTownInput) {
-    return 'This action adds a new town';
+  create(createTownInput: CreateTownInput): Promise<Town> {
+    return Town.save(Town.create(createTownInput));
   }
 
-  findAll() {
-    return `This action returns all towns`;
+  find(filter: FindTownsArgs): Promise<Town[]> {
+    let filterClause = filter ? { where: filter } : undefined;
+    return this.townsRepository.find(filterClause);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} town`;
+  findOne(id: number): Promise<Town> {
+    return this.townsRepository.findOne(id);
   }
 
-  update(id: number, updateTownInput: UpdateTownInput) {
-    return `This action updates a #${id} town`;
+  async update(id: number, updateTownInput: UpdateTownInput): Promise<Town> {
+    const town = await this.townsRepository.findOne({ id });
+    Object.assign(town, updateTownInput);
+    return town.save();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} town`;
+  async remove(id: number): Promise<boolean> {
+    const result = await this.townsRepository.delete({ id });
+    return result.affected > 0;
   }
 }

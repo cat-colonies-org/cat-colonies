@@ -124,8 +124,12 @@ type User {
 }
 
 type Query {
+  annotations: [Annotation!]!
+  annotation(id: Int!): Annotation!
   cats(birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
+  ceaseCauses: [CeaseCause!]!
+  ceaseCause(id: Int!): CeaseCause!
   colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
   colony(id: Int!): Colony
   colors(description: String): [Color!]
@@ -134,14 +138,22 @@ type Query {
   eyeColor(id: Int!): EyeColor!
   patterns(description: String): [Pattern!]
   pattern(id: Int!): Pattern
+  towns(name: String): [Town!]
+  town(id: Int!): Town
   users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!
 }
 
 type Mutation {
+  createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
+  updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
+  removeAnnotation(id: Int!): Annotation!
   createCat(createCatInput: CreateCatInput!): Cat!
   updateCat(updateCatInput: UpdateCatInput!): Cat!
   removeCat(id: Int!): RemoveCatResult!
+  createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
+  updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
+  removeCeaseCause(id: Int!): CeaseCause!
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
   removeColony(id: Int!): Colony!
@@ -154,9 +166,23 @@ type Mutation {
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
+  createTown(createTownInput: CreateTownInput!): Town!
+  updateTown(updateTownInput: UpdateTownInput!): Town!
+  removeTown(id: Int!): Town!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
+}
+
+input CreateAnnotationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAnnotationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input CreateCatInput {
@@ -181,6 +207,17 @@ input UpdateCatInput {
   eyesId: Int
   gender: Gender
   kitten: Boolean
+  id: Int!
+}
+
+input CreateCeaseCauseInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCeaseCauseInput {
+  """Example field (placeholder)"""
+  exampleField: Int
   id: Int!
 }
 
@@ -228,6 +265,15 @@ input UpdatePatternInput {
   id: Int!
 }
 
+input CreateTownInput {
+  name: String!
+}
+
+input UpdateTownInput {
+  name: String
+  id: Int!
+}
+
 input CreateUserInput {
   name: String!
   surnames: String!
@@ -260,4 +306,7 @@ type Subscription {
   patternAdded: Pattern!
   patternUpdated: Pattern!
   patternRemoved: Pattern!
+  townAdded: Town!
+  townUpdated: Town!
+  townRemoved: Town!
 }

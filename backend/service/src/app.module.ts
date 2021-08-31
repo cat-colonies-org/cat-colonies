@@ -34,7 +34,17 @@ import appConfig from './configuration';
     TypeOrmModule.forRoot(appConfig().orm),
     ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true, load: [appConfig] }),
     GraphQLModule.forRoot({
-      include: [CatsModule, ColoniesModule, ColorsModule, EyeColorsModule, PatternsModule, UsersModule],
+      include: [
+        AnnotationsModule,
+        CatsModule,
+        CeaseCausesModule,
+        ColoniesModule,
+        ColorsModule,
+        EyeColorsModule,
+        PatternsModule,
+        TownsModule,
+        UsersModule,
+      ],
       debug: true,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
