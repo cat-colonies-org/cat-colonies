@@ -2,12 +2,12 @@ name: Build service image
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches: ['main']
     paths: ['.github/**', 'backend/service/**']
 
   # pull_request:
-  #   branches: ["main", "develop"]
-  #   paths: [".github/**", "backend/service/**"]
+  #   branches: ['main']
+  #   paths: ['.github/**', 'backend/service/**']
 
 defaults:
   run:
