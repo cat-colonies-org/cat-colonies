@@ -107,6 +107,10 @@ type RemoveColorResult {
   result: Boolean!
 }
 
+type RemovePatternResult {
+  result: Boolean!
+}
+
 type User {
   id: Int!
   name: String!
@@ -128,8 +132,8 @@ type Query {
   color(id: Int!): Color
   eyeColors: [EyeColor!]!
   eyeColor(id: Int!): EyeColor!
-  patterns: [Pattern!]!
-  pattern(id: Int!): Pattern!
+  patterns(description: String): [Pattern!]
+  pattern(id: Int!): Pattern
   users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!
 }
@@ -149,7 +153,7 @@ type Mutation {
   removeEyeColor(id: Int!): EyeColor!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
-  removePattern(id: Int!): Pattern!
+  removePattern(id: Int!): RemovePatternResult!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
@@ -253,4 +257,7 @@ type Subscription {
   colorAdded: Color!
   colorUpdated: Color!
   colorRemoved: Color!
+  patternAdded: Pattern!
+  patternUpdated: Pattern!
+  patternRemoved: Pattern!
 }
