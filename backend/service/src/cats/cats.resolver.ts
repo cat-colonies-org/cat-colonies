@@ -53,8 +53,11 @@ export class CatsResolver {
   @Mutation(() => RemoveCatResult)
   async removeCat(@Args('id', { type: () => Int }) id: number): Promise<RemoveCatResult> {
     const cat = await this.catsService.findOne(id);
+    if (!cat) return { result: false };
+
     const result = await this.catsService.remove(id);
-    this.pubSub.publish(CAT_REMOVED_EVENT, { [CAT_REMOVED_EVENT]: cat });
+    if (result) this.pubSub.publish(CAT_REMOVED_EVENT, { [CAT_REMOVED_EVENT]: cat });
+
     return { result };
   }
   // #endregion
