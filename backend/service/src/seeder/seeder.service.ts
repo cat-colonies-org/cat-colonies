@@ -1,13 +1,13 @@
 import { Cat, Gender } from 'src/cats/entities/cat.entity';
-import { CeaseCause } from 'src/cats/entities/cease-cause.entity';
 import { Colony } from 'src/colonies/entities/colony.entity';
 import { Color } from 'src/colors/entities/color.entity';
 import { Environment } from 'src/colonies/entities/environment.entity';
-import { Eyes } from 'src/cats/entities/eyes.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { LocationType } from 'src/colonies/entities/location-type.entity';
 import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { Town } from 'src/towns/entities/town.entity';
+import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
+import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
 // import { Annotation } from 'src/cats/entities/annotation.entity';
 // import { User } from 'src/users/entities/user.entity';
 
@@ -19,7 +19,7 @@ export class SeederService implements OnModuleInit {
     await this.seedTowns();
     await this.seedColors();
     await this.seedPatterns();
-    await this.seedEyes();
+    await this.seedEyeColors();
     await this.seedCeaseCauses();
     await this.seedLocationTypes();
     await this.seedEnvironments();
@@ -62,12 +62,12 @@ export class SeederService implements OnModuleInit {
     ]);
   }
 
-  private async seedEyes(): Promise<any> {
+  private async seedEyeColors(): Promise<any> {
     return Promise.all([
-      Eyes.create({ id: 1, description: 'Ojos 1' }).save(),
-      Eyes.create({ id: 2, description: 'Ojos 2' }).save(),
-      Eyes.create({ id: 3, description: 'Ojos 3' }).save(),
-      Eyes.create({ id: 4, description: 'Ojos 4' }).save(),
+      EyeColor.create({ id: 1, description: 'Ojos 1' }).save(),
+      EyeColor.create({ id: 2, description: 'Ojos 2' }).save(),
+      EyeColor.create({ id: 3, description: 'Ojos 3' }).save(),
+      EyeColor.create({ id: 4, description: 'Ojos 4' }).save(),
     ]);
   }
 
@@ -165,7 +165,7 @@ export class SeederService implements OnModuleInit {
         colorId: 2,
         patternId: 2,
         gender: Gender.Male,
-        eyesId: 2,
+        eyeColorId: 2,
       }).save(),
       Cat.create({
         id: 4,
@@ -189,7 +189,7 @@ export class SeederService implements OnModuleInit {
         ceasedAt: new Date(),
         ceaseCauseId: 1,
         gender: Gender.Male,
-        eyesId: 1,
+        eyeColorId: 1,
       }).save(),
     ]);
   }
