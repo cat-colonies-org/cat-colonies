@@ -7,12 +7,11 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { PubSubModule } from './pubsub.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { SeederModule } from './seeder/seeder.module';
 import { TownsModule } from './towns/towns.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import appConfig from './config/configuration';
-import ormConfig from '../ormconfig';
-import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -30,7 +29,7 @@ import { SeederModule } from './seeder/seeder.module';
     PubSubModule,
     SeederModule,
     TownsModule,
-    TypeOrmModule.forRoot(ormConfig),
+    TypeOrmModule.forRoot(appConfig().orm),
   ],
   controllers: [AppController],
   providers: [AppService],

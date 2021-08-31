@@ -1,14 +1,9 @@
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+
 interface Configuration {
   port: number;
 
-  database: {
-    name: string;
-    host: string;
-    port: number;
-    user: string;
-    password: string;
-    synchronize: boolean;
-  };
+  orm: PostgresConnectionOptions;
 
   redis: {
     host: string;
@@ -16,26 +11,34 @@ interface Configuration {
   };
 }
 
-const getBool = (key: string, defaultValue: boolean): boolean => {
-  return typeof process.env[key] === 'string' ? process.env[key] === 'true' : defaultValue;
+const getString = (key: string, defaultValue: string): string => {
+  return key in process.env ? process.env[key] : defaultValue;
 };
 
 const getNumber = (key: string, defaultValue: number): number => {
-  return typeof process.env[key] === 'string' ? +process.env[key] : defaultValue;
+  return key in process.env ? +process.env[key] : defaultValue;
+};
+
+const getBool = (key: string, defaultValue: boolean): boolean => {
+  return key in process.env ? process.env[key] === 'true' : defaultValue;
 };
 
 export default (): Configuration => ({
   port: getNumber('PORT', 8080),
-  database: {
-    host: process.env.DB_HOST || 'database',
+
+  orm: {
+    type: 'postgres',
+    host: getString('DB_HOST', 'database'),
     port: getNumber('DB_PORT', 5432),
-    user: process.env.DB_USER || 'appuser',
-    password: process.env.DB_PASS || 'appuser-pass!',
-    name: process.env.DB_NAME || 'cats',
+    database: getString('DB_NAME', 'cats'),
+    username: getString('DB_USER', 'appuser'),
+    password: getString('DB_PASS', 'appuser-pass!'),
+    entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: getBool('DB_SYNCHRONIZE', true),
   },
+
   redis: {
-    host: process.env.REDIS_HOST || 'redis',
+    host: getString('REDIS_HOST', 'redis'),
     port: getNumber('REDIS_PORT', 6379),
   },
 });

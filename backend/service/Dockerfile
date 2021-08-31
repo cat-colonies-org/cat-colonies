@@ -5,7 +5,6 @@ WORKDIR /usr/local/app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY tsconfig.build.json ./
-COPY ormconfig.ts ./
 
 RUN npm install
 
