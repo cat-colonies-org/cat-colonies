@@ -13,7 +13,7 @@ import { TownsModule } from './towns/towns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { PatternsModule } from './patterns/patterns.module';
-import appConfig from './config/configuration';
+import appConfig from './configuration';
 
 @Module({
   imports: [
