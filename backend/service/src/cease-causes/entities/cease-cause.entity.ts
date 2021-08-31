@@ -1,10 +1,10 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Cat } from 'src/cats/entities/cat.entity';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Cat } from './cat.entity';
 
 @Entity()
 @ObjectType()
-export class Eyes extends BaseEntity {
+export class CeaseCause extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
@@ -13,7 +13,7 @@ export class Eyes extends BaseEntity {
   @Field(() => String)
   description: string;
 
-  @OneToMany(() => Cat, (cat) => cat.eyes)
+  @OneToMany(() => Cat, (cat) => cat.ceaseCause)
   @Field(() => [Cat])
   cats: Promise<Cat[]>;
 }
