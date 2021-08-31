@@ -4,11 +4,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { FindCatsArgs } from './dto/find-cats.args';
-import { CatsRepository } from './cats.repository';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CatsService {
-  constructor(@InjectRepository(Cat) private readonly catsRepository: CatsRepository) {}
+  constructor(@InjectRepository(Cat) private readonly catsRepository: Repository<Cat>) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
     return Cat.save(Cat.create(createCatInput));

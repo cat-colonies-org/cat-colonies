@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CeaseCause {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
 type Town {
   id: Int!
   name: String!
@@ -44,27 +50,13 @@ type Color {
   cats: [Cat!]!
 }
 
+type EyeColor {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
 type Pattern {
-  id: Int!
-  description: String!
-  cats: [Cat!]!
-}
-
-type Annotation {
-  id: Int!
-  annotation: String!
-  date: DateTime!
-  catId: Int!
-  cat: Cat!
-}
-
-type CeaseCause {
-  id: Int!
-  description: String!
-  cats: [Cat!]!
-}
-
-type Eyes {
   id: Int!
   description: String!
   cats: [Cat!]!
@@ -87,8 +79,8 @@ type Cat {
   pattern: Pattern
   gender: Gender
   kitten: Boolean
-  eyesId: Int
-  eyes: Eyes
+  eyeColorId: Int
+  eyeColor: EyeColor
   imageURL: String
   annotations: [Annotation!]
 }
@@ -99,7 +91,19 @@ enum Gender {
   Female
 }
 
+type Annotation {
+  id: Int!
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
+}
+
 type RemoveCatResult {
+  result: Boolean!
+}
+
+type RemoveColorResult {
   result: Boolean!
 }
 
@@ -120,8 +124,10 @@ type Query {
   cat(id: Int!): Cat
   colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
   colony(id: Int!): Colony
-  colors: [Color!]!
-  color(id: Int!): Color!
+  colors(description: String): [Color!]
+  color(id: Int!): Color
+  eyeColors: [EyeColor!]!
+  eyeColor(id: Int!): EyeColor!
   patterns: [Pattern!]!
   pattern(id: Int!): Pattern!
   users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
@@ -137,7 +143,10 @@ type Mutation {
   removeColony(id: Int!): Colony!
   createColor(createColorInput: CreateColorInput!): Color!
   updateColor(updateColorInput: UpdateColorInput!): Color!
-  removeColor(id: Int!): Color!
+  removeColor(id: Int!): RemoveColorResult!
+  createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
+  updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
+  removeEyeColor(id: Int!): EyeColor!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): Pattern!
@@ -195,6 +204,17 @@ input UpdateColorInput {
   id: Int!
 }
 
+input CreateEyeColorInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateEyeColorInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input CreatePatternInput {
   description: String!
 }
@@ -230,4 +250,7 @@ type Subscription {
   colonyAdded: Colony!
   colonyUpdated: Colony!
   colonyRemoved: Colony!
+  colorAdded: Color!
+  colorUpdated: Color!
+  colorRemoved: Color!
 }

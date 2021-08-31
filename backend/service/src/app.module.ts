@@ -1,28 +1,31 @@
+import { AnnotationsModule } from './annotations/annotations.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CatsModule } from './cats/cats.module';
+import { CeaseCausesModule } from './cease-causes/cease-causes.module';
 import { ColoniesModule } from './colonies/colonies.module';
 import { ColorsModule } from './colors/colors.module';
 import { ConfigModule } from '@nestjs/config';
+import { EyeColorsModule } from './eye-colors/eye-colors.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { Module } from '@nestjs/common';
+import { PatternsModule } from './patterns/patterns.module';
 import { PubSubModule } from './pubsub.module';
 import { SeederModule } from './seeder/seeder.module';
 import { TownsModule } from './towns/towns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { PatternsModule } from './patterns/patterns.module';
-import { AnnotationsModule } from './annotations/annotations.module';
-import { CeaseCausesModule } from './cease-causes/cease-causes.module';
-import { EyeColorsModule } from './eye-colors/eye-colors.module';
 import appConfig from './configuration';
 
 @Module({
   imports: [
+    AnnotationsModule,
     CatsModule,
+    CeaseCausesModule,
     ColoniesModule,
     ColorsModule,
+    EyeColorsModule,
     PatternsModule,
     PubSubModule,
     SeederModule,
@@ -37,9 +40,6 @@ import appConfig from './configuration';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
     }),
-    AnnotationsModule,
-    CeaseCausesModule,
-    EyeColorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
