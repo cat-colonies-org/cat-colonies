@@ -1,0 +1,12 @@
+{
+  "name": "cat-colonies-database",
+  "version": "0.0.1",
+  "description": "",
+  "author": "cat-colonies-org",
+  "private": true,
+  "license": "BSD 3-Clause License",
+  "scripts": {
+    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-database .",
+    "docker:push": "docker push daviddq/cat-colonies-database"
+  }
+}

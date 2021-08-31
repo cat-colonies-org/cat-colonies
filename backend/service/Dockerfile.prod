@@ -1,0 +1,24 @@
+FROM node:16-alpine AS builder
+
+WORKDIR /usr/local/app
+
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY tsconfig.build.json ./
+COPY ./src ./src
+
+RUN npm install && \
+  npm run build && \
+  npm prune --production
+
+# --------------------------------------------------
+
+FROM node:16-alpine
+
+WORKDIR /usr/local/app
+
+COPY --from=builder /usr/local/app ./
+
+CMD [ "npm", "run", "start:prod" ]
+
+#USER node

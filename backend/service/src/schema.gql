@@ -1,0 +1,214 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Town {
+  id: Int!
+  name: String!
+  colonies: [Colony!]!
+}
+
+type Environment {
+  id: Int!
+  description: String!
+  colonies: [Colony!]!
+}
+
+type LocationType {
+  id: Int!
+  description: String!
+  colonies: [Colony!]
+}
+
+type Colony {
+  id: Int!
+  createdAt: DateTime!
+  address: String!
+  locationTypeId: Int
+  locationType: LocationType!
+  cats: [Cat!]
+  environmentId: Int
+  environment: Environment!
+  townId: Int!
+  town: Town!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Color {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
+type Pattern {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
+type Annotation {
+  id: Int!
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
+}
+
+type CeaseCause {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
+type Eyes {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
+type Cat {
+  id: Int!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  ceaseCause: CeaseCause
+  birthYear: Int
+  sterilized: Boolean
+  sterilizedAt: DateTime
+  colonyId: Int
+  colony: Colony
+  colorId: Int
+  color: Color
+  patternId: Int
+  pattern: Pattern
+  gender: Gender
+  kitten: Boolean
+  eyesId: Int
+  eyes: Eyes
+  imageURL: String
+  annotations: [Annotation!]
+}
+
+""""""
+enum Gender {
+  Male
+  Female
+}
+
+type RemoveCatResult {
+  result: Boolean!
+}
+
+type User {
+  id: Int!
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+}
+
+type Query {
+  cats(birthYear: Int, sterilized: Boolean, colonyId: Int): [Cat!]
+  cat(id: Int!): Cat
+  colonies: [Colony!]!
+  colony(id: Int!): Colony!
+  colors: [Color!]!
+  color(id: Int!): Color!
+  patterns: [Pattern!]!
+  pattern(id: Int!): Pattern!
+  users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
+  user(id: Int!): User!
+}
+
+type Mutation {
+  createCat(createCatInput: CreateCatInput!): Cat!
+  updateCat(updateCatInput: UpdateCatInput!): Cat!
+  removeCat(id: Int!): RemoveCatResult!
+  createColony(createColonyInput: CreateColonyInput!): Colony!
+  updateColony(updateColonyInput: UpdateColonyInput!): Colony!
+  removeColony(id: Int!): Colony!
+  createColor(createColorInput: CreateColorInput!): Color!
+  updateColor(updateColorInput: UpdateColorInput!): Color!
+  removeColor(id: Int!): Color!
+  createPattern(createPatternInput: CreatePatternInput!): Pattern!
+  updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
+  removePattern(id: Int!): Pattern!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+}
+
+input CreateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  colonyId: Int
+}
+
+input UpdateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  colonyId: Int
+  id: Int!
+}
+
+input CreateColonyInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateColonyInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateColorInput {
+  description: String!
+}
+
+input UpdateColorInput {
+  description: String
+  id: Int!
+}
+
+input CreatePatternInput {
+  description: String!
+}
+
+input UpdatePatternInput {
+  description: String
+  id: Int!
+}
+
+input CreateUserInput {
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  authorizesWhatsApp: Boolean
+}
+
+input UpdateUserInput {
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  authorizesWhatsApp: Boolean
+  id: Int!
+}
+
+type Subscription {
+  catAdded: Cat!
+  catUpdated: Cat!
+  catRemoved: Cat!
+}

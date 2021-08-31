@@ -1,0 +1,44 @@
+name: Build backend image
+
+on:
+  push:
+    branches: ['main']
+    paths: ['.github/**', 'backend/database/**']
+
+  # pull_request:
+  #   branches: ['main']
+  #   paths: ['.github/**', 'backend/database/**']
+
+defaults:
+  run:
+    working-directory: ./backend/database
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build backend image
+        run: |
+          npm run docker:build
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Push backend image
+        run: |
+          npm run docker:push
