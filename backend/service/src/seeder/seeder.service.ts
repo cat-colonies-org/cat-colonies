@@ -1,14 +1,14 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-
-// import { Annotation } from 'src/cats/entities/annotation.entity';
 import { Cat, Gender } from 'src/cats/entities/cat.entity';
 import { CeaseCause } from 'src/cats/entities/cease-cause.entity';
-import { Coat } from 'src/cats/entities/coat.entity';
 import { Colony } from 'src/colonies/entities/colony.entity';
+import { Color } from 'src/colors/entities/color.entity';
 import { Environment } from 'src/colonies/entities/environment.entity';
 import { Eyes } from 'src/cats/entities/eyes.entity';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { LocationType } from 'src/colonies/entities/location-type.entity';
+import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { Town } from 'src/towns/entities/town.entity';
+// import { Annotation } from 'src/cats/entities/annotation.entity';
 // import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
@@ -17,7 +17,8 @@ export class SeederService implements OnModuleInit {
 
   async onModuleInit() {
     await this.seedTowns();
-    await this.seedCoats();
+    await this.seedColors();
+    await this.seedPatterns();
     await this.seedEyes();
     await this.seedCeaseCauses();
     await this.seedLocationTypes();
@@ -35,19 +36,29 @@ export class SeederService implements OnModuleInit {
     ]);
   }
 
-  private async seedCoats(): Promise<any> {
+  private async seedColors(): Promise<any> {
     return Promise.all([
-      Coat.create({ id: 1, description: 'Azul Ruso' }).save(),
-      Coat.create({ id: 2, description: 'Bengalí' }).save(),
-      Coat.create({ id: 3, description: 'Europeo de pelo corto' }).save(),
-      Coat.create({ id: 4, description: 'Himalayo' }).save(),
-      Coat.create({ id: 5, description: 'Persa' }).save(),
-      Coat.create({ id: 6, description: 'Selkirk Rex' }).save(),
-      Coat.create({ id: 7, description: 'Rex' }).save(),
-      Coat.create({ id: 8, description: 'Bosque de Noruega' }).save(),
-      Coat.create({ id: 9, description: 'Maine Coon' }).save(),
-      Coat.create({ id: 10, description: 'Sphynx' }).save(),
-      Coat.create({ id: 11, description: 'Peterbald' }).save(),
+      Color.create({ id: 1, description: 'Negro' }).save(),
+      Color.create({ id: 2, description: 'Rojo' }).save(),
+      Color.create({ id: 3, description: 'Azul' }).save(),
+      Color.create({ id: 4, description: 'Chocolate' }).save(),
+      Color.create({ id: 5, description: 'Blanco' }).save(),
+      Color.create({ id: 6, description: 'Crema' }).save(),
+      Color.create({ id: 7, description: 'Gris' }).save(),
+      Color.create({ id: 8, description: 'Tricolor' }).save(),
+      Color.create({ id: 9, description: 'Tricolor diluído' }).save(),
+    ]);
+  }
+
+  private async seedPatterns(): Promise<any> {
+    return Promise.all([
+      Pattern.create({ id: 1, description: 'Sólido' }).save(),
+      Pattern.create({ id: 2, description: 'Tabby' }).save(),
+      Pattern.create({ id: 3, description: 'Punteado' }).save(),
+      Pattern.create({ id: 4, description: 'Particolor' }).save(),
+      Pattern.create({ id: 5, description: 'Point' }).save(),
+      Pattern.create({ id: 6, description: 'Carey' }).save(),
+      Pattern.create({ id: 7, description: 'Cálico' }).save(),
     ]);
   }
 
@@ -129,7 +140,8 @@ export class SeederService implements OnModuleInit {
         sterilizedAt: new Date(),
         birthYear: 2015,
         colonyId: 1,
-        coatId: 1,
+        colorId: 1,
+        patternId: 1,
         gender: Gender.Male,
         imageURL:
           'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.ueMqYHUuxXOm8RK_rHF62AHaHa%26pid%3DApi&f=1',
@@ -140,7 +152,8 @@ export class SeederService implements OnModuleInit {
         sterilized: false,
         birthYear: 2016,
         colonyId: 1,
-        coatId: 2,
+        colorId: 1,
+        patternId: 1,
         gender: Gender.Female,
       }).save(),
       Cat.create({
@@ -149,7 +162,8 @@ export class SeederService implements OnModuleInit {
         sterilized: false,
         birthYear: 2017,
         colonyId: 2,
-        coatId: 2,
+        colorId: 2,
+        patternId: 2,
         gender: Gender.Male,
         eyesId: 2,
       }).save(),
@@ -159,7 +173,8 @@ export class SeederService implements OnModuleInit {
         sterilized: true,
         birthYear: 2017,
         colonyId: 3,
-        coatId: 1,
+        colorId: 1,
+        patternId: 1,
         gender: Gender.Female,
         kitten: true,
       }).save(),
@@ -169,7 +184,8 @@ export class SeederService implements OnModuleInit {
         sterilized: true,
         birthYear: 2017,
         colonyId: 4,
-        coatId: 1,
+        colorId: 1,
+        patternId: 1,
         ceasedAt: new Date(),
         ceaseCauseId: 1,
         gender: Gender.Male,

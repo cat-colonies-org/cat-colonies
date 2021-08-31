@@ -1,9 +1,10 @@
 import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 import { Colony } from 'src/colonies/entities/colony.entity';
+import { Color } from 'src/colors/entities/color.entity';
+import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Annotation } from './annotation.entity';
 import { CeaseCause } from './cease-cause.entity';
-import { Coat } from './coat.entity';
 import { Eyes } from './eyes.entity';
 
 export enum Gender {
@@ -57,11 +58,19 @@ export class Cat extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  coatId?: number;
+  colorId?: number;
 
-  @ManyToOne(() => Coat, (coat) => coat.cats)
-  @Field(() => Coat, { nullable: true })
-  coat?: Promise<Coat>;
+  @ManyToOne(() => Color, (color) => color.cats)
+  @Field(() => Color, { nullable: true })
+  color?: Promise<Color>;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  patternId?: number;
+
+  @ManyToOne(() => Pattern, (pattern) => pattern.cats)
+  @Field(() => Pattern, { nullable: true })
+  pattern?: Promise<Pattern>;
 
   @Column({ nullable: true })
   @Field(() => Gender, { nullable: true })
