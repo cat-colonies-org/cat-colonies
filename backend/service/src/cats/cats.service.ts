@@ -4,17 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { FindCatsArgs } from './dto/find-cats.args';
-import { CatsRepository } from './cats.repository';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CatsService {
-  constructor(@InjectRepository(Cat) private readonly catsRepository: CatsRepository) {}
+  constructor(@InjectRepository(Cat) private readonly catsRepository: Repository<Cat>) {}
 
   create(createCatInput: CreateCatInput): Promise<Cat> {
     return Cat.save(Cat.create(createCatInput));
   }
 
-  find(filter: FindCatsArgs) {
+  find(filter: FindCatsArgs): Promise<Cat[]> {
     let filterClause = filter ? { where: filter } : undefined;
     return this.catsRepository.find(filterClause);
   }
@@ -30,7 +30,7 @@ export class CatsService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const result = await this.catsRepository.delete({ id }); // TODO: Return our result
+    const result = await this.catsRepository.delete({ id });
     return result.affected > 0;
   }
 }

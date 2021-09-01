@@ -1,11 +1,11 @@
 import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
+import { Annotation } from 'src/annotations/entities/annotation.entity';
+import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
 import { Colony } from 'src/colonies/entities/colony.entity';
 import { Color } from 'src/colors/entities/color.entity';
+import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
 import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Annotation } from './annotation.entity';
-import { CeaseCause } from './cease-cause.entity';
-import { Eyes } from './eyes.entity';
 
 export enum Gender {
   Male = 'Male',
@@ -82,11 +82,11 @@ export class Cat extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  eyesId?: number;
+  eyeColorId?: number;
 
-  @ManyToOne(() => Eyes, (eyes) => eyes.cats)
-  @Field(() => Eyes, { nullable: true })
-  eyes?: Promise<Eyes>;
+  @ManyToOne(() => EyeColor, (eyeColors) => eyeColors.cats)
+  @Field(() => EyeColor, { nullable: true })
+  eyeColor?: Promise<EyeColor>;
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })

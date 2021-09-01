@@ -2,33 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateColonyInput } from './dto/create-colony.input';
+import { FindColoniesArgs } from './dto/find-colonies.args';
 import { UpdateColonyInput } from './dto/update-colony.input';
 import { Colony } from './entities/colony.entity';
 
 @Injectable()
 export class ColoniesService {
-  constructor(
-    @InjectRepository(Colony)
-    private readonly colonyRepository: Repository<Colony>,
-  ) {}
+  constructor(@InjectRepository(Colony) private readonly coloniesRepository: Repository<Colony>) {}
 
-  create(createColonyInput: CreateColonyInput) {
-    return 'This action adds a new colony';
+  create(createColonyInput: CreateColonyInput): Promise<Colony> {
+    return Colony.save(Colony.create(createColonyInput));
   }
 
-  findAll(): Promise<Colony[]> {
-    return this.colonyRepository.find();
+  find(filter: FindColoniesArgs): Promise<Colony[]> {
+    let filterClause = filter ? { where: filter } : undefined;
+    return this.coloniesRepository.find(filterClause);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} colony`;
+  findOne(id: number): Promise<Colony> {
+    return this.coloniesRepository.findOne(id);
   }
 
-  update(id: number, updateColonyInput: UpdateColonyInput) {
-    return `This action updates a #${id} colony`;
+  async update(id: number, updateColonyInput: UpdateColonyInput): Promise<Colony> {
+    const colony = await this.coloniesRepository.findOne(id);
+    Object.assign(colony, updateColonyInput);
+    return colony.save();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} colony`;
+  async remove(id: number): Promise<boolean> {
+    const result = await this.coloniesRepository.delete(id);
+    return result.affected > 0;
   }
 }

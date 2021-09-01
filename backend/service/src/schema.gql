@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CeaseCause {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
 type Town {
   id: Int!
   name: String!
@@ -44,27 +50,13 @@ type Color {
   cats: [Cat!]!
 }
 
+type EyeColor {
+  id: Int!
+  description: String!
+  cats: [Cat!]!
+}
+
 type Pattern {
-  id: Int!
-  description: String!
-  cats: [Cat!]!
-}
-
-type Annotation {
-  id: Int!
-  annotation: String!
-  date: DateTime!
-  catId: Int!
-  cat: Cat!
-}
-
-type CeaseCause {
-  id: Int!
-  description: String!
-  cats: [Cat!]!
-}
-
-type Eyes {
   id: Int!
   description: String!
   cats: [Cat!]!
@@ -87,8 +79,8 @@ type Cat {
   pattern: Pattern
   gender: Gender
   kitten: Boolean
-  eyesId: Int
-  eyes: Eyes
+  eyeColorId: Int
+  eyeColor: EyeColor
   imageURL: String
   annotations: [Annotation!]
 }
@@ -99,7 +91,23 @@ enum Gender {
   Female
 }
 
+type Annotation {
+  id: Int!
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
+}
+
 type RemoveCatResult {
+  result: Boolean!
+}
+
+type RemoveColorResult {
+  result: Boolean!
+}
+
+type RemovePatternResult {
   result: Boolean!
 }
 
@@ -116,57 +124,115 @@ type User {
 }
 
 type Query {
-  cats(birthYear: Int, sterilized: Boolean, colonyId: Int): [Cat!]
+  annotations: [Annotation!]!
+  annotation(id: Int!): Annotation!
+  cats(birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
-  colonies: [Colony!]!
-  colony(id: Int!): Colony!
-  colors: [Color!]!
-  color(id: Int!): Color!
-  patterns: [Pattern!]!
-  pattern(id: Int!): Pattern!
+  ceaseCauses: [CeaseCause!]!
+  ceaseCause(id: Int!): CeaseCause!
+  colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
+  colony(id: Int!): Colony
+  colors(description: String): [Color!]
+  color(id: Int!): Color
+  eyeColors: [EyeColor!]!
+  eyeColor(id: Int!): EyeColor!
+  patterns(description: String): [Pattern!]
+  pattern(id: Int!): Pattern
+  towns(name: String): [Town!]
+  town(id: Int!): Town
   users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!
 }
 
 type Mutation {
+  createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
+  updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
+  removeAnnotation(id: Int!): Annotation!
   createCat(createCatInput: CreateCatInput!): Cat!
   updateCat(updateCatInput: UpdateCatInput!): Cat!
   removeCat(id: Int!): RemoveCatResult!
+  createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
+  updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
+  removeCeaseCause(id: Int!): CeaseCause!
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
   removeColony(id: Int!): Colony!
   createColor(createColorInput: CreateColorInput!): Color!
   updateColor(updateColorInput: UpdateColorInput!): Color!
-  removeColor(id: Int!): Color!
+  removeColor(id: Int!): RemoveColorResult!
+  createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
+  updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
+  removeEyeColor(id: Int!): EyeColor!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
-  removePattern(id: Int!): Pattern!
+  removePattern(id: Int!): RemovePatternResult!
+  createTown(createTownInput: CreateTownInput!): Town!
+  updateTown(updateTownInput: UpdateTownInput!): Town!
+  removeTown(id: Int!): Town!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
+input CreateAnnotationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAnnotationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input CreateCatInput {
   birthYear: Int
   sterilized: Boolean
+  sterilizedAt: DateTime
   colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
 }
 
 input UpdateCatInput {
   birthYear: Int
   sterilized: Boolean
+  sterilizedAt: DateTime
   colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
   id: Int!
 }
 
-input CreateColonyInput {
+input CreateCeaseCauseInput {
   """Example field (placeholder)"""
   exampleField: Int!
 }
 
-input UpdateColonyInput {
+input UpdateCeaseCauseInput {
   """Example field (placeholder)"""
   exampleField: Int
+  id: Int!
+}
+
+input CreateColonyInput {
+  address: String!
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int!
+}
+
+input UpdateColonyInput {
+  address: String
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int
   id: Int!
 }
 
@@ -179,12 +245,32 @@ input UpdateColorInput {
   id: Int!
 }
 
+input CreateEyeColorInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateEyeColorInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input CreatePatternInput {
   description: String!
 }
 
 input UpdatePatternInput {
   description: String
+  id: Int!
+}
+
+input CreateTownInput {
+  name: String!
+}
+
+input UpdateTownInput {
+  name: String
   id: Int!
 }
 
@@ -211,4 +297,16 @@ type Subscription {
   catAdded: Cat!
   catUpdated: Cat!
   catRemoved: Cat!
+  colonyAdded: Colony!
+  colonyUpdated: Colony!
+  colonyRemoved: Colony!
+  colorAdded: Color!
+  colorUpdated: Color!
+  colorRemoved: Color!
+  patternAdded: Pattern!
+  patternUpdated: Pattern!
+  patternRemoved: Pattern!
+  townAdded: Town!
+  townUpdated: Town!
+  townRemoved: Town!
 }

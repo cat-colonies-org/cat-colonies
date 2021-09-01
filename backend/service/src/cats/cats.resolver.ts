@@ -16,7 +16,7 @@ const CAT_REMOVED_EVENT = 'catRemoved';
 
 @Resolver(() => Cat)
 export class CatsResolver {
-  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private pubSub: RedisPubSub) {}
+  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private readonly pubSub: RedisPubSub) {}
 
   // #region Subscriptions
   @Subscription(() => Cat)
@@ -33,20 +33,20 @@ export class CatsResolver {
   catRemoved() {
     return this.pubSub.asyncIterator(CAT_REMOVED_EVENT);
   }
-  // #endregion
+  // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Cat)
   async createCat(@Args('createCatInput') createCatInput: CreateCatInput): Promise<Cat> {
     const cat = await this.catsService.create(createCatInput);
-    this.pubSub.publish(CAT_ADDED_EVENT, { [CAT_ADDED_EVENT]: cat });
+    cat && this.pubSub.publish(CAT_ADDED_EVENT, { [CAT_ADDED_EVENT]: cat });
     return cat;
   }
 
   @Mutation(() => Cat)
   async updateCat(@Args('updateCatInput') updateCatInput: UpdateCatInput): Promise<Cat> {
     const cat = await this.catsService.update(updateCatInput.id, updateCatInput);
-    this.pubSub.publish(CAT_UPDATED_EVENT, { [CAT_UPDATED_EVENT]: cat });
+    cat && this.pubSub.publish(CAT_UPDATED_EVENT, { [CAT_UPDATED_EVENT]: cat });
     return cat;
   }
 
@@ -56,11 +56,11 @@ export class CatsResolver {
     if (!cat) return { result: false };
 
     const result = await this.catsService.remove(id);
-    if (result) this.pubSub.publish(CAT_REMOVED_EVENT, { [CAT_REMOVED_EVENT]: cat });
+    result && this.pubSub.publish(CAT_REMOVED_EVENT, { [CAT_REMOVED_EVENT]: cat });
 
     return { result };
   }
-  // #endregion
+  // #endregion Mutations
 
   // #region Queries
   @Query(() => [Cat], { name: 'cats', nullable: true })
@@ -72,12 +72,12 @@ export class CatsResolver {
   findOne(@Args('id', { type: () => Int }) id: number): Promise<Cat> {
     return this.catsService.findOne(id);
   }
-  // #endregion
+  // #endregion Queries
 
   // #region ResolveFields
   @ResolveField('colony', () => Colony)
   async colony(@Parent() cat: Cat) {
     return await cat.colony;
   }
-  // #endregion
+  // #endregion ResolveFields
 }
