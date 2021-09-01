@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Parent, ResolveField, Subscription } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
 import { ColoniesService } from './colonies.service';
 import { Colony } from './entities/colony.entity';
 import { CreateColonyInput } from './dto/create-colony.input';
@@ -75,11 +75,4 @@ export class ColoniesResolver {
     return this.coloniesService.findOne(id);
   }
   // #endregion Queries
-
-  // #region ResolveFields
-  @ResolveField('locationType', () => LocationType)
-  async locationType(@Parent() colony: Colony) {
-    return await colony.locationType;
-  }
-  // #endregion ResolveFields
 }

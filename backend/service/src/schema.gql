@@ -126,11 +126,11 @@ type User {
 type Query {
   annotations(id: Int, catId: Int, annotation: String): [Annotation!]
   annotation(id: Int!): Annotation
-  cats(birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
+  cats(id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
   ceaseCauses(id: Int, description: String): [CeaseCause!]
   ceaseCause(id: Int!): CeaseCause
-  colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
+  colonies(id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
   colony(id: Int!): Colony
   colors(description: String): [Color!]
   color(id: Int!): Color

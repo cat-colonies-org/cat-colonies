@@ -94,5 +94,5 @@ export class Cat extends BaseEntity {
 
   @OneToMany(() => Annotation, (annotation) => annotation.cat)
   @Field(() => [Annotation], { nullable: true })
-  annotations?: Annotation[];
+  annotations?: Promise<Annotation[]>;
 }

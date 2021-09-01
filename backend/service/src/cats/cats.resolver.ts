@@ -1,7 +1,6 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, Subscription } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
 import { Cat } from './entities/cat.entity';
 import { CatsService } from './cats.service';
-import { Colony } from 'src/colonies/entities/colony.entity';
 import { CreateCatInput } from './dto/create-cat.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
@@ -73,11 +72,4 @@ export class CatsResolver {
     return this.catsService.findOne(id);
   }
   // #endregion Queries
-
-  // #region ResolveFields
-  @ResolveField('colony', () => Colony)
-  async colony(@Parent() cat: Cat) {
-    return await cat.colony;
-  }
-  // #endregion ResolveFields
 }

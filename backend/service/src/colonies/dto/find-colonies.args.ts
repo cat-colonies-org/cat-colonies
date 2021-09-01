@@ -2,8 +2,11 @@ import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 @ArgsType()
 export class FindColoniesArgs {
+  @Field(() => Int, { nullable: true })
+  id?: number;
+
   @Field(() => String, { nullable: true })
-  address: string;
+  address?: string;
 
   @Field(() => Int, { nullable: true })
   locationTypeId?: number;
@@ -12,5 +15,5 @@ export class FindColoniesArgs {
   environmentId?: number;
 
   @Field(() => Int, { nullable: true })
-  townId: number;
+  townId?: number;
 }

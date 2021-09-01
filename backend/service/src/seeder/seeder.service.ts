@@ -1,14 +1,14 @@
+import { Annotation } from 'src/annotations/entities/annotation.entity';
 import { Cat, Gender } from 'src/cats/entities/cat.entity';
+import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
 import { Colony } from 'src/colonies/entities/colony.entity';
 import { Color } from 'src/colors/entities/color.entity';
+import { Environment } from 'src/environments/entities/environment.entity';
+import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { LocationType } from 'src/location-types/entities/location-type.entity';
 import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { Town } from 'src/towns/entities/town.entity';
-import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
-import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
-import { LocationType } from 'src/location-types/entities/location-type.entity';
-import { Environment } from 'src/environments/entities/environment.entity';
-import { Annotation } from 'src/annotations/entities/annotation.entity';
 // import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
