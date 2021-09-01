@@ -3,6 +3,7 @@ import { EyeColorsService } from './eye-colors.service';
 import { EyeColor } from './entities/eye-color.entity';
 import { CreateEyeColorInput } from './dto/create-eye-color.input';
 import { UpdateEyeColorInput } from './dto/update-eye-color.input';
+import { FindEyeColorsArgs } from './dto/find-eye-colors.args';
 
 @Resolver(() => EyeColor)
 export class EyeColorsResolver {
@@ -14,8 +15,8 @@ export class EyeColorsResolver {
   }
 
   @Query(() => [EyeColor], { name: 'eyeColors' })
-  findAll() {
-    return this.eyeColorsService.findAll();
+  find(@Args() filter: FindEyeColorsArgs): Promise<EyeColor[]> {
+    return this.eyeColorsService.find(filter);
   }
 
   @Query(() => EyeColor, { name: 'eyeColor' })

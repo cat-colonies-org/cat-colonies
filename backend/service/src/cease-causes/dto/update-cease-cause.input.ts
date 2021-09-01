@@ -3,6 +3,6 @@ import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateCeaseCauseInput extends PartialType(CreateCeaseCauseInput) {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   id: number;
 }

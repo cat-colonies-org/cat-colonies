@@ -1,5 +1,4 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { LocationType } from '../entities/location-type.entity';
 
 @InputType()
 export class CreateColonyInput {

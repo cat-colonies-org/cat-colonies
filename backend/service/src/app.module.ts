@@ -6,9 +6,11 @@ import { CeaseCausesModule } from './cease-causes/cease-causes.module';
 import { ColoniesModule } from './colonies/colonies.module';
 import { ColorsModule } from './colors/colors.module';
 import { ConfigModule } from '@nestjs/config';
+import { EnvironmentsModule } from './environments/environments.module';
 import { EyeColorsModule } from './eye-colors/eye-colors.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { LocationTypesModule } from './location-types/location-types.module';
 import { Module } from '@nestjs/common';
 import { PatternsModule } from './patterns/patterns.module';
 import { PubSubModule } from './pubsub.module';
@@ -25,7 +27,9 @@ import appConfig from './configuration';
     CeaseCausesModule,
     ColoniesModule,
     ColorsModule,
+    EnvironmentsModule,
     EyeColorsModule,
+    LocationTypesModule,
     PatternsModule,
     PubSubModule,
     SeederModule,

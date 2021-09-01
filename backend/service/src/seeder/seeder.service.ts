@@ -1,14 +1,14 @@
 import { Cat, Gender } from 'src/cats/entities/cat.entity';
 import { Colony } from 'src/colonies/entities/colony.entity';
 import { Color } from 'src/colors/entities/color.entity';
-import { Environment } from 'src/colonies/entities/environment.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { LocationType } from 'src/colonies/entities/location-type.entity';
 import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { Town } from 'src/towns/entities/town.entity';
 import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
 import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
-// import { Annotation } from 'src/cats/entities/annotation.entity';
+import { LocationType } from 'src/location-types/entities/location-type.entity';
+import { Environment } from 'src/environments/entities/environment.entity';
+import { Annotation } from 'src/annotations/entities/annotation.entity';
 // import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
@@ -25,6 +25,7 @@ export class SeederService implements OnModuleInit {
     await this.seedEnvironments();
     await this.seedColonies();
     await this.seedCats();
+    await this.seedAnnotations();
   }
 
   private async seedTowns(): Promise<any> {
@@ -191,6 +192,17 @@ export class SeederService implements OnModuleInit {
         gender: Gender.Male,
         eyeColorId: 1,
       }).save(),
+    ]);
+  }
+
+  private async seedAnnotations(): Promise<any> {
+    return Promise.all([
+      Annotation.create({ id: 1, catId: 1, annotation: 'Este gato es feo', date: new Date() }).save(),
+      Annotation.create({ id: 2, catId: 1, annotation: 'Pero es majo', date: new Date() }).save(),
+      Annotation.create({ id: 3, catId: 2, annotation: 'este gato es bonito', date: new Date() }).save(),
+      Annotation.create({ id: 4, catId: 2, annotation: 'Pero es más malo que un demoio', date: new Date() }).save(),
+      Annotation.create({ id: 5, catId: 3, annotation: 'Este es el gato 3', date: new Date() }).save(),
+      Annotation.create({ id: 6, catId: 3, annotation: 'Otra anotación para el gato 3', date: new Date() }).save(),
     ]);
   }
 }

@@ -3,11 +3,11 @@ import { ColoniesService } from './colonies.service';
 import { Colony } from './entities/colony.entity';
 import { CreateColonyInput } from './dto/create-colony.input';
 import { UpdateColonyInput } from './dto/update-colony.input';
-import { LocationType } from './entities/location-type.entity';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { FindColoniesArgs } from './dto/find-colonies.args';
+import { LocationType } from 'src/location-types/entities/location-type.entity';
 
 const COLONY_ADDED_EVENT = 'colonyAdded';
 const COLONY_UPDATED_EVENT = 'colonyUpdated';

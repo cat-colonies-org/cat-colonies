@@ -8,12 +8,6 @@ type CeaseCause {
   cats: [Cat!]!
 }
 
-type Town {
-  id: Int!
-  name: String!
-  colonies: [Colony!]!
-}
-
 type Environment {
   id: Int!
   description: String!
@@ -24,6 +18,12 @@ type LocationType {
   id: Int!
   description: String!
   colonies: [Colony!]
+}
+
+type Town {
+  id: Int!
+  name: String!
+  colonies: [Colony!]!
 }
 
 type Colony {
@@ -124,23 +124,23 @@ type User {
 }
 
 type Query {
-  annotations: [Annotation!]!
-  annotation(id: Int!): Annotation!
+  annotations(id: Int, catId: Int, annotation: String): [Annotation!]
+  annotation(id: Int!): Annotation
   cats(birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
-  ceaseCauses: [CeaseCause!]!
-  ceaseCause(id: Int!): CeaseCause!
+  ceaseCauses(id: Int, description: String): [CeaseCause!]
+  ceaseCause(id: Int!): CeaseCause
   colonies(address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
   colony(id: Int!): Colony
   colors(description: String): [Color!]
   color(id: Int!): Color
-  eyeColors: [EyeColor!]!
+  eyeColors(description: String): [EyeColor!]!
   eyeColor(id: Int!): EyeColor!
   patterns(description: String): [Pattern!]
   pattern(id: Int!): Pattern
   towns(name: String): [Town!]
   town(id: Int!): Town
-  users(name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
+  users(id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!
 }
 
@@ -175,13 +175,13 @@ type Mutation {
 }
 
 input CreateAnnotationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  catId: Int!
+  annotation: String!
 }
 
 input UpdateAnnotationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  catId: Int
+  annotation: String
   id: Int!
 }
 
@@ -211,14 +211,12 @@ input UpdateCatInput {
 }
 
 input CreateCeaseCauseInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String!
 }
 
 input UpdateCeaseCauseInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  description: String
+  id: Int
 }
 
 input CreateColonyInput {
@@ -246,14 +244,13 @@ input UpdateColorInput {
 }
 
 input CreateEyeColorInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: Int
+  description: String
 }
 
 input UpdateEyeColorInput {
-  """Example field (placeholder)"""
-  exampleField: Int
   id: Int!
+  description: String
 }
 
 input CreatePatternInput {
@@ -284,19 +281,25 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
+  name: String
+  surnames: String
+  idCard: String
+  phoneNumber: Int
+  email: String
   authorizesWhatsApp: Boolean
   id: Int!
 }
 
 type Subscription {
+  annotationAdded: Annotation!
+  annotationUpdated: Annotation!
+  annotationRemoved: Annotation!
   catAdded: Cat!
   catUpdated: Cat!
   catRemoved: Cat!
+  ceaseCauseAdded: CeaseCause!
+  ceaseCauseUpdated: CeaseCause!
+  ceaseCauseRemoved: CeaseCause!
   colonyAdded: Colony!
   colonyUpdated: Colony!
   colonyRemoved: Colony!

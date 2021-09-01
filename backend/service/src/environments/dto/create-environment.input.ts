@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CreateCeaseCauseInput {
+export class CreateEnvironmentInput {
   @Field(() => String)
   description: string;
 }
