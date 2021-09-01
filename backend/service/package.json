@@ -20,8 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service .",
-    "docker:push": "docker push daviddq/cat-colonies-service",
-    "prepare": "husky install"
+    "docker:push": "docker push daviddq/cat-colonies-service"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -52,7 +51,6 @@
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "husky": "^7.0.2",
     "jest": "^26.6.3",
     "prettier": "^2.3.2",
     "supertest": "^6.1.3",
