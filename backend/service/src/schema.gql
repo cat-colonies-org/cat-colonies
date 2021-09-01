@@ -132,13 +132,13 @@ type Query {
   ceaseCause(id: Int!): CeaseCause
   colonies(id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
   colony(id: Int!): Colony
-  colors(description: String): [Color!]
+  colors(id: Int, description: String): [Color!]
   color(id: Int!): Color
-  eyeColors(description: String): [EyeColor!]!
+  eyeColors(id: Int, description: String): [EyeColor!]!
   eyeColor(id: Int!): EyeColor!
-  patterns(description: String): [Pattern!]
+  patterns(id: Int, description: String): [Pattern!]
   pattern(id: Int!): Pattern
-  towns(name: String): [Town!]
+  towns(id: Int, name: String): [Town!]
   town(id: Int!): Town
   users(id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
   user(id: Int!): User!

@@ -9,22 +9,26 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { LocationType } from 'src/location-types/entities/location-type.entity';
 import { Pattern } from 'src/patterns/entities/pattern.entity';
 import { Town } from 'src/towns/entities/town.entity';
-// import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
   constructor() {}
 
   async onModuleInit() {
+    await this.seedUsers();
+
     await this.seedTowns();
+    await this.seedLocationTypes();
+    await this.seedEnvironments();
+    await this.seedColonies();
+
     await this.seedColors();
     await this.seedPatterns();
     await this.seedEyeColors();
     await this.seedCeaseCauses();
-    await this.seedLocationTypes();
-    await this.seedEnvironments();
-    await this.seedColonies();
     await this.seedCats();
+
     await this.seedAnnotations();
   }
 
@@ -203,6 +207,56 @@ export class SeederService implements OnModuleInit {
       Annotation.create({ id: 4, catId: 2, annotation: 'Pero es más malo que un demoio', date: new Date() }).save(),
       Annotation.create({ id: 5, catId: 3, annotation: 'Este es el gato 3', date: new Date() }).save(),
       Annotation.create({ id: 6, catId: 3, annotation: 'Otra anotación para el gato 3', date: new Date() }).save(),
+    ]);
+  }
+
+  private async seedUsers(): Promise<any> {
+    return Promise.all([
+      User.create({
+        id: 1,
+        name: 'Agapito',
+        surnames: 'Perez Ferrera',
+        idCard: '11111111A',
+        phoneNumber: 123123123,
+        email: 'agapito@cats.org',
+        createdAt: new Date(),
+      }).save(),
+      User.create({
+        id: 2,
+        name: 'Matilde',
+        surnames: 'Modesta Salmeron',
+        idCard: '22222222B',
+        phoneNumber: 456456456,
+        email: 'matilde@cats.org',
+        createdAt: new Date(),
+      }).save(),
+      User.create({
+        id: 3,
+        name: 'Juan',
+        surnames: 'Sanchez Brei',
+        idCard: '33333333C',
+        phoneNumber: 789789789,
+        email: 'juan@cats.org',
+        createdAt: new Date(),
+      }).save(),
+      User.create({
+        id: 4,
+        name: 'Maria',
+        surnames: 'del Amor Hermoso',
+        idCard: '44444444D',
+        phoneNumber: 135135135,
+        email: 'maria@cats.org',
+        createdAt: new Date(),
+      }).save(),
+      User.create({
+        id: 5,
+        name: 'Apolonio',
+        surnames: 'García Serrano',
+        idCard: '55555555E',
+        phoneNumber: 246246246,
+        email: 'apolonio@cats.org',
+        createdAt: new Date(),
+      }).save(),
     ]);
   }
 }

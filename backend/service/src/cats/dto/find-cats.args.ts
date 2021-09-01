@@ -4,7 +4,7 @@ import { Gender } from '../entities/cat.entity';
 @ArgsType()
 export class FindCatsArgs {
   @Field(() => Int, { nullable: true })
-  id: number;
+  id?: number;
 
   @Field(() => Int, { nullable: true })
   birthYear?: number;

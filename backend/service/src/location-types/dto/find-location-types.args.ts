@@ -4,8 +4,8 @@ import { Colony } from 'src/colonies/entities/colony.entity';
 @ArgsType()
 export class FindLocationTypeArgs {
   @Field(() => Int, { nullable: true })
-  id: number;
+  id?: number;
 
   @Field(() => String, { nullable: true })
-  description: string;
+  description?: string;
 }
