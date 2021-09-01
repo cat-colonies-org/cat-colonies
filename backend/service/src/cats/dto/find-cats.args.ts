@@ -1,4 +1,4 @@
-import { ArgsType, Field, InputType, Int } from '@nestjs/graphql';
+import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Gender } from '../entities/cat.entity';
 
 @ArgsType()

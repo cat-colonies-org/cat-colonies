@@ -11,7 +11,7 @@ export class BaseCrudService<T extends BaseEntity> {
   }
 
   find(filter: Record<string, any>): Promise<T[]> {
-    let filterClause = filter ? { where: filter } : undefined;
+    const filterClause = filter ? { where: filter } : undefined;
     return this.repository.find(filterClause);
   }
 

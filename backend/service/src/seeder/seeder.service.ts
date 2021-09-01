@@ -13,8 +13,6 @@ import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
-  constructor() {}
-
   async onModuleInit() {
     await this.seedUsers();
 
@@ -149,7 +147,8 @@ export class SeederService implements OnModuleInit {
         patternId: 1,
         gender: Gender.Male,
         imageURL:
-          'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.ueMqYHUuxXOm8RK_rHF62AHaHa%26pid%3DApi&f=1',
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.ueMqYHUuxXOm8RK_rHF62AHaHa%26pid%3DApi&f=1',
       }).save(),
       Cat.create({
         id: 2,
