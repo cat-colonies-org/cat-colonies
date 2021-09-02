@@ -7,6 +7,7 @@ import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { FindColoniesArgs } from './dto/find-colonies.args';
+import { RemoveColonyResult } from './dto/remove-colony.result';
 
 const COLONY_ADDED_EVENT = 'colonyAdded';
 const COLONY_UPDATED_EVENT = 'colonyUpdated';
@@ -52,7 +53,7 @@ export class ColoniesResolver {
   }
 
   @Mutation(() => Colony)
-  async removeColony(@Args('id', { type: () => Int }) id: number) {
+  async removeColony(@Args('id', { type: () => Int }) id: number): Promise<RemoveColonyResult> {
     const colony = await this.coloniesService.findOne(id);
     if (!colony) return { result: false };
 

@@ -6,7 +6,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
 import { UpdateAnnotationInput } from './dto/update-annotation.input';
-import { RemoveAnnotationResult } from './dto/remove-annotation-result';
+import { RemoveAnnotationResult } from './dto/remove-annotation.result';
 import { FindAnnotationsArgs } from './dto/find-annotations.args';
 
 const ANNOTATION_ADDED_EVENT = 'annotationAdded';

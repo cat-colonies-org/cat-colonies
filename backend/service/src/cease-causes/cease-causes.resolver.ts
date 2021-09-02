@@ -6,7 +6,7 @@ import { UpdateCeaseCauseInput } from './dto/update-cease-cause.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { RemoveCeaseCauseResult } from './dto/remove-cease-cuase-result';
+import { RemoveCeaseCauseResult } from './dto/remove-cease-cuase.result';
 import { FindCeaseCauseArgs } from './dto/find-cease-cause.args';
 
 const CEASE_CAUSE_ADDED_EVENT = 'ceaseCauseAdded';

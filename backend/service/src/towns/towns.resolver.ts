@@ -6,7 +6,7 @@ import { UpdateTownInput } from './dto/update-town.input';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { Inject } from '@nestjs/common';
-import { RemoveTownResult } from './dto/remove-town-result';
+import { RemoveTownResult } from './dto/remove-town.result';
 import { FindTownsArgs } from './dto/find-towns.args';
 
 const TOWN_ADDED_EVENT = 'townAdded';

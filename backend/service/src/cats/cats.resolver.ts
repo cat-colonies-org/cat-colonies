@@ -7,7 +7,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { FindCatsArgs } from './dto/find-cats.args';
-import { RemoveCatResult } from './dto/remove-cat-result';
+import { RemoveCatResult } from './dto/remove-cat.result';
 
 const CAT_ADDED_EVENT = 'catAdded';
 const CAT_UPDATED_EVENT = 'catUpdated';

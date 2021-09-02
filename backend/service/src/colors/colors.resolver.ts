@@ -6,7 +6,7 @@ import { ColorsService } from './colors.service';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { RemoveColorResult } from './dto/remove-color-result';
+import { RemoveColorResult } from './dto/remove-color.result';
 import { FindColorsArgs } from './dto/find-colors.args';
 
 const COLOR_ADDED_EVENT = 'colorAdded';

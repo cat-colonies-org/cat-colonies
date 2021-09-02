@@ -6,7 +6,7 @@ import { Environment } from './entities/environment.entity';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { RemoveEnvironmentResult } from './dto/remove-environment-result';
+import { RemoveEnvironmentResult } from './dto/remove-environment.result';
 import { FindEnvironmentArgs } from './dto/find-environments.args';
 
 const ENVIRONMENT_ADDED_EVENT = 'environmentAdded';

@@ -6,7 +6,7 @@ import { UpdatePatternInput } from './dto/update-pattern.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { RemovePatternResult } from './dto/remove-pattern-result';
+import { RemovePatternResult } from './dto/remove-pattern.result';
 import { FindPatternArgs } from './dto/find-patterns.args';
 
 const PATTERN_ADDED_EVENT = 'patternAdded';
