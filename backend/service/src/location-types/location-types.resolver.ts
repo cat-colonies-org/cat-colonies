@@ -22,17 +22,17 @@ export class LocationTypesResolver {
 
   // #region Subscriptions
   @Subscription(() => LocationType)
-  colonyAdded() {
+  locationTypeAdded() {
     return this.pubSub.asyncIterator(LOCATION_TYPE_ADDED_EVENT);
   }
 
   @Subscription(() => LocationType)
-  colonyUpdated() {
+  locationTypeUpdated() {
     return this.pubSub.asyncIterator(LOCATION_TYPE_UPDATED_EVENT);
   }
 
   @Subscription(() => LocationType)
-  colonyRemoved() {
+  locationTypeRemoved() {
     return this.pubSub.asyncIterator(LOCATION_TYPE_REMOVED_EVENT);
   }
 

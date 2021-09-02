@@ -85,7 +85,9 @@ type Cat {
   annotations: [Annotation!]
 }
 
-""""""
+"""
+
+"""
 enum Gender {
   Male
   Female
@@ -126,7 +128,18 @@ type User {
 type Query {
   annotations(id: Int, catId: Int, annotation: String): [Annotation!]
   annotation(id: Int!): Annotation
-  cats(id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
+  cats(
+    id: Int
+    birthYear: Int
+    sterilized: Boolean
+    sterilizedAt: DateTime
+    colonyId: Int
+    colorId: Int
+    patternId: Int
+    eyesId: Int
+    gender: Gender
+    kitten: Boolean
+  ): [Cat!]
   cat(id: Int!): Cat
   ceaseCauses(id: Int, description: String): [CeaseCause!]
   ceaseCause(id: Int!): CeaseCause
@@ -135,13 +148,21 @@ type Query {
   colors(id: Int, description: String): [Color!]
   color(id: Int!): Color
   eyeColors(id: Int, description: String): [EyeColor!]!
-  eyeColor(id: Int!): EyeColor!
+  eyeColor(id: Int!): EyeColor
   patterns(id: Int, description: String): [Pattern!]
   pattern(id: Int!): Pattern
   towns(id: Int, name: String): [Town!]
   town(id: Int!): Town
-  users(id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
-  user(id: Int!): User!
+  users(
+    id: Int
+    name: String
+    surnames: String
+    idCard: String
+    phoneNumber: Int
+    email: String
+    authorizesWhatsApp: Boolean
+  ): [User!]!
+  user(id: Int!): User
 }
 
 type Mutation {
@@ -306,10 +327,16 @@ type Subscription {
   colorAdded: Color!
   colorUpdated: Color!
   colorRemoved: Color!
+  eyeColorAdded: EyeColor!
+  eyeColorUpdated: EyeColor!
+  eyeColorRemoved: EyeColor!
   patternAdded: Pattern!
   patternUpdated: Pattern!
   patternRemoved: Pattern!
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!
+  userAdded: User!
+  userUpdated: User!
+  userRemoved: User!
 }

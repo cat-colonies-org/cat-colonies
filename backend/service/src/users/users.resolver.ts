@@ -19,17 +19,17 @@ export class UsersResolver {
 
   // #region Subscriptions
   @Subscription(() => User)
-  colonyAdded() {
+  userAdded() {
     return this.pubSub.asyncIterator(USER_ADDED_EVENT);
   }
 
   @Subscription(() => User)
-  colonyUpdated() {
+  userUpdated() {
     return this.pubSub.asyncIterator(USER_UPDATED_EVENT);
   }
 
   @Subscription(() => User)
-  colonyRemoved() {
+  userRemoved() {
     return this.pubSub.asyncIterator(USER_REMOVED_EVENT);
   }
   // #endregion

@@ -9,9 +9,9 @@ import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveEyeColorResult } from './dto/remove-eye-color.result';
 
-const EYECOLOR_ADDED_EVENT = 'eyeColorAdded';
-const EYECOLOR_UPDATED_EVENT = 'eyeColorUpdated';
-const EYECOLOR_REMOVED_EVENT = 'eyeColorRemoved';
+const EYE_COLOR_ADDED_EVENT = 'eyeColorAdded';
+const EYE_COLOR_UPDATED_EVENT = 'eyeColorUpdated';
+const EYE_COLOR_REMOVED_EVENT = 'eyeColorRemoved';
 
 @Resolver(() => EyeColor)
 export class EyeColorsResolver {
@@ -23,17 +23,17 @@ export class EyeColorsResolver {
   // #region Subscriptions
   @Subscription(() => EyeColor)
   eyeColorAdded() {
-    return this.pubSub.asyncIterator(EYECOLOR_ADDED_EVENT);
+    return this.pubSub.asyncIterator(EYE_COLOR_ADDED_EVENT);
   }
 
   @Subscription(() => EyeColor)
   eyeColorUpdated() {
-    return this.pubSub.asyncIterator(EYECOLOR_UPDATED_EVENT);
+    return this.pubSub.asyncIterator(EYE_COLOR_UPDATED_EVENT);
   }
 
   @Subscription(() => EyeColor)
   eyeColorRemoved() {
-    return this.pubSub.asyncIterator(EYECOLOR_REMOVED_EVENT);
+    return this.pubSub.asyncIterator(EYE_COLOR_REMOVED_EVENT);
   }
 
   // #endregion
@@ -42,14 +42,14 @@ export class EyeColorsResolver {
   @Mutation(() => EyeColor)
   async createEyeColor(@Args('createEyeColorInput') createEyeColorInput: CreateEyeColorInput): Promise<EyeColor> {
     const eyeColor = this.eyeColorsService.create(createEyeColorInput);
-    eyeColor && this.pubSub.publish(EYECOLOR_ADDED_EVENT, { [EYECOLOR_ADDED_EVENT]: eyeColor });
+    eyeColor && this.pubSub.publish(EYE_COLOR_ADDED_EVENT, { [EYE_COLOR_ADDED_EVENT]: eyeColor });
     return eyeColor;
   }
 
   @Mutation(() => EyeColor)
   async updateEyeColor(@Args('updateEyeColorInput') updateEyeColorInput: UpdateEyeColorInput): Promise<EyeColor> {
     const eyeColor = this.eyeColorsService.update(updateEyeColorInput.id, updateEyeColorInput);
-    eyeColor && this.pubSub.publish(EYECOLOR_UPDATED_EVENT, { [EYECOLOR_UPDATED_EVENT]: eyeColor });
+    eyeColor && this.pubSub.publish(EYE_COLOR_UPDATED_EVENT, { [EYE_COLOR_UPDATED_EVENT]: eyeColor });
     return eyeColor;
   }
 
@@ -59,7 +59,7 @@ export class EyeColorsResolver {
     if (!eyeColor) return { result: false };
 
     const result = await this.eyeColorsService.remove(id);
-    result && this.pubSub.publish(EYECOLOR_REMOVED_EVENT, { [EYECOLOR_REMOVED_EVENT]: eyeColor });
+    result && this.pubSub.publish(EYE_COLOR_REMOVED_EVENT, { [EYE_COLOR_REMOVED_EVENT]: eyeColor });
 
     return { result };
   }
