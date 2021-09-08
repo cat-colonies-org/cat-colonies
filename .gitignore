@@ -11,15 +11,20 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS
+# misc
 .DS_Store
+*.pem
 
 # Tests
-/coverage
-/.nyc_output
+**/coverage
+**/.nyc_output
+
+# dependencies
+**/.pnp
+.pnp.js
 
 # IDEs and editors
-/.idea
+**/.idea
 .project
 .classpath
 .c9/
@@ -33,3 +38,19 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# next.js
+**/.next
+**/out
+
+# production
+**/build
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# vercel
+.vercel

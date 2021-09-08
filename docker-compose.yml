@@ -15,7 +15,7 @@ services:
       retries: 5
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./database/initdb:/docker-entrypoint-initdb.d/
+      - ./backend/database/initdb:/docker-entrypoint-initdb.d/
 
   redis:
     container_name: redis
@@ -26,12 +26,12 @@ services:
   service:
     container_name: service
     build:
-      context: ./service
+      context: ./backend/service
       dockerfile: Dockerfile
     env_file:
       - .env
     volumes:
-      - ./service/src:/usr/local/app/src
+      - ./backend/service/src:/usr/local/app/src
     depends_on:
       redis:
         condition: service_started
@@ -40,6 +40,22 @@ services:
     restart: 'no'
     ports:
       - 8080:8080
+
+  web:
+    container_name: web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./web/src:/usr/local/app/src
+    depends_on:
+      service:
+        condition: service_started
+    restart: 'no'
+    ports:
+      - 3000:3000
 
 volumes:
   postgres-data:
