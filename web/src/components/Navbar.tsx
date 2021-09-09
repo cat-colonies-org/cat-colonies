@@ -1,9 +1,8 @@
-const Nav = () => {
+const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <a className="navbar-brand" href="#">
-        Gatetes
-      </a>
+      <a className="navbar-brand">Gatetes</a>
+
       <button
         className="navbar-toggler"
         type="button"
@@ -15,22 +14,19 @@ const Nav = () => {
       >
         <span className="navbar-toggler-icon" />
       </button>
+
       <div className="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul className="navbar-nav">
+        {/* <ul className="navbar-nav">
           <li className="nav-item active">
-            <a className="nav-link" href="#">
-              Maestros
-            </a>
+            <a className="nav-link">Maestros</a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
-              Informes
-            </a>
+            <a className="nav-link">Informes</a>
           </li>
-        </ul>
+        </ul> */}
       </div>
     </nav>
   );
 };
 
-export default Nav;
+export default Navbar;
