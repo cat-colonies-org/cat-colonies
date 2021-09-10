@@ -10,7 +10,7 @@ interface Cat {
 }
 
 const buildCatsQuery = () => `query {
-  cats {
+  cats (order: "id", descending: true, skip: 0, take: 4) {
     id
     sterilized
     birthYear
