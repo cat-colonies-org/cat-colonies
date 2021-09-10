@@ -2,66 +2,58 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   return (
-    <div className="flex-shrink-0 p-3 bg-white">
-      <ul className="list-unstyled ps-0">
-        <li className="mb-1">
+    <nav id="sidebar">
+      <div className="sidebar-header">
+        <h3>Gatetes</h3>
+      </div>
+      <ul className="list-unstyled components">
+        {/* <p>Cabecera</p> */}
+        <li>
           <Link href="/">
-            <a className="link-dark rounded">Inicio</a>
+            <a>Inicio</a>
           </Link>
         </li>
-        <li className="mb-1">
-          <button
-            className="btn btn-toggle"
-            data-bs-toggle="collapse"
-            data-bs-target="#home-collapse"
-            aria-expanded="true"
-          >
-            Maestros
-          </button>
-          <div className="collapse" id="home-collapse">
-            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-              <li>
-                <Link href="/cats">
-                  <a className="link-dark rounded">Gatos</a>
-                </Link>
-              </li>
-              <li>
-                <a className="link-dark rounded">Colonias</a>
-              </li>
-              <li>
-                <a className="link-dark rounded">Localidades</a>
-              </li>
-            </ul>
-          </div>
+
+        <li>
+          <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
+            Colecciones
+          </a>
+          <ul className="collapse list-unstyled" id="pageSubmenu">
+            <li>
+              <a>Colonias</a>
+            </li>
+            <li>
+              <Link href="/cats">
+                <a>Gatos</a>
+              </Link>
+            </li>
+            <li>
+              <a>Localidades</a>
+            </li>
+          </ul>
         </li>
-        <li className="mb-1">
-          <button
-            className="btn btn-toggle"
-            data-bs-toggle="collapse"
-            data-bs-target="#dashboard-collapse"
-            aria-expanded="false"
-          >
+        <li className="active">
+          <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
             Informes
-          </button>
-          <div className="collapse" id="dashboard-collapse">
-            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-              <li>
-                <a className="link-dark rounded">Resumen</a>
-              </li>
-              <li>
-                <a className="link-dark rounded">Semanal</a>
-              </li>
-              <li>
-                <a className="link-dark rounded">Mensual</a>
-              </li>
-              <li>
-                <a className="link-dark rounded">Anual</a>
-              </li>
-            </ul>
-          </div>
+          </a>
+          <ul className="collapse list-unstyled" id="homeSubmenu">
+            <li>
+              <a>Semanal</a>
+            </li>
+            <li>
+              <a>Mensual</a>
+            </li>
+            <li>
+              <a>Anual</a>
+            </li>
+          </ul>
         </li>
+
+        {/* <li>
+          <a>Contact</a>
+        </li> */}
       </ul>
-    </div>
+    </nav>
   );
 };
 

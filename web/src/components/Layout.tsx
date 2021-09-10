@@ -1,22 +1,17 @@
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: { children: any }) => {
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">
-          <Navbar />
+      <div className="wrapper row">
+        <div className="col-2">
+          <Sidebar />
         </div>
 
-        <div className="row">
-          <div className="col-2">
-            <Sidebar />
-          </div>
-
-          <div className="col-10">
-            <main>{children}</main>
-          </div>
+        <div className="col-10">
+          <Navbar />
+          <main>{children}</main>
         </div>
       </div>
     </>
