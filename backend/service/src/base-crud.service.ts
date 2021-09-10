@@ -1,4 +1,5 @@
 import { BaseEntity, Repository } from 'typeorm';
+import { omit } from './util';
 
 export class BaseCrudService<T extends BaseEntity> {
   constructor(private readonly repository: Repository<T>) {}
@@ -10,9 +11,19 @@ export class BaseCrudService<T extends BaseEntity> {
     return await entity.save();
   }
 
-  find(filter: Record<string, any>): Promise<T[]> {
-    const filterClause = filter ? { where: filter } : undefined;
-    return this.repository.find(filterClause);
+  find(opts: Record<string, any>): Promise<T[]> {
+    const { skip, take, order, descending } = opts;
+    const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
+
+    const filterClause = Object.keys(filter).length ? { where: filter } : undefined;
+    const orderClause = order ? JSON.parse(JSON.stringify({ order: { [order]: descending ? -1 : 1 } })) : undefined;
+    const paginationClause = skip !== undefined && take !== undefined ? { skip, take } : undefined;
+
+    return this.repository.find({
+      ...filterClause,
+      ...orderClause,
+      ...paginationClause,
+    });
   }
 
   findOne(id: number): Promise<T> {

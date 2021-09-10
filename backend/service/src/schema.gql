@@ -126,7 +126,7 @@ type User {
 type Query {
   annotations(id: Int, catId: Int, annotation: String): [Annotation!]
   annotation(id: Int!): Annotation
-  cats(id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
+  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
   cat(id: Int!): Cat
   ceaseCauses(id: Int, description: String): [CeaseCause!]
   ceaseCause(id: Int!): CeaseCause
