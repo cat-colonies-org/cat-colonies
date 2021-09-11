@@ -10,18 +10,16 @@ interface Cat {
   colonyEnvironment: string;
 }
 
-const Cats = ({ cats }: { cats: Cat[] }) => {
+const Cats = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(4);
 
   const fetchData = async (page: number) => {
     setLoading(true);
 
     const skip = Math.max(page - 1, 0) * perPage;
-
-    console.log({ skip, perPage });
 
     const query = `query {
       cats (order: "id", descending: false, skip: ${skip}, take: ${perPage}) {
@@ -62,14 +60,14 @@ const Cats = ({ cats }: { cats: Cat[] }) => {
 
         setLoading(false);
         setData(cats);
-        setTotalRows(5);
+        setTotalRows(10);
       });
     // TODO: catch
   };
 
-  const handlePerRowsChange = async (newPerPage: number, page: number) => {
+  const handlePerRowsChange = (newPerPage: number, page: number) => {
     setPerPage(newPerPage);
-    await fetchData(page);
+    fetchData(page);
     // setLoading(true);
     // const response = await axios.get(`https://reqres.in/api/users?page=${page}&per_page=${newPerPage}&delay=1`);
     // setData(response.data.data);
@@ -80,22 +78,22 @@ const Cats = ({ cats }: { cats: Cat[] }) => {
     fetchData(page);
   };
 
-  const columns = [
-    { name: 'Id', selector: (cat: Cat) => cat.id },
-    { name: 'Nacimiento', selector: (cat: Cat) => cat.birthYear },
-    {
-      name: 'Esterilizado',
-      selector: (cat: Cat) => cat.sterilized,
-      format: (cat: Cat) => (cat.sterilized ? 'Sí' : 'No'),
-    },
-    { name: 'Dirección', selector: (cat: Cat) => cat.colonyAddress },
-    { name: 'Tipo de localización', selector: (cat: Cat) => cat.colonyLocationType },
-    { name: 'Entorno', selector: (cat: Cat) => cat.colonyEnvironment },
-  ];
-
   useEffect(() => {
     fetchData(1);
   }, []);
+
+  const columns = [
+    { name: 'Id', selector: (cat: any) => cat.id },
+    { name: 'Nacimiento', selector: (cat: Cat) => cat.birthYear },
+    {
+      name: 'Esterilizado',
+      selector: (cat: any) => cat.sterilized,
+      format: (cat: any) => (cat.sterilized ? 'Sí' : 'No'),
+    },
+    { name: 'Dirección', selector: (cat: any) => cat.colonyAddress },
+    { name: 'Tipo de localización', selector: (cat: any) => cat.colonyLocationType },
+    { name: 'Entorno', selector: (cat: any) => cat.colonyEnvironment },
+  ];
 
   return (
     <>
@@ -122,37 +120,5 @@ const Cats = ({ cats }: { cats: Cat[] }) => {
     </>
   );
 };
-
-// export async function getServerSideProps() {
-//   loading = true;
-
-//   const options = {
-//     method: 'post',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       // Authorization: "Bearer " + "## API KEY"
-//     },
-
-//     body: JSON.stringify({ query: buildCatsQuery() }),
-//   };
-
-//   return fetch('http://service:8080/graphql', options)
-//     .then((response) => response.json())
-//     .then((response) => {
-//       const cats = response.data?.cats.map((cat: any): Cat => {
-//         loading = false;
-
-//         return {
-//           id: cat.id,
-//           sterilized: cat.sterilized,
-//           birthYear: cat.birthYear,
-//           colonyAddress: cat.colony.address,
-//           colonyLocationType: cat.colony.locationType.description,
-//           colonyEnvironment: cat.colony.environment.description,
-//         };
-//       });
-//       return { props: { cats } };
-//     });
-// }
 
 export default Cats;
