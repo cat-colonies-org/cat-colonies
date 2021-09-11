@@ -49,7 +49,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./web/src:/usr/local/app/src
+      - ./web:/usr/local/app
     depends_on:
       service:
         condition: service_started

@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Gatetes</title>
         <meta name="description" content="A service to control them all" />
-        <link rel="icon" href="public/favicon.ico" />
+        <link rel="icon" href="favicon.ico" />
 
         <link
           rel="stylesheet"
@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         ></script>
 
-        {/* <script src="/public/collapse.js"></script> */}
+        <script src="/collapse.js"></script>
       </Head>
 
       <Layout>
