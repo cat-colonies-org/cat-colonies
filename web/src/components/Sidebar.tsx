@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   return (
-    <nav id="sidebar">
+    <nav>
       <div className="sidebar-header">
         <h3>Gatetes</h3>
       </div>
@@ -20,7 +20,9 @@ const Sidebar = () => {
           </a>
           <ul className="collapse list-unstyled" id="pageSubmenu">
             <li>
-              <a>Colonias</a>
+              <Link href="/colonies">
+                <a>Colonias</a>
+              </Link>
             </li>
             <li>
               <Link href="/cats">

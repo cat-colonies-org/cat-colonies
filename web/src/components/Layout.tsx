@@ -5,7 +5,7 @@ const Layout = ({ children }: { children: any }) => {
   return (
     <>
       <div className="wrapper row">
-        <div className="col-2">
+        <div id="sidebar" className="col-2">
           <Sidebar />
         </div>
 
