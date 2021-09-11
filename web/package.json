@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,7 +13,9 @@
     "next": "11.1.2",
     "react": "17.0.2",
     "react-data-grid": "^7.0.0-beta.5",
-    "react-dom": "17.0.2"
+    "react-data-table-component": "^7.0.0",
+    "react-dom": "17.0.2",
+    "styled-components": "^5.3.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.6",
