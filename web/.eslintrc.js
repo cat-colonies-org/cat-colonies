@@ -22,5 +22,6 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': State.Off,
     'react-hooks/exhaustive-deps': State.Off,
+    '@next/next/no-img-element': State.Off,
   },
 };
