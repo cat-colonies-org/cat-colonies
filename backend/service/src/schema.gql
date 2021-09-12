@@ -103,6 +103,11 @@ type RemoveCatResult {
   result: Boolean!
 }
 
+type FindCatsResult {
+  total: Int!
+  data: [Cat!]!
+}
+
 type RemoveColorResult {
   result: Boolean!
 }
@@ -126,7 +131,7 @@ type User {
 type Query {
   annotations(id: Int, catId: Int, annotation: String): [Annotation!]
   annotation(id: Int!): Annotation
-  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
+  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
   ceaseCauses(id: Int, description: String): [CeaseCause!]
   ceaseCause(id: Int!): CeaseCause

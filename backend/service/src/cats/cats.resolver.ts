@@ -6,8 +6,9 @@ import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { UpdateCatInput } from './dto/update-cat.input';
-import { FindCatsArgs } from './dto/find-cats.args';
 import { RemoveCatResult } from './dto/remove-cat.result';
+import { FindCatsArgs } from './dto/find-cats.args';
+import { FindCatsResult } from './dto/find-cats.result';
 
 const CAT_ADDED_EVENT = 'catAdded';
 const CAT_UPDATED_EVENT = 'catUpdated';
@@ -62,9 +63,10 @@ export class CatsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Cat], { name: 'cats', nullable: true })
-  find(@Args() filter: FindCatsArgs): Promise<Cat[]> {
-    return this.catsService.find(filter);
+  @Query(() => FindCatsResult, { name: 'cats', nullable: true })
+  async find(@Args() filter: FindCatsArgs): Promise<FindCatsResult> {
+    const [data, total] = await this.catsService.findPaginated(filter);
+    return { total, data };
   }
 
   @Query(() => Cat, { name: 'cat', nullable: true })
