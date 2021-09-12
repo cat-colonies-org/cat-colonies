@@ -4,12 +4,15 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 
 type CatRow = {
   id: number;
+  imageUrl: string;
+  createdAt: Date;
+  color: string;
+  pattern: string;
   sterilized: boolean;
   birthYear: number;
   colonyAddress: string;
   colonyLocationType: string;
   colonyEnvironment: string;
-  imageUrl: string;
 };
 
 const Cats = () => {
@@ -31,9 +34,12 @@ const Cats = () => {
         total
         items {
           id
+          imageURL
+          createdAt
+          color { description }
+          pattern { description }
           sterilized
           birthYear
-          imageURL
           colony {
             address
             locationType { description }
@@ -62,12 +68,15 @@ const Cats = () => {
         const selected = response.data.cats.items.map((cat: any): CatRow => {
           return {
             id: cat.id,
+            imageUrl: cat.imageURL,
+            createdAt: cat.createdAt,
+            color: cat.color.description,
+            pattern: cat.pattern.description,
             sterilized: cat.sterilized,
             birthYear: cat.birthYear,
             colonyAddress: cat.colony?.address,
             colonyLocationType: cat.colony?.locationType.description,
             colonyEnvironment: cat.colony?.environment.description,
-            imageUrl: cat.colony?.environment.description,
           };
         });
 
@@ -91,18 +100,32 @@ const Cats = () => {
     fetchData(1, perPage);
   }, []);
 
+  const styles = {
+    avatar: {
+      borderRadius: '50%',
+      width: '56px',
+      height: '56px',
+    },
+  };
+
   const columns: TableColumn<CatRow>[] = [
     { name: 'Id', selector: (cat) => cat.id },
-    { name: 'Nacimiento', selector: (cat: CatRow) => cat.birthYear },
+    {
+      name: 'Foto',
+      cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageUrl} />,
+    },
+    { name: 'Registro', selector: (cat) => cat.createdAt },
+    { name: 'Nacimiento', selector: (cat) => cat.birthYear },
+    { name: 'Color', selector: (cat) => cat.color },
+    { name: 'Patrón', selector: (cat) => cat.pattern },
     {
       name: 'Esterilizado',
-      selector: (cat: CatRow) => cat.sterilized,
-      format: (cat: CatRow) => (cat.sterilized ? 'Sí' : 'No'),
+      selector: (cat) => cat.sterilized,
+      format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Dirección', selector: (cat: CatRow) => cat.colonyAddress },
-    { name: 'Tipo de localización', selector: (cat: CatRow) => cat.colonyLocationType },
-    { name: 'Entorno', selector: (cat: CatRow) => cat.colonyEnvironment },
-    { name: '', selector: (cat: CatRow) => cat.imageUrl },
+    { name: 'Dirección', selector: (cat) => cat.colonyAddress },
+    { name: 'Tipo de localización', selector: (cat) => cat.colonyLocationType },
+    { name: 'Entorno', selector: (cat) => cat.colonyEnvironment },
   ];
 
   return (

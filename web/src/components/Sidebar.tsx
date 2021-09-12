@@ -1,13 +1,13 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Sidebar = () => {
   return (
     <nav>
       <div className="sidebar-header">
-        <h3>Gatetes</h3>
+        <Image alt="Logo Cinco Hocicos" src="/logo.jpg" width="250px" height="250px"></Image>
       </div>
       <ul className="list-unstyled components">
-        {/* <p>Cabecera</p> */}
         <li>
           <Link href="/">
             <a>Inicio</a>
