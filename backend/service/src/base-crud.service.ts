@@ -11,24 +11,7 @@ export class BaseCrudService<T extends BaseEntity> {
     return await entity.save();
   }
 
-  // TODO: remove
-  find(opts: Record<string, any>): Promise<T[]> {
-    const { skip, take, order, descending } = opts;
-    const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
-
-    const filterClause = Object.keys(filter).length ? { where: filter } : undefined;
-    const orderClause = order ? JSON.parse(JSON.stringify({ order: { [order]: descending ? -1 : 1 } })) : undefined;
-    const paginationClause = skip !== undefined && take !== undefined ? { skip, take } : undefined;
-
-    return this.repository.find({
-      ...filterClause,
-      ...orderClause,
-      ...paginationClause,
-    });
-  }
-
-  // TODO: rename to "find"
-  findPaginated(opts: Record<string, any>): Promise<[T[], number]> {
+  find(opts: Record<string, any>): Promise<[T[], number]> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 

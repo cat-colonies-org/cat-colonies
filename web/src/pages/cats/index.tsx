@@ -16,7 +16,7 @@ const Cats = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(2);
+  const [perPage, setPerPage] = useState(10);
 
   const router = useRouter();
 
@@ -28,14 +28,17 @@ const Cats = () => {
 
     const query = `query {
       cats (order: "id", descending: false, skip: ${skip}, take: ${take}) {
-        id
-        sterilized
-        birthYear
-        imageURL
-        colony {
-          address
-          locationType { description }
-          environment { description }
+        total
+        items {
+          id
+          sterilized
+          birthYear
+          imageURL
+          colony {
+            address
+            locationType { description }
+            environment { description }
+          }
         }
       }
     }`;
@@ -53,22 +56,24 @@ const Cats = () => {
     await fetch('http://service:8080/graphql', options)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response.data?.cats);
-        const cats = response.data?.cats.map((cat: any): CatRow => {
+        const cats = response?.data?.cats;
+        if (!cats) return;
+
+        const selected = response.data.cats.items.map((cat: any): CatRow => {
           return {
             id: cat.id,
             sterilized: cat.sterilized,
             birthYear: cat.birthYear,
-            colonyAddress: cat.colony.address,
-            colonyLocationType: cat.colony.locationType.description,
-            colonyEnvironment: cat.colony.environment.description,
-            imageUrl: cat.colony.environment.description,
+            colonyAddress: cat.colony?.address,
+            colonyLocationType: cat.colony?.locationType.description,
+            colonyEnvironment: cat.colony?.environment.description,
+            imageUrl: cat.colony?.environment.description,
           };
         });
 
+        setData(selected);
+        setTotalRows(cats.total);
         setLoading(false);
-        setData(cats);
-        setTotalRows(10);
       });
     // TODO: catch
   };
@@ -107,20 +112,18 @@ const Cats = () => {
       <p>Lista de gatos</p>
 
       <DataTable
-        highlightOnHover={true}
-        striped={true}
         columns={columns}
         data={data}
+        highlightOnHover={false}
+        striped={true}
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[2, 4, 6, 8]}
         paginationServer
+        paginationRowsPerPageOptions={[10, 25, 50, 100]}
         paginationTotalRows={totalRows}
         onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}
-        onRowClicked={(row) => {
-          router.push(`/cats/${row.id}`);
-        }}
+        onRowClicked={(row) => router.push(`/cats/${row.id}`)}
       />
     </>
   );

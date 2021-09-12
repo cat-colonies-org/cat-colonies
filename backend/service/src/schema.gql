@@ -105,7 +105,7 @@ type RemoveCatResult {
 
 type FindCatsResult {
   total: Int!
-  data: [Cat!]!
+  items: [Cat!]!
 }
 
 type RemoveColorResult {

@@ -260,6 +260,19 @@ export class SeederService implements OnModuleInit {
         gender: Gender.Male,
         eyeColorId: 3,
       }).save(),
+      Cat.create({
+        id: 11,
+        createdAt: new Date(),
+        sterilized: true,
+        birthYear: 1999,
+        colonyId: 4,
+        colorId: 4,
+        patternId: 4,
+        ceasedAt: undefined,
+        ceaseCauseId: undefined,
+        gender: Gender.Female,
+        eyeColorId: 4,
+      }).save(),
     ]);
   }
 

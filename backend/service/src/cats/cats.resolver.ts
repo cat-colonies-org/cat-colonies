@@ -65,8 +65,8 @@ export class CatsResolver {
   // #region Queries
   @Query(() => FindCatsResult, { name: 'cats', nullable: true })
   async find(@Args() filter: FindCatsArgs): Promise<FindCatsResult> {
-    const [data, total] = await this.catsService.findPaginated(filter);
-    return { total, data };
+    const [items, total] = await this.catsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Cat, { name: 'cat', nullable: true })
