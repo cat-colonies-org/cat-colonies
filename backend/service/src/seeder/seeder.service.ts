@@ -159,6 +159,9 @@ export class SeederService implements OnModuleInit {
         colorId: 1,
         patternId: 1,
         gender: Gender.Female,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.ORcvmgw3Me7_C19XHykrrgAAAA%26pid%3DApi&f=1',
       }).save(),
       Cat.create({
         id: 3,
@@ -170,6 +173,9 @@ export class SeederService implements OnModuleInit {
         patternId: 2,
         gender: Gender.Male,
         eyeColorId: 2,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.lU48EMNgLJdqviTM8MuYiQAAAA%26pid%3DApi&f=1',
       }).save(),
       Cat.create({
         id: 4,
@@ -181,6 +187,9 @@ export class SeederService implements OnModuleInit {
         patternId: 1,
         gender: Gender.Female,
         kitten: true,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.hevumcN2wlrp8oR0FunK7wAAAA%26pid%3DApi&f=1',
       }).save(),
       Cat.create({
         id: 5,
@@ -194,6 +203,7 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: 1,
         gender: Gender.Male,
         eyeColorId: 1,
+        imageURL: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.imgur.com%2FxPy88y5.png&f=1&nofb=1',
       }).save(),
       Cat.create({
         id: 6,
@@ -207,6 +217,9 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: null,
         gender: Gender.Female,
         eyeColorId: 2,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FF1ZpwvdjHQQ%2Fhqdefault.jpg&f=1&nofb=1',
       }).save(),
       Cat.create({
         id: 7,
@@ -220,6 +233,9 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: null,
         gender: Gender.Female,
         eyeColorId: 1,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Fi1.wp.com%2Fwww.techjunkie.com%2Fwp-content%2Fuploads%2F2018%2F02%2Fsmiling-kitten.jpg',
       }).save(),
       Cat.create({
         id: 8,
@@ -233,6 +249,9 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: null,
         gender: Gender.Male,
         eyeColorId: 1,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Fmedia.giphy.com%2Fmedia%2F1HKaikaFqDt7i%2Fgiphy.gif&f=1&nofb=1',
       }).save(),
       Cat.create({
         id: 9,
@@ -246,6 +265,8 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: 2,
         gender: Gender.Male,
         eyeColorId: 3,
+        imageURL:
+          'https://external-content.duckduckgo.com' + '/iu/?u=https%3A%2F%2Fi.imgflip.com%2F2%2Fna5r3.jpg&f=1&nofb=1',
       }).save(),
       Cat.create({
         id: 10,
@@ -259,6 +280,10 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: 3,
         gender: Gender.Male,
         eyeColorId: 3,
+        imageURL:
+          'https://external-content.duckduckgo.com' +
+          '/iu/?u=https%3A%2F%2Fpixel.nymag.com' +
+          '%2Fimgs%2Fdaily%2Fvulture%2F2016%2F09%2F29%2F29-grumpy-cat.w190.h190.jpg&f=1&nofb=1',
       }).save(),
       Cat.create({
         id: 11,
@@ -272,6 +297,8 @@ export class SeederService implements OnModuleInit {
         ceaseCauseId: undefined,
         gender: Gender.Female,
         eyeColorId: 4,
+        imageURL:
+          'https://external-content.duckduckgo.com' + '/iu/?u=https%3A%2F%2Fi.imgflip.com%2F2%2F7w4oz.jpg&f=1&nofb=1',
       }).save(),
     ]);
   }
