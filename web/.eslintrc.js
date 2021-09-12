@@ -21,5 +21,6 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     'react/react-in-jsx-scope': State.Off,
+    'react-hooks/exhaustive-deps': State.Off,
   },
 };

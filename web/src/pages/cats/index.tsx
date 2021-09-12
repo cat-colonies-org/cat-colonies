@@ -1,31 +1,37 @@
-import DataTable from 'react-data-table-component';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import DataTable, { TableColumn } from 'react-data-table-component';
 
-interface Cat {
+type CatRow = {
   id: number;
   sterilized: boolean;
   birthYear: number;
   colonyAddress: string;
   colonyLocationType: string;
   colonyEnvironment: string;
-}
+  imageUrl: string;
+};
 
 const Cats = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(4);
+  const [perPage, setPerPage] = useState(2);
 
-  const fetchData = async (page: number) => {
+  const router = useRouter();
+
+  const fetchData = async (page: number, newPerPage?: number) => {
     setLoading(true);
 
     const skip = Math.max(page - 1, 0) * perPage;
+    const take = newPerPage || perPage;
 
     const query = `query {
-      cats (order: "id", descending: false, skip: ${skip}, take: ${perPage}) {
+      cats (order: "id", descending: false, skip: ${skip}, take: ${take}) {
         id
         sterilized
         birthYear
+        imageURL
         colony {
           address
           locationType { description }
@@ -47,7 +53,8 @@ const Cats = () => {
     await fetch('http://service:8080/graphql', options)
       .then((response) => response.json())
       .then((response) => {
-        const cats = response.data?.cats.map((cat: any): Cat => {
+        console.log(response.data?.cats);
+        const cats = response.data?.cats.map((cat: any): CatRow => {
           return {
             id: cat.id,
             sterilized: cat.sterilized,
@@ -55,6 +62,7 @@ const Cats = () => {
             colonyAddress: cat.colony.address,
             colonyLocationType: cat.colony.locationType.description,
             colonyEnvironment: cat.colony.environment.description,
+            imageUrl: cat.colony.environment.description,
           };
         });
 
@@ -65,34 +73,31 @@ const Cats = () => {
     // TODO: catch
   };
 
-  const handlePerRowsChange = (newPerPage: number, page: number) => {
-    setPerPage(newPerPage);
-    fetchData(page);
-    // setLoading(true);
-    // const response = await axios.get(`https://reqres.in/api/users?page=${page}&per_page=${newPerPage}&delay=1`);
-    // setData(response.data.data);
-    // setLoading(false);
-  };
-
   const handlePageChange = (page: number) => {
     fetchData(page);
   };
 
+  const handlePerRowsChange = (newPerPage: number, page: number) => {
+    fetchData(page, newPerPage);
+    setPerPage(newPerPage);
+  };
+
   useEffect(() => {
-    fetchData(1);
+    fetchData(1, perPage);
   }, []);
 
-  const columns = [
-    { name: 'Id', selector: (cat: any) => cat.id },
-    { name: 'Nacimiento', selector: (cat: Cat) => cat.birthYear },
+  const columns: TableColumn<CatRow>[] = [
+    { name: 'Id', selector: (cat) => cat.id },
+    { name: 'Nacimiento', selector: (cat: CatRow) => cat.birthYear },
     {
       name: 'Esterilizado',
-      selector: (cat: any) => cat.sterilized,
-      format: (cat: any) => (cat.sterilized ? 'Sí' : 'No'),
+      selector: (cat: CatRow) => cat.sterilized,
+      format: (cat: CatRow) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Dirección', selector: (cat: any) => cat.colonyAddress },
-    { name: 'Tipo de localización', selector: (cat: any) => cat.colonyLocationType },
-    { name: 'Entorno', selector: (cat: any) => cat.colonyEnvironment },
+    { name: 'Dirección', selector: (cat: CatRow) => cat.colonyAddress },
+    { name: 'Tipo de localización', selector: (cat: CatRow) => cat.colonyLocationType },
+    { name: 'Entorno', selector: (cat: CatRow) => cat.colonyEnvironment },
+    { name: '', selector: (cat: CatRow) => cat.imageUrl },
   ];
 
   return (
@@ -108,13 +113,13 @@ const Cats = () => {
         data={data}
         progressPending={loading}
         pagination
-        paginationRowsPerPageOptions={[3, 6, 9, 12]}
+        paginationRowsPerPageOptions={[2, 4, 6, 8]}
         paginationServer
         paginationTotalRows={totalRows}
         onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}
         onRowClicked={(row) => {
-          alert(JSON.stringify(row, null, 2));
+          router.push(`/cats/${row.id}`);
         }}
       />
     </>
