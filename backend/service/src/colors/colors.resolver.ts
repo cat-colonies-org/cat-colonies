@@ -8,6 +8,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { RemoveColorResult } from './dto/remove-color.result';
 import { FindColorsArgs } from './dto/find-colors.args';
+import { FindColorsResult } from './dto/find-colors.result';
 
 const COLOR_ADDED_EVENT = 'colorAdded';
 const COLOR_UPDATED_EVENT = 'colorUpdated';
@@ -62,9 +63,10 @@ export class ColorsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Color], { name: 'colors', nullable: true })
-  find(@Args() filter: FindColorsArgs): Promise<Color[]> {
-    return this.colorsService.find(filter);
+  @Query(() => FindColorsResult, { name: 'colors', nullable: true })
+  async find(@Args() filter: FindColorsArgs): Promise<FindColorsResult> {
+    const [items, total] = await this.colorsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Color, { name: 'color', nullable: true })

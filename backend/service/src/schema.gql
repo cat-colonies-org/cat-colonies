@@ -99,6 +99,11 @@ type Annotation {
   cat: Cat!
 }
 
+type FindAnnotationsResult {
+  total: Int!
+  items: [Annotation!]!
+}
+
 type RemoveCatResult {
   result: Boolean!
 }
@@ -108,6 +113,11 @@ type FindCatsResult {
   items: [Cat!]!
 }
 
+type FindCeaseCausesResult {
+  total: Int!
+  items: [CeaseCause!]!
+}
+
 type FindColoniesResult {
   total: Int!
   items: [Colony!]!
@@ -115,6 +125,11 @@ type FindColoniesResult {
 
 type RemoveColorResult {
   result: Boolean!
+}
+
+type FindColorsResult {
+  total: Int!
+  items: [Color!]!
 }
 
 type RemovePatternResult {
@@ -134,12 +149,15 @@ type User {
 }
 
 type Query {
+  annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
   cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
+  ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
   ceaseCause(id: Int!): CeaseCause
   colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): FindColoniesResult
   colony(id: Int!): Colony
+  colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
   color(id: Int!): Color
   eyeColor(id: Int!): EyeColor
   pattern(id: Int!): Pattern
