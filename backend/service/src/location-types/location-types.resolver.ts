@@ -8,6 +8,7 @@ import { Inject } from '@nestjs/common';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveLocationTypeResult } from './dto/remove-location-type.result';
+import { FindLocationTypesResult } from './dto/find-location-types.result';
 
 const LOCATION_TYPE_ADDED_EVENT = 'locationTypeAdded';
 const LOCATION_TYPE_UPDATED_EVENT = 'locationTypeUpdated';
@@ -71,9 +72,10 @@ export class LocationTypesResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [LocationType], { name: 'locationTypes' })
-  find(@Args() filter: FindLocationTypeArgs): Promise<LocationType[]> {
-    return this.locationTypesService.find(filter);
+  @Query(() => FindLocationTypesResult, { name: 'locationTypes' })
+  async find(@Args() filter: FindLocationTypeArgs): Promise<FindLocationTypesResult> {
+    const [items, total] = await this.locationTypesService.find(filter);
+    return { items, total };
   }
 
   @Query(() => LocationType, { name: 'locationType', nullable: true })

@@ -142,6 +142,11 @@ type FindEyeColorsResult {
   items: [EyeColor!]!
 }
 
+type FindLocationTypesResult {
+  total: Int!
+  items: [LocationType!]!
+}
+
 type RemovePatternResult {
   result: Boolean!
 }
@@ -173,6 +178,7 @@ type Query {
   environment(id: Int!): Environment
   eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
   eyeColor(id: Int!): EyeColor
+  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult!
   locationType(id: Int!): LocationType
   pattern(id: Int!): Pattern
   town(id: Int!): Town
