@@ -1,24 +1,22 @@
-import { AnnotationsModule } from './annotations/annotations.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { CatsModule } from './cats/cats.module';
-import { CeaseCausesModule } from './cease-causes/cease-causes.module';
-import { ColoniesModule } from './colonies/colonies.module';
-import { ColorsModule } from './colors/colors.module';
+import { AnnotationsModule } from './domain/annotations/annotations.module';
 import { ConfigModule } from '@nestjs/config';
-import { EnvironmentsModule } from './environments/environments.module';
-import { EyeColorsModule } from './eye-colors/eye-colors.module';
+import { EnvironmentsModule } from './domain/environments/environments.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
-import { LocationTypesModule } from './location-types/location-types.module';
 import { Module } from '@nestjs/common';
-import { PatternsModule } from './patterns/patterns.module';
 import { PubSubModule } from './pubsub.module';
 import { SeederModule } from './seeder/seeder.module';
-import { TownsModule } from './towns/towns.module';
+import { TownsModule } from './domain/towns/towns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './domain/users/users.module';
 import appConfig from './configuration';
+import { CatsModule } from './domain/cats/cats.module';
+import { CeaseCausesModule } from './domain/cease-causes/cease-causes.module';
+import { ColoniesModule } from './domain/colonies/colonies.module';
+import { ColorsModule } from './domain/colors/colors.module';
+import { EyeColorsModule } from './domain/eye-colors/eye-colors.module';
+import { LocationTypesModule } from './domain/location-types/location-types.module';
+import { PatternsModule } from './domain/patterns/patterns.module';
 
 @Module({
   imports: [
@@ -44,7 +42,9 @@ import appConfig from './configuration';
         CeaseCausesModule,
         ColoniesModule,
         ColorsModule,
+        EnvironmentsModule,
         EyeColorsModule,
+        LocationTypesModule,
         PatternsModule,
         TownsModule,
         UsersModule,
@@ -55,7 +55,5 @@ import appConfig from './configuration';
       installSubscriptionHandlers: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

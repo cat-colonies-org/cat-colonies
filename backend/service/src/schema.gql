@@ -99,16 +99,14 @@ type Annotation {
   cat: Cat!
 }
 
-type RemoveCatResult {
-  result: Boolean!
+type FindAnnotationsResult {
+  total: Int!
+  items: [Annotation!]!
 }
 
-type RemoveColorResult {
-  result: Boolean!
-}
-
-type RemovePatternResult {
-  result: Boolean!
+type FindEnvironmentsResult {
+  total: Int!
+  items: [Environment!]!
 }
 
 type User {
@@ -123,25 +121,80 @@ type User {
   authorizesWhatsApp: Boolean
 }
 
+type FindTownsResult {
+  total: Int!
+  items: [Town!]!
+}
+
+type RemoveCatResult {
+  result: Boolean!
+}
+
+type FindCatsResult {
+  total: Int!
+  items: [Cat!]!
+}
+
+type FindCeaseCausesResult {
+  total: Int!
+  items: [CeaseCause!]!
+}
+
+type FindColoniesResult {
+  total: Int!
+  items: [Colony!]!
+}
+
+type RemoveColorResult {
+  result: Boolean!
+}
+
+type FindColorsResult {
+  total: Int!
+  items: [Color!]!
+}
+
+type FindEyeColorsResult {
+  total: Int!
+  items: [EyeColor!]!
+}
+
+type FindLocationTypesResult {
+  total: Int!
+  items: [LocationType!]!
+}
+
+type RemovePatternResult {
+  result: Boolean!
+}
+
+type FindPatternsResult {
+  total: Int!
+  items: [Pattern!]!
+}
+
 type Query {
-  annotations(id: Int, catId: Int, annotation: String): [Annotation!]
+  annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
-  cats(id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): [Cat!]
+  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
-  ceaseCauses(id: Int, description: String): [CeaseCause!]
+  ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
   ceaseCause(id: Int!): CeaseCause
-  colonies(id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
+  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): FindColoniesResult
   colony(id: Int!): Colony
-  colors(id: Int, description: String): [Color!]
+  colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
   color(id: Int!): Color
-  eyeColors(id: Int, description: String): [EyeColor!]!
-  eyeColor(id: Int!): EyeColor!
-  patterns(id: Int, description: String): [Pattern!]
+  environments(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEnvironmentsResult
+  environment(id: Int!): Environment
+  eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
+  eyeColor(id: Int!): EyeColor
+  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult!
+  locationType(id: Int!): LocationType
+  patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
-  towns(id: Int, name: String): [Town!]
+  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
-  users(id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]
-  user(id: Int!): User!
+  user(id: Int!): User
 }
 
 type Mutation {
@@ -160,9 +213,15 @@ type Mutation {
   createColor(createColorInput: CreateColorInput!): Color!
   updateColor(updateColorInput: UpdateColorInput!): Color!
   removeColor(id: Int!): RemoveColorResult!
+  createEnvironment(createEnvironmentInput: CreateEnvironmentInput!): Environment!
+  updateEnvironment(updateEnvironmentInput: UpdateEnvironmentInput!): Environment!
+  removeEnvironment(id: Int!): Environment!
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
+  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
+  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
+  removeLocationType(id: Int!): LocationType!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
@@ -243,6 +302,15 @@ input UpdateColorInput {
   id: Int!
 }
 
+input CreateEnvironmentInput {
+  description: String!
+}
+
+input UpdateEnvironmentInput {
+  description: String
+  id: Int!
+}
+
 input CreateEyeColorInput {
   id: Int
   description: String
@@ -251,6 +319,15 @@ input CreateEyeColorInput {
 input UpdateEyeColorInput {
   id: Int!
   description: String
+}
+
+input CreateLocationTypeInput {
+  description: String!
+}
+
+input UpdateLocationTypeInput {
+  description: String
+  id: Int!
 }
 
 input CreatePatternInput {
@@ -306,10 +383,22 @@ type Subscription {
   colorAdded: Color!
   colorUpdated: Color!
   colorRemoved: Color!
+  environmentAdded: Environment!
+  environmentUpdated: Environment!
+  environmentRemoved: Environment!
+  eyeColorAdded: EyeColor!
+  eyeColorUpdated: EyeColor!
+  eyeColorRemoved: EyeColor!
+  locationTypeAdded: LocationType!
+  locationTypeUpdated: LocationType!
+  locationTypeRemoved: LocationType!
   patternAdded: Pattern!
   patternUpdated: Pattern!
   patternRemoved: Pattern!
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!
+  userAdded: User!
+  userUpdated: User!
+  userRemoved: User!
 }
