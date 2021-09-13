@@ -99,6 +99,10 @@ type Annotation {
   cat: Cat!
 }
 
+type RemoveAnnotationResult {
+  result: Boolean!
+}
+
 type FindAnnotationsResult {
   total: Int!
   items: [Annotation!]!
@@ -135,9 +139,17 @@ type FindCatsResult {
   items: [Cat!]!
 }
 
+type RemoveCeaseCauseResult {
+  result: Boolean!
+}
+
 type FindCeaseCausesResult {
   total: Int!
   items: [CeaseCause!]!
+}
+
+type RemoveColonyResult {
+  result: Boolean!
 }
 
 type FindColoniesResult {
@@ -200,16 +212,16 @@ type Query {
 type Mutation {
   createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
   updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
-  removeAnnotation(id: Int!): Annotation!
+  removeAnnotation(id: Int!): RemoveAnnotationResult!
   createCat(createCatInput: CreateCatInput!): Cat!
   updateCat(updateCatInput: UpdateCatInput!): Cat!
   removeCat(id: Int!): RemoveCatResult!
   createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
   updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
-  removeCeaseCause(id: Int!): CeaseCause!
+  removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
-  removeColony(id: Int!): Colony!
+  removeColony(id: Int!): RemoveColonyResult!
   createColor(createColorInput: CreateColorInput!): Color!
   updateColor(updateColorInput: UpdateColorInput!): Color!
   removeColor(id: Int!): RemoveColorResult!

@@ -56,7 +56,7 @@ export class CeaseCausesResolver extends BaseResolver<CeaseCause> {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => FindCeaseCausesResult, { name: 'cease-cause', nullable: true })
+  @Query(() => FindCeaseCausesResult, { name: 'ceaseCauses', nullable: true })
   async findCeaseCauses(@Args() filter: FindCeaseCauseArgs): Promise<FindCeaseCausesResult> {
     return this.find(filter);
   }
