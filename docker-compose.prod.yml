@@ -43,7 +43,8 @@ services:
     networks:
       - network
     ports:
-      - 80:80
+      - ${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}
+
     restart: unless-stopped
 
   web:
@@ -51,7 +52,9 @@ services:
     container_name: web
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - ${FRONTEND_PORT:-80}:${FRONTEND_PORT:-80}
+    networks:
+      - network
 
 volumes:
   postgres-data:
