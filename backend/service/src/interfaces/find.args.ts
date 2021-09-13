@@ -1,5 +1,7 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
+// TODO: buscar dónde poner esta clase (ahora mismo están el directorio "interfaces", pero no es correcto)
+
 @ArgsType()
 export class FindArgs {
   @Field(() => String, { nullable: true })

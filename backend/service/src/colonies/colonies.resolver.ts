@@ -8,6 +8,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { FindColoniesArgs } from './dto/find-colonies.args';
 import { RemoveColonyResult } from './dto/remove-colony.result';
+import { FindColoniesResult } from './dto/find-colonies.result';
 
 const COLONY_ADDED_EVENT = 'colonyAdded';
 const COLONY_UPDATED_EVENT = 'colonyUpdated';
@@ -65,9 +66,10 @@ export class ColoniesResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Colony], { name: 'colonies' })
-  find(@Args() filter: FindColoniesArgs): Promise<Colony[]> {
-    return this.coloniesService.find(filter);
+  @Query(() => FindColoniesResult, { name: 'colonies', nullable: true })
+  async find(@Args() filter: FindColoniesArgs): Promise<FindColoniesResult> {
+    const [items, total] = await this.coloniesService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Colony, { name: 'colony', nullable: true })

@@ -108,6 +108,11 @@ type FindCatsResult {
   items: [Cat!]!
 }
 
+type FindColoniesResult {
+  total: Int!
+  items: [Colony!]!
+}
+
 type RemoveColorResult {
   result: Boolean!
 }
@@ -129,23 +134,16 @@ type User {
 }
 
 type Query {
-  annotations(id: Int, catId: Int, annotation: String): [Annotation!]
   annotation(id: Int!): Annotation
   cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
-  ceaseCauses(id: Int, description: String): [CeaseCause!]
   ceaseCause(id: Int!): CeaseCause
-  colonies(id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): [Colony!]!
+  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): FindColoniesResult
   colony(id: Int!): Colony
-  colors(id: Int, description: String): [Color!]
   color(id: Int!): Color
-  eyeColors(id: Int, description: String): [EyeColor!]!
   eyeColor(id: Int!): EyeColor
-  patterns(id: Int, description: String): [Pattern!]
   pattern(id: Int!): Pattern
-  towns(id: Int, name: String): [Town!]
   town(id: Int!): Town
-  users(id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): [User!]!
   user(id: Int!): User
 }
 
