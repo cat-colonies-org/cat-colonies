@@ -8,6 +8,7 @@ import { Inject } from '@nestjs/common';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveEyeColorResult } from './dto/remove-eye-color.result';
+import { FindEyeColorsResult } from './dto/find-eye-colors.result';
 
 const EYE_COLOR_ADDED_EVENT = 'eyeColorAdded';
 const EYE_COLOR_UPDATED_EVENT = 'eyeColorUpdated';
@@ -66,9 +67,10 @@ export class EyeColorsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [EyeColor], { name: 'eyeColors' })
-  find(@Args() filter: FindEyeColorsArgs): Promise<EyeColor[]> {
-    return this.eyeColorsService.find(filter);
+  @Query(() => FindEyeColorsResult, { name: 'eyeColors' })
+  async find(@Args() filter: FindEyeColorsArgs): Promise<FindEyeColorsResult> {
+    const [items, total] = await this.eyeColorsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => EyeColor, { name: 'eyeColor', nullable: true })
