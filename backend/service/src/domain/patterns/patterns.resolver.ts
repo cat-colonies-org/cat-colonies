@@ -1,80 +1,65 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
-import { PatternsService } from './patterns.service';
 import { Pattern } from './entities/pattern.entity';
+import { PatternsService } from './patterns.service';
 import { CreatePatternInput } from './dto/create-pattern.input';
-import { UpdatePatternInput } from './dto/update-pattern.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdatePatternInput } from './dto/update-pattern.input';
 import { RemovePatternResult } from './dto/remove-pattern.result';
-import { FindPatternArgs } from './dto/find-patterns.args';
+import { FindPatternsArgs } from './dto/find-patterns.args';
 import { FindPatternsResult } from './dto/find-patterns.result';
-
-const PATTERN_ADDED_EVENT = 'patternAdded';
-const PATTERN_UPDATED_EVENT = 'patternUpdated';
-const PATTERN_REMOVED_EVENT = 'patternRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Pattern)
-export class PatternsResolver {
-  constructor(
-    private readonly patternsService: PatternsService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class PatternsResolver extends BaseResolver<Pattern> {
+  constructor(service: PatternsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Pattern.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Pattern)
   patternAdded() {
-    return this.pubSub.asyncIterator(PATTERN_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Pattern)
   patternUpdated() {
-    return this.pubSub.asyncIterator(PATTERN_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Pattern)
   patternRemoved() {
-    return this.pubSub.asyncIterator(PATTERN_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Pattern)
   async createPattern(@Args('createPatternInput') createPatternInput: CreatePatternInput): Promise<Pattern> {
-    const pattern = await this.patternsService.create(createPatternInput);
-    pattern && this.pubSub.publish(PATTERN_ADDED_EVENT, { [PATTERN_ADDED_EVENT]: pattern });
-    return pattern;
+    return this.create(createPatternInput);
   }
 
   @Mutation(() => Pattern)
   async updatePattern(@Args('updatePatternInput') updatePatternInput: UpdatePatternInput): Promise<Pattern> {
-    const pattern = await this.patternsService.update(updatePatternInput.id, updatePatternInput);
-    pattern && this.pubSub.publish(PATTERN_UPDATED_EVENT, { [PATTERN_UPDATED_EVENT]: pattern });
-    return pattern;
+    return this.update(updatePatternInput);
   }
 
   @Mutation(() => RemovePatternResult)
   async removePattern(@Args('id', { type: () => Int }) id: number): Promise<RemovePatternResult> {
-    const pattern = await this.patternsService.findOne(id);
-    if (!pattern) return { result: false };
-
-    const result = await this.patternsService.remove(id);
-    result && this.pubSub.publish(PATTERN_REMOVED_EVENT, { [PATTERN_REMOVED_EVENT]: pattern });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindPatternsResult, { name: 'patterns', nullable: true })
-  async find(@Args() filter: FindPatternArgs): Promise<FindPatternsResult> {
-    const [items, total] = await this.patternsService.find(filter);
-    return { items, total };
+  async findPatterns(@Args() filter: FindPatternsArgs): Promise<FindPatternsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Pattern, { name: 'pattern', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Pattern> {
-    return this.patternsService.findOne(id);
+  findOnePattern(@Args('id', { type: () => Int }) id: number): Promise<Pattern> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }
