@@ -5,7 +5,6 @@ import { CreateEyeColorInput } from './dto/create-eye-color.input';
 import { UpdateEyeColorInput } from './dto/update-eye-color.input';
 import { FindEyeColorsArgs } from './dto/find-eye-colors.args';
 import { Inject } from '@nestjs/common';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveEyeColorResult } from './dto/remove-eye-color.result';
 import { FindEyeColorsResult } from './dto/find-eye-colors.result';
