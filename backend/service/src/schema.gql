@@ -108,6 +108,10 @@ type FindAnnotationsResult {
   items: [Annotation!]!
 }
 
+type RemoveEnvironmentResult {
+  result: Boolean!
+}
+
 type FindEnvironmentsResult {
   total: Int!
   items: [Environment!]!
@@ -245,7 +249,7 @@ type Mutation {
   removeColor(id: Int!): RemoveColorResult!
   createEnvironment(createEnvironmentInput: CreateEnvironmentInput!): Environment!
   updateEnvironment(updateEnvironmentInput: UpdateEnvironmentInput!): Environment!
-  removeEnvironment(id: Int!): Environment!
+  removeEnvironment(id: Int!): RemoveEnvironmentResult!
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
