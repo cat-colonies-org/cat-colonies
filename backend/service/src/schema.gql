@@ -184,6 +184,10 @@ type FindEyeColorsResult {
   items: [EyeColor!]!
 }
 
+type RemoveLocationTypeResult {
+  result: Boolean!
+}
+
 type FindLocationTypesResult {
   total: Int!
   items: [LocationType!]!
@@ -213,7 +217,7 @@ type Query {
   environment(id: Int!): Environment
   eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
   eyeColor(id: Int!): EyeColor
-  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult!
+  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult
   locationType(id: Int!): LocationType
   patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
@@ -227,9 +231,9 @@ type Mutation {
   createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
   updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
   removeAnnotation(id: Int!): RemoveAnnotationResult!
-  createCat(createCatInput: CreateCatInput!): Cat!
-  updateCat(updateCatInput: UpdateCatInput!): Cat!
-  removeCat(id: Int!): RemoveCatResult!
+  createCat(createCatInput: CreateLocationTypeInput!): LocationType!
+  updateCat(updateCatInput: UpdateLocationTypeInput!): LocationType!
+  removeCat(id: Int!): RemoveLocationTypeResult!
   createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
   updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
   removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
@@ -245,9 +249,6 @@ type Mutation {
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
-  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
-  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
-  removeLocationType(id: Int!): LocationType!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
@@ -270,28 +271,12 @@ input UpdateAnnotationInput {
   id: Int!
 }
 
-input CreateCatInput {
-  birthYear: Int
-  sterilized: Boolean
-  sterilizedAt: DateTime
-  colonyId: Int
-  colorId: Int
-  patternId: Int
-  eyesId: Int
-  gender: Gender
-  kitten: Boolean
+input CreateLocationTypeInput {
+  description: String!
 }
 
-input UpdateCatInput {
-  birthYear: Int
-  sterilized: Boolean
-  sterilizedAt: DateTime
-  colonyId: Int
-  colorId: Int
-  patternId: Int
-  eyesId: Int
-  gender: Gender
-  kitten: Boolean
+input UpdateLocationTypeInput {
+  description: String
   id: Int!
 }
 
@@ -345,15 +330,6 @@ input CreateEyeColorInput {
 input UpdateEyeColorInput {
   id: Int!
   description: String
-}
-
-input CreateLocationTypeInput {
-  description: String!
-}
-
-input UpdateLocationTypeInput {
-  description: String
-  id: Int!
 }
 
 input CreatePatternInput {

@@ -1,86 +1,65 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
+import { LocationType } from './entities/location-type.entity';
 import { LocationTypesService } from './location-types.service';
 import { CreateLocationTypeInput } from './dto/create-location-type.input';
-import { UpdateLocationTypeInput } from './dto/update-location-type.input';
-import { LocationType } from './entities/location-type.entity';
-import { FindLocationTypeArgs } from './dto/find-location-types.args';
 import { Inject } from '@nestjs/common';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
+import { UpdateLocationTypeInput } from './dto/update-location-type.input';
 import { RemoveLocationTypeResult } from './dto/remove-location-type.result';
+import { FindLocationTypesArgs } from './dto/find-location-types.args';
 import { FindLocationTypesResult } from './dto/find-location-types.result';
-
-const LOCATION_TYPE_ADDED_EVENT = 'locationTypeAdded';
-const LOCATION_TYPE_UPDATED_EVENT = 'locationTypeUpdated';
-const LOCATION_TYPE_REMOVED_EVENT = 'locationTypeRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => LocationType)
-export class LocationTypesResolver {
-  constructor(
-    private readonly locationTypesService: LocationTypesService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class LocationTypesResolver extends BaseResolver<LocationType> {
+  constructor(service: LocationTypesService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, LocationType.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => LocationType)
   locationTypeAdded() {
-    return this.pubSub.asyncIterator(LOCATION_TYPE_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => LocationType)
   locationTypeUpdated() {
-    return this.pubSub.asyncIterator(LOCATION_TYPE_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => LocationType)
   locationTypeRemoved() {
-    return this.pubSub.asyncIterator(LOCATION_TYPE_REMOVED_EVENT);
+    return this.removedEvent();
   }
-
-  // #endregion
+  // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => LocationType)
-  async createLocationType(
-    @Args('createLocationTypeInput') createLocationTypeInput: CreateLocationTypeInput,
-  ): Promise<LocationType> {
-    const locationType = this.locationTypesService.create(createLocationTypeInput);
-    locationType && this.pubSub.publish(LOCATION_TYPE_ADDED_EVENT, { [LOCATION_TYPE_ADDED_EVENT]: locationType });
-    return locationType;
+  async createCat(@Args('createCatInput') createCatInput: CreateLocationTypeInput): Promise<LocationType> {
+    return this.create(createCatInput);
   }
 
   @Mutation(() => LocationType)
-  async updateLocationType(
-    @Args('updateLocationTypeInput') updateLocationTypeInput: UpdateLocationTypeInput,
-  ): Promise<LocationType> {
-    const locationType = await this.locationTypesService.update(updateLocationTypeInput.id, updateLocationTypeInput);
-    locationType && this.pubSub.publish(LOCATION_TYPE_UPDATED_EVENT, { [LOCATION_TYPE_UPDATED_EVENT]: locationType });
-    return locationType;
+  async updateCat(@Args('updateCatInput') updateCatInput: UpdateLocationTypeInput): Promise<LocationType> {
+    return this.update(updateCatInput);
   }
 
-  @Mutation(() => LocationType)
-  async removeLocationType(@Args('id', { type: () => Int }) id: number): Promise<RemoveLocationTypeResult> {
-    const locationType = await this.locationTypesService.findOne(id);
-    if (!locationType) return { result: false };
-
-    const result = await this.locationTypesService.remove(id);
-    result && this.pubSub.publish(LOCATION_TYPE_REMOVED_EVENT, { [LOCATION_TYPE_REMOVED_EVENT]: locationType });
-
-    return { result };
+  @Mutation(() => RemoveLocationTypeResult)
+  async removeCat(@Args('id', { type: () => Int }) id: number): Promise<RemoveLocationTypeResult> {
+    return this.remove(id);
   }
-
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => FindLocationTypesResult, { name: 'locationTypes' })
-  async find(@Args() filter: FindLocationTypeArgs): Promise<FindLocationTypesResult> {
-    const [items, total] = await this.locationTypesService.find(filter);
-    return { items, total };
+  @Query(() => FindLocationTypesResult, { name: 'locationTypes', nullable: true })
+  async findLocationTypes(@Args() filter: FindLocationTypesArgs): Promise<FindLocationTypesResult> {
+    return this.find(filter);
   }
 
   @Query(() => LocationType, { name: 'locationType', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<LocationType> {
-    return this.locationTypesService.findOne(id);
+  findOneCat(@Args('id', { type: () => Int }) id: number): Promise<LocationType> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }
