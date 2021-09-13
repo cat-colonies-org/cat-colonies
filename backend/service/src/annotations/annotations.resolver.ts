@@ -8,6 +8,7 @@ import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/grap
 import { UpdateAnnotationInput } from './dto/update-annotation.input';
 import { RemoveAnnotationResult } from './dto/remove-annotation.result';
 import { FindAnnotationsArgs } from './dto/find-annotations.args';
+import { FindAnnotationsResult } from './dto/find-annotations.result';
 
 const ANNOTATION_ADDED_EVENT = 'annotationAdded';
 const ANNOTATION_UPDATED_EVENT = 'annotationUpdated';
@@ -69,9 +70,10 @@ export class AnnotationsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Annotation], { name: 'annotations', nullable: true })
-  find(@Args() filter: FindAnnotationsArgs): Promise<Annotation[]> {
-    return this.annotationsService.find(filter);
+  @Query(() => FindAnnotationsResult, { name: 'annotations', nullable: true })
+  async find(@Args() filter: FindAnnotationsArgs): Promise<FindAnnotationsResult> {
+    const [items, total] = await this.annotationsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Annotation, { name: 'annotation', nullable: true })
