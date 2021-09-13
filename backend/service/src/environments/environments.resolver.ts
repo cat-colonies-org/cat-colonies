@@ -8,6 +8,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { RemoveEnvironmentResult } from './dto/remove-environment.result';
 import { FindEnvironmentArgs } from './dto/find-environments.args';
+import { FindEnvironmentsResult } from './dto/find-environments.result';
 
 const ENVIRONMENT_ADDED_EVENT = 'environmentAdded';
 const ENVIRONMENT_UPDATED_EVENT = 'environmentUpdated';
@@ -69,9 +70,10 @@ export class EnvironmentsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Environment], { name: 'environments', nullable: true })
-  find(@Args() filter: FindEnvironmentArgs): Promise<Environment[]> {
-    return this.environmentsService.find(filter);
+  @Query(() => FindEnvironmentsResult, { name: 'environments', nullable: true })
+  async find(@Args() filter: FindEnvironmentArgs): Promise<FindEnvironmentsResult> {
+    const [items, total] = await this.environmentsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Environment, { name: 'environment', nullable: true })

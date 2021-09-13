@@ -132,6 +132,11 @@ type FindColorsResult {
   items: [Color!]!
 }
 
+type FindEnvironmentsResult {
+  total: Int!
+  items: [Environment!]!
+}
+
 type RemovePatternResult {
   result: Boolean!
 }
@@ -159,7 +164,10 @@ type Query {
   colony(id: Int!): Colony
   colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
   color(id: Int!): Color
+  environments(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEnvironmentsResult
+  environment(id: Int!): Environment
   eyeColor(id: Int!): EyeColor
+  locationType(id: Int!): LocationType
   pattern(id: Int!): Pattern
   town(id: Int!): Town
   user(id: Int!): User
@@ -181,9 +189,15 @@ type Mutation {
   createColor(createColorInput: CreateColorInput!): Color!
   updateColor(updateColorInput: UpdateColorInput!): Color!
   removeColor(id: Int!): RemoveColorResult!
+  createEnvironment(createEnvironmentInput: CreateEnvironmentInput!): Environment!
+  updateEnvironment(updateEnvironmentInput: UpdateEnvironmentInput!): Environment!
+  removeEnvironment(id: Int!): Environment!
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
+  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
+  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
+  removeLocationType(id: Int!): LocationType!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
@@ -264,6 +278,15 @@ input UpdateColorInput {
   id: Int!
 }
 
+input CreateEnvironmentInput {
+  description: String!
+}
+
+input UpdateEnvironmentInput {
+  description: String
+  id: Int!
+}
+
 input CreateEyeColorInput {
   id: Int
   description: String
@@ -272,6 +295,15 @@ input CreateEyeColorInput {
 input UpdateEyeColorInput {
   id: Int!
   description: String
+}
+
+input CreateLocationTypeInput {
+  description: String!
+}
+
+input UpdateLocationTypeInput {
+  description: String
+  id: Int!
 }
 
 input CreatePatternInput {
@@ -327,9 +359,15 @@ type Subscription {
   colorAdded: Color!
   colorUpdated: Color!
   colorRemoved: Color!
+  environmentAdded: Environment!
+  environmentUpdated: Environment!
+  environmentRemoved: Environment!
   eyeColorAdded: EyeColor!
   eyeColorUpdated: EyeColor!
   eyeColorRemoved: EyeColor!
+  locationTypeAdded: LocationType!
+  locationTypeUpdated: LocationType!
+  locationTypeRemoved: LocationType!
   patternAdded: Pattern!
   patternUpdated: Pattern!
   patternRemoved: Pattern!
