@@ -134,6 +134,15 @@ type FindTownsResult {
   items: [Town!]!
 }
 
+type RemoveUserResult {
+  result: Boolean!
+}
+
+type FindUsersResult {
+  total: Int!
+  items: [User!]!
+}
+
 type RemoveCatResult {
   result: Boolean!
 }
@@ -210,6 +219,7 @@ type Query {
   pattern(id: Int!): Pattern
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
+  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
 }
 
@@ -246,7 +256,7 @@ type Mutation {
   removeTown(id: Int!): RemoveTownResult!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  removeUser(id: Int!): RemoveUserResult!
 }
 
 input CreateAnnotationInput {

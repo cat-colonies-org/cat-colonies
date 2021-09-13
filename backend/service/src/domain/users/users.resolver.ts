@@ -1,75 +1,65 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
-import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
-import { FindAllUsersArgs } from './dto/find-users.args';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdateUserInput } from './dto/update-user.input';
 import { RemoveUserResult } from './dto/remove-user.result';
-
-const USER_ADDED_EVENT = 'userAdded';
-const USER_UPDATED_EVENT = 'userUpdated';
-const USER_REMOVED_EVENT = 'userRemoved';
+import { FindUsersArgs } from './dto/find-users.args';
+import { FindUsersResult } from './dto/find-users.result';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => User)
-export class UsersResolver {
-  constructor(private readonly usersService: UsersService, @Inject(PUB_SUB) private readonly pubSub: RedisPubSub) {}
+export class UsersResolver extends BaseResolver<User> {
+  constructor(service: UsersService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, User.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => User)
   userAdded() {
-    return this.pubSub.asyncIterator(USER_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => User)
   userUpdated() {
-    return this.pubSub.asyncIterator(USER_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => User)
   userRemoved() {
-    return this.pubSub.asyncIterator(USER_REMOVED_EVENT);
+    return this.removedEvent();
   }
-  // #endregion
+  // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
-    const user = await this.usersService.create(createUserInput);
-    user && this.pubSub.publish(USER_ADDED_EVENT, { [USER_ADDED_EVENT]: user });
-    return user;
+    return this.create(createUserInput);
   }
 
   @Mutation(() => User)
   async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput): Promise<User> {
-    const user = await this.usersService.update(updateUserInput.id, updateUserInput);
-    user && this.pubSub.publish(USER_UPDATED_EVENT, { [USER_UPDATED_EVENT]: user });
-    return user;
+    return this.update(updateUserInput);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => RemoveUserResult)
   async removeUser(@Args('id', { type: () => Int }) id: number): Promise<RemoveUserResult> {
-    const user = await this.usersService.findOne(id);
-    if (!user) return { result: false };
-
-    const result = await this.usersService.remove(id);
-    result && this.pubSub.publish(USER_REMOVED_EVENT, { [USER_REMOVED_EVENT]: user });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
-  // @Query(() => [User], { name: 'users' })
-  // find(@Args() filter: FindAllUsersArgs): Promise<User[]> {
-  //   return this.usersService.find(filter);
-  // }
+  @Query(() => FindUsersResult, { name: 'users', nullable: true })
+  async findUsers(@Args() filter: FindUsersArgs): Promise<FindUsersResult> {
+    return this.find(filter);
+  }
 
   @Query(() => User, { name: 'user', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  findOneUser(@Args('id', { type: () => Int }) id: number): Promise<User> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }
