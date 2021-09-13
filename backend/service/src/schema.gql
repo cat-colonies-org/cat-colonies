@@ -125,6 +125,10 @@ type User {
   authorizesWhatsApp: Boolean
 }
 
+type RemoveTownResult {
+  result: Boolean!
+}
+
 type FindTownsResult {
   total: Int!
   items: [Town!]!
@@ -239,7 +243,7 @@ type Mutation {
   removePattern(id: Int!): RemovePatternResult!
   createTown(createTownInput: CreateTownInput!): Town!
   updateTown(updateTownInput: UpdateTownInput!): Town!
-  removeTown(id: Int!): Town!
+  removeTown(id: Int!): RemoveTownResult!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
