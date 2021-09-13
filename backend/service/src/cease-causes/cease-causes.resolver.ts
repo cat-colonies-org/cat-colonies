@@ -7,7 +7,8 @@ import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { RemoveCeaseCauseResult } from './dto/remove-cease-cuase.result';
-import { FindCeaseCauseArgs } from './dto/find-cease-cause.args';
+import { FindCeaseCauseArgs } from './dto/find-cease-causes.args';
+import { FindCeaseCausesResult } from './dto/find-cease-causes.result';
 
 const CEASE_CAUSE_ADDED_EVENT = 'ceaseCauseAdded';
 const CEASE_CAUSE_UPDATED_EVENT = 'ceaseCauseUpdated';
@@ -69,9 +70,10 @@ export class CeaseCausesResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [CeaseCause], { name: 'ceaseCauses', nullable: true })
-  find(@Args() filter: FindCeaseCauseArgs): Promise<CeaseCause[]> {
-    return this.ceaseCausesService.find(filter);
+  @Query(() => FindCeaseCausesResult, { name: 'ceaseCauses', nullable: true })
+  async find(@Args() filter: FindCeaseCauseArgs): Promise<FindCeaseCausesResult> {
+    const [items, total] = await this.ceaseCausesService.find(filter);
+    return { items, total };
   }
 
   @Query(() => CeaseCause, { name: 'ceaseCause', nullable: true })
