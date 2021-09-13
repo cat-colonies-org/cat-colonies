@@ -49,8 +49,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
           crossOrigin="anonymous"
         ></script>
-
-        <script src="/collapse.js"></script>
       </Head>
 
       <Layout>

@@ -105,6 +105,7 @@ const Cats = () => {
       borderRadius: '50%',
       width: '56px',
       height: '56px',
+      margin: '2px',
     },
   };
 
