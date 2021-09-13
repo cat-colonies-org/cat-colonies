@@ -46,6 +46,13 @@ services:
       - 80:80
     restart: unless-stopped
 
+  web:
+    image: daviddq/cat-colonies-web:latest
+    container_name: web
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+
 volumes:
   postgres-data:
 
