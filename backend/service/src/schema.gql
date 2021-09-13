@@ -168,6 +168,11 @@ type User {
   authorizesWhatsApp: Boolean
 }
 
+type FindTownsResult {
+  total: Int!
+  items: [Town!]!
+}
+
 type Query {
   annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
@@ -187,6 +192,7 @@ type Query {
   locationType(id: Int!): LocationType
   patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
+  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
   user(id: Int!): User
 }

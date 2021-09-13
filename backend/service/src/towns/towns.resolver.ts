@@ -8,6 +8,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { Inject } from '@nestjs/common';
 import { RemoveTownResult } from './dto/remove-town.result';
 import { FindTownsArgs } from './dto/find-towns.args';
+import { FindTownsResult } from './dto/find-towns.result';
 
 const TOWN_ADDED_EVENT = 'townAdded';
 const TOWN_UPDATED_EVENT = 'townUpdated';
@@ -62,9 +63,10 @@ export class TownsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Town], { name: 'towns', nullable: true })
-  find(@Args() filter: FindTownsArgs): Promise<Town[]> {
-    return this.townsService.find(filter);
+  @Query(() => FindTownsResult, { name: 'towns', nullable: true })
+  async find(@Args() filter: FindTownsArgs): Promise<FindTownsResult> {
+    const [items, total] = await this.townsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Town, { name: 'town', nullable: true })
