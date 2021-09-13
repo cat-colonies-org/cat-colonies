@@ -4,11 +4,11 @@ import { CatsService } from './cats.service';
 import { CreateCatInput } from './dto/create-cat.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { UpdateCatInput } from './dto/update-cat.input';
 import { RemoveCatResult } from './dto/remove-cat.result';
 import { FindCatsArgs } from './dto/find-cats.args';
 import { FindCatsResult } from './dto/find-cats.result';
+import { PubSubEngine } from 'graphql-subscriptions';
 
 const CAT_ADDED_EVENT = 'catAdded';
 const CAT_UPDATED_EVENT = 'catUpdated';
@@ -16,7 +16,7 @@ const CAT_REMOVED_EVENT = 'catRemoved';
 
 @Resolver(() => Cat)
 export class CatsResolver {
-  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private readonly pubSub: RedisPubSub) {}
+  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private readonly pubSub: PubSubEngine) {}
 
   // #region Subscriptions
   @Subscription(() => Cat)
