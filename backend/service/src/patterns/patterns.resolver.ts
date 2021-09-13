@@ -8,6 +8,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { RemovePatternResult } from './dto/remove-pattern.result';
 import { FindPatternArgs } from './dto/find-patterns.args';
+import { FindPatternsResult } from './dto/find-patterns.result';
 
 const PATTERN_ADDED_EVENT = 'patternAdded';
 const PATTERN_UPDATED_EVENT = 'patternUpdated';
@@ -65,9 +66,10 @@ export class PatternsResolver {
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => [Pattern], { name: 'patterns', nullable: true })
-  find(@Args() filter: FindPatternArgs): Promise<Pattern[]> {
-    return this.patternsService.find(filter);
+  @Query(() => FindPatternsResult, { name: 'patterns', nullable: true })
+  async find(@Args() filter: FindPatternArgs): Promise<FindPatternsResult> {
+    const [items, total] = await this.patternsService.find(filter);
+    return { items, total };
   }
 
   @Query(() => Pattern, { name: 'pattern', nullable: true })

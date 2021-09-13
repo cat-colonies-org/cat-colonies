@@ -151,6 +151,11 @@ type RemovePatternResult {
   result: Boolean!
 }
 
+type FindPatternsResult {
+  total: Int!
+  items: [Pattern!]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -180,6 +185,7 @@ type Query {
   eyeColor(id: Int!): EyeColor
   locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult!
   locationType(id: Int!): LocationType
+  patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
   town(id: Int!): Town
   user(id: Int!): User
