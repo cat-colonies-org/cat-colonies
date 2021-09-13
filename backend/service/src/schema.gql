@@ -104,6 +104,28 @@ type FindAnnotationsResult {
   items: [Annotation!]!
 }
 
+type FindEnvironmentsResult {
+  total: Int!
+  items: [Environment!]!
+}
+
+type User {
+  id: Int!
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+}
+
+type FindTownsResult {
+  total: Int!
+  items: [Town!]!
+}
+
 type RemoveCatResult {
   result: Boolean!
 }
@@ -132,11 +154,6 @@ type FindColorsResult {
   items: [Color!]!
 }
 
-type FindEnvironmentsResult {
-  total: Int!
-  items: [Environment!]!
-}
-
 type FindEyeColorsResult {
   total: Int!
   items: [EyeColor!]!
@@ -154,23 +171,6 @@ type RemovePatternResult {
 type FindPatternsResult {
   total: Int!
   items: [Pattern!]!
-}
-
-type User {
-  id: Int!
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
-  createdAt: DateTime!
-  ceasedAt: DateTime
-  authorizesWhatsApp: Boolean
-}
-
-type FindTownsResult {
-  total: Int!
-  items: [Town!]!
 }
 
 type Query {

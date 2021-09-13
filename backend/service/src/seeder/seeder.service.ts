@@ -1,15 +1,15 @@
-import { Annotation } from 'src/annotations/entities/annotation.entity';
-import { Cat, Gender } from 'src/cats/entities/cat.entity';
-import { CeaseCause } from 'src/cease-causes/entities/cease-cause.entity';
-import { Colony } from 'src/colonies/entities/colony.entity';
-import { Color } from 'src/colors/entities/color.entity';
-import { Environment } from 'src/environments/entities/environment.entity';
-import { EyeColor } from 'src/eye-colors/entities/eye-color.entity';
+import { Annotation } from 'src/domain/annotations/entities/annotation.entity';
+import { Environment } from 'src/domain/environments/entities/environment.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { LocationType } from 'src/location-types/entities/location-type.entity';
-import { Pattern } from 'src/patterns/entities/pattern.entity';
-import { Town } from 'src/towns/entities/town.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Town } from 'src/domain/towns/entities/town.entity';
+import { User } from 'src/domain/users/entities/user.entity';
+import { Color } from 'src/domain/colors/entities/color.entity';
+import { Pattern } from 'src/domain/patterns/entities/pattern.entity';
+import { EyeColor } from 'src/domain/eye-colors/entities/eye-color.entity';
+import { CeaseCause } from 'src/domain/cease-causes/entities/cease-cause.entity';
+import { LocationType } from 'src/domain/location-types/entities/location-type.entity';
+import { Colony } from 'src/domain/colonies/entities/colony.entity';
+import { Cat, Gender } from 'src/domain/cats/entities/cat.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
