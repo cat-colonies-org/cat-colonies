@@ -1,40 +1,36 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
-import { CeaseCausesService } from './cease-causes.service';
 import { CeaseCause } from './entities/cease-cause.entity';
+import { CeaseCausesService } from './cease-causes.service';
 import { CreateCeaseCauseInput } from './dto/create-cease-cause.input';
-import { UpdateCeaseCauseInput } from './dto/update-cease-cause.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdateCeaseCauseInput } from './dto/update-cease-cause.input';
 import { RemoveCeaseCauseResult } from './dto/remove-cease-cuase.result';
 import { FindCeaseCauseArgs } from './dto/find-cease-causes.args';
 import { FindCeaseCausesResult } from './dto/find-cease-causes.result';
-
-const CEASE_CAUSE_ADDED_EVENT = 'ceaseCauseAdded';
-const CEASE_CAUSE_UPDATED_EVENT = 'ceaseCauseUpdated';
-const CEASE_CAUSE_REMOVED_EVENT = 'ceaseCauseRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => CeaseCause)
-export class CeaseCausesResolver {
-  constructor(
-    private readonly ceaseCausesService: CeaseCausesService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class CeaseCausesResolver extends BaseResolver<CeaseCause> {
+  constructor(service: CeaseCausesService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, CeaseCause.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => CeaseCause)
   ceaseCauseAdded() {
-    return this.pubSub.asyncIterator(CEASE_CAUSE_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => CeaseCause)
   ceaseCauseUpdated() {
-    return this.pubSub.asyncIterator(CEASE_CAUSE_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => CeaseCause)
   ceaseCauseRemoved() {
-    return this.pubSub.asyncIterator(CEASE_CAUSE_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
@@ -43,42 +39,31 @@ export class CeaseCausesResolver {
   async createCeaseCause(
     @Args('createCeaseCauseInput') createCeaseCauseInput: CreateCeaseCauseInput,
   ): Promise<CeaseCause> {
-    const ceaseCause = await this.ceaseCausesService.create(createCeaseCauseInput);
-    ceaseCause && this.pubSub.publish(CEASE_CAUSE_ADDED_EVENT, { [CEASE_CAUSE_ADDED_EVENT]: ceaseCause });
-    return ceaseCause;
+    return this.create(createCeaseCauseInput);
   }
 
   @Mutation(() => CeaseCause)
   async updateCeaseCause(
     @Args('updateCeaseCauseInput') updateCeaseCauseInput: UpdateCeaseCauseInput,
   ): Promise<CeaseCause> {
-    const ceaseCause = await this.ceaseCausesService.update(updateCeaseCauseInput.id, updateCeaseCauseInput);
-    ceaseCause && this.pubSub.publish(CEASE_CAUSE_UPDATED_EVENT, { [CEASE_CAUSE_UPDATED_EVENT]: ceaseCause });
-    return ceaseCause;
+    return this.update(updateCeaseCauseInput);
   }
 
-  @Mutation(() => CeaseCause)
+  @Mutation(() => RemoveCeaseCauseResult)
   async removeCeaseCause(@Args('id', { type: () => Int }) id: number): Promise<RemoveCeaseCauseResult> {
-    const ceaseCause = await this.ceaseCausesService.findOne(id);
-    if (!ceaseCause) return { result: false };
-
-    const result = await this.ceaseCausesService.remove(id);
-    result && this.pubSub.publish(CEASE_CAUSE_REMOVED_EVENT, { [CEASE_CAUSE_REMOVED_EVENT]: ceaseCause });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
-  @Query(() => FindCeaseCausesResult, { name: 'ceaseCauses', nullable: true })
-  async find(@Args() filter: FindCeaseCauseArgs): Promise<FindCeaseCausesResult> {
-    const [items, total] = await this.ceaseCausesService.find(filter);
-    return { items, total };
+  @Query(() => FindCeaseCausesResult, { name: 'cease-cause', nullable: true })
+  async findCeaseCauses(@Args() filter: FindCeaseCauseArgs): Promise<FindCeaseCausesResult> {
+    return this.find(filter);
   }
 
   @Query(() => CeaseCause, { name: 'ceaseCause', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<CeaseCause> {
-    return this.ceaseCausesService.findOne(id);
+  findOneCeaseCause(@Args('id', { type: () => Int }) id: number): Promise<CeaseCause> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

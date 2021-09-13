@@ -1,40 +1,36 @@
+import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
 import { Annotation } from './entities/annotation.entity';
 import { AnnotationsService } from './annotations.service';
 import { CreateAnnotationInput } from './dto/create-annotation.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
 import { UpdateAnnotationInput } from './dto/update-annotation.input';
 import { RemoveAnnotationResult } from './dto/remove-annotation.result';
 import { FindAnnotationsArgs } from './dto/find-annotations.args';
 import { FindAnnotationsResult } from './dto/find-annotations.result';
-
-const ANNOTATION_ADDED_EVENT = 'annotationAdded';
-const ANNOTATION_UPDATED_EVENT = 'annotationUpdated';
-const ANNOTATION_REMOVED_EVENT = 'annotationRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Annotation)
-export class AnnotationsResolver {
-  constructor(
-    private readonly annotationsService: AnnotationsService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class AnnotationsResolver extends BaseResolver<Annotation> {
+  constructor(service: AnnotationsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Annotation.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Annotation)
   annotationAdded() {
-    return this.pubSub.asyncIterator(ANNOTATION_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Annotation)
   annotationUpdated() {
-    return this.pubSub.asyncIterator(ANNOTATION_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Annotation)
   annotationRemoved() {
-    return this.pubSub.asyncIterator(ANNOTATION_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
@@ -43,42 +39,31 @@ export class AnnotationsResolver {
   async createAnnotation(
     @Args('createAnnotationInput') createAnnotationInput: CreateAnnotationInput,
   ): Promise<Annotation> {
-    const annotation = await this.annotationsService.create(createAnnotationInput);
-    annotation && this.pubSub.publish(ANNOTATION_ADDED_EVENT, { [ANNOTATION_ADDED_EVENT]: annotation });
-    return annotation;
+    return this.create(createAnnotationInput);
   }
 
   @Mutation(() => Annotation)
   async updateAnnotation(
     @Args('updateAnnotationInput') updateAnnotationInput: UpdateAnnotationInput,
   ): Promise<Annotation> {
-    const annotation = await this.annotationsService.update(updateAnnotationInput.id, updateAnnotationInput);
-    annotation && this.pubSub.publish(ANNOTATION_UPDATED_EVENT, { [ANNOTATION_UPDATED_EVENT]: annotation });
-    return annotation;
+    return this.update(updateAnnotationInput);
   }
 
-  @Mutation(() => Annotation)
+  @Mutation(() => RemoveAnnotationResult)
   async removeAnnotation(@Args('id', { type: () => Int }) id: number): Promise<RemoveAnnotationResult> {
-    const annotation = await this.annotationsService.findOne(id);
-    if (!annotation) return { result: false };
-
-    const result = await this.annotationsService.remove(id);
-    result && this.pubSub.publish(ANNOTATION_REMOVED_EVENT, { [ANNOTATION_REMOVED_EVENT]: annotation });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindAnnotationsResult, { name: 'annotations', nullable: true })
-  async find(@Args() filter: FindAnnotationsArgs): Promise<FindAnnotationsResult> {
-    const [items, total] = await this.annotationsService.find(filter);
-    return { items, total };
+  async findAnnotations(@Args() filter: FindAnnotationsArgs): Promise<FindAnnotationsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Annotation, { name: 'annotation', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Annotation> {
-    return this.annotationsService.findOne(id);
+  findOneAnnotation(@Args('id', { type: () => Int }) id: number): Promise<Annotation> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }
