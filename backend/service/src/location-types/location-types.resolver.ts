@@ -82,6 +82,5 @@ export class LocationTypesResolver {
   findOne(@Args('id', { type: () => Int }) id: number): Promise<LocationType> {
     return this.locationTypesService.findOne(id);
   }
-
   // #endregion Queries
 }
