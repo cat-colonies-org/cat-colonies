@@ -33,7 +33,7 @@ services:
     container_name: service
     environment:
       - NODE_ENV
-      - PORT
+      - BACKEND_PORT
       - DB_HOST
       - DB_PORT
       - DB_NAME
