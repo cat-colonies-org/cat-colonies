@@ -9,32 +9,29 @@ import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveEyeColorResult } from './dto/remove-eye-color.result';
 import { FindEyeColorsResult } from './dto/find-eye-colors.result';
-
-const EYE_COLOR_ADDED_EVENT = 'eyeColorAdded';
-const EYE_COLOR_UPDATED_EVENT = 'eyeColorUpdated';
-const EYE_COLOR_REMOVED_EVENT = 'eyeColorRemoved';
+import { BaseResolver } from 'src/common/base-resolver';
+import { PubSubEngine } from 'apollo-server-express';
 
 @Resolver(() => EyeColor)
-export class EyeColorsResolver {
-  constructor(
-    private readonly eyeColorsService: EyeColorsService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class EyeColorsResolver extends BaseResolver<EyeColor> {
+  constructor(service: EyeColorsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, EyeColor.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => EyeColor)
   eyeColorAdded() {
-    return this.pubSub.asyncIterator(EYE_COLOR_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => EyeColor)
   eyeColorUpdated() {
-    return this.pubSub.asyncIterator(EYE_COLOR_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => EyeColor)
   eyeColorRemoved() {
-    return this.pubSub.asyncIterator(EYE_COLOR_REMOVED_EVENT);
+    return this.removedEvent();
   }
 
   // #endregion
@@ -42,40 +39,29 @@ export class EyeColorsResolver {
   // #region Mutations
   @Mutation(() => EyeColor)
   async createEyeColor(@Args('createEyeColorInput') createEyeColorInput: CreateEyeColorInput): Promise<EyeColor> {
-    const eyeColor = this.eyeColorsService.create(createEyeColorInput);
-    eyeColor && this.pubSub.publish(EYE_COLOR_ADDED_EVENT, { [EYE_COLOR_ADDED_EVENT]: eyeColor });
-    return eyeColor;
+    return this.create(CreateEyeColorInput);
   }
 
   @Mutation(() => EyeColor)
   async updateEyeColor(@Args('updateEyeColorInput') updateEyeColorInput: UpdateEyeColorInput): Promise<EyeColor> {
-    const eyeColor = this.eyeColorsService.update(updateEyeColorInput.id, updateEyeColorInput);
-    eyeColor && this.pubSub.publish(EYE_COLOR_UPDATED_EVENT, { [EYE_COLOR_UPDATED_EVENT]: eyeColor });
-    return eyeColor;
+    return this.update(updateEyeColorInput);
   }
 
   @Mutation(() => EyeColor)
   async removeEyeColor(@Args('id', { type: () => Int }) id: number): Promise<RemoveEyeColorResult> {
-    const eyeColor = await this.eyeColorsService.findOne(id);
-    if (!eyeColor) return { result: false };
-
-    const result = await this.eyeColorsService.remove(id);
-    result && this.pubSub.publish(EYE_COLOR_REMOVED_EVENT, { [EYE_COLOR_REMOVED_EVENT]: eyeColor });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindEyeColorsResult, { name: 'eyeColors' })
-  async find(@Args() filter: FindEyeColorsArgs): Promise<FindEyeColorsResult> {
-    const [items, total] = await this.eyeColorsService.find(filter);
-    return { items, total };
+  async findEyeColors(@Args() filter: FindEyeColorsArgs): Promise<FindEyeColorsResult> {
+    return this.find(filter);
   }
 
   @Query(() => EyeColor, { name: 'eyeColor', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<EyeColor> {
-    return this.eyeColorsService.findOne(id);
+  findOneEyeColor(@Args('id', { type: () => Int }) id: number): Promise<EyeColor> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }
