@@ -128,6 +128,7 @@ type User {
   ceasedAt: DateTime
   authorizesWhatsApp: Boolean
   password: String!
+  salt: String!
 }
 
 type RemoveTownResult {
