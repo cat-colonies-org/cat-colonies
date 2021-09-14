@@ -59,6 +59,7 @@ const Cats = () => {
       body: JSON.stringify({ query }),
     };
 
+    // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
     await fetch('http://service:8080/graphql', options)
       .then((response) => response.json())
       .then((response) => {
