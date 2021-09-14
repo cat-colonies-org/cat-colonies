@@ -1,22 +1,10 @@
+import { CatRow, getCatsList } from '../../services/cats';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
-type CatRow = {
-  id: number;
-  imageUrl: string;
-  createdAt: Date;
-  color: string;
-  pattern: string;
-  sterilized: boolean;
-  birthYear: number;
-  colonyAddress: string;
-  colonyLocationType: string;
-  colonyEnvironment: string;
-};
-
 const Cats = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([] as CatRow[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -26,66 +14,11 @@ const Cats = () => {
   const fetchData = async (page: number, newPerPage?: number) => {
     setLoading(true);
 
-    const skip = Math.max(page - 1, 0) * perPage;
-    const take = newPerPage || perPage;
+    const cats = await getCatsList(page, newPerPage || perPage);
 
-    const query = `query {
-      cats (order: "id", descending: false, skip: ${skip}, take: ${take}) {
-        total
-        items {
-          id
-          imageURL
-          createdAt
-          color { description }
-          pattern { description }
-          sterilized
-          birthYear
-          colony {
-            address
-            locationType { description }
-            environment { description }
-          }
-        }
-      }
-    }`;
-
-    const options = {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        // Authorization: "Bearer " + "## API KEY"
-      },
-
-      body: JSON.stringify({ query }),
-    };
-
-    // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-    await fetch('http://service:8080/graphql', options)
-      .then((response) => response.json())
-      .then((response) => {
-        const cats = response?.data?.cats;
-        if (!cats) return;
-
-        const selected = response.data.cats.items.map((cat: any): CatRow => {
-          return {
-            id: cat.id,
-            imageUrl: cat.imageURL,
-            createdAt: cat.createdAt,
-            color: cat.color.description,
-            pattern: cat.pattern.description,
-            sterilized: cat.sterilized,
-            birthYear: cat.birthYear,
-            colonyAddress: cat.colony?.address,
-            colonyLocationType: cat.colony?.locationType.description,
-            colonyEnvironment: cat.colony?.environment.description,
-          };
-        });
-
-        setData(selected);
-        setTotalRows(cats.total);
-        setLoading(false);
-      });
-    // TODO: catch
+    setData(cats.items);
+    setTotalRows(cats.total);
+    setLoading(false);
   };
 
   const handlePageChange = (page: number) => {
