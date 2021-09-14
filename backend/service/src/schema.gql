@@ -127,6 +127,7 @@ type User {
   createdAt: DateTime!
   ceasedAt: DateTime
   authorizesWhatsApp: Boolean
+  password: String!
 }
 
 type RemoveTownResult {
@@ -229,6 +230,12 @@ type Query {
   town(id: Int!): Town
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
+  signin(userCredentials: UserCredentials!): Boolean!
+}
+
+input UserCredentials {
+  email: String!
+  password: String!
 }
 
 type Mutation {
@@ -361,6 +368,7 @@ input CreateUserInput {
   phoneNumber: Int!
   email: String!
   authorizesWhatsApp: Boolean
+  password: String!
 }
 
 input UpdateUserInput {
@@ -370,6 +378,7 @@ input UpdateUserInput {
   phoneNumber: Int
   email: String
   authorizesWhatsApp: Boolean
+  password: String
   id: Int!
 }
 

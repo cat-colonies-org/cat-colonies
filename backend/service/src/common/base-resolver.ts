@@ -1,4 +1,3 @@
-import { Inject } from '@nestjs/common';
 import { PubSubEngine } from 'apollo-server-express';
 import { BaseEntity } from 'typeorm';
 import { BaseCrudService } from './base-crud.service';

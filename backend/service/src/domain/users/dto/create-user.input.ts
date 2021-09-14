@@ -19,4 +19,7 @@ export class CreateUserInput {
 
   @Field(() => Boolean, { nullable: true })
   authorizesWhatsApp?: boolean;
+
+  @Field(() => String)
+  password: string;
 }

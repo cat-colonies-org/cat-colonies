@@ -324,6 +324,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 123123123,
         email: 'agapito@cats.org',
         createdAt: new Date(),
+        password: '123456',
       }).save(),
       User.create({
         id: 2,
@@ -333,6 +334,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 456456456,
         email: 'matilde@cats.org',
         createdAt: new Date(),
+        password: '654321',
       }).save(),
       User.create({
         id: 3,
@@ -342,6 +344,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 789789789,
         email: 'juan@cats.org',
         createdAt: new Date(),
+        password: 'password',
       }).save(),
       User.create({
         id: 4,
@@ -351,6 +354,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 135135135,
         email: 'maria@cats.org',
         createdAt: new Date(),
+        password: 'drowssap',
       }).save(),
       User.create({
         id: 5,
@@ -360,6 +364,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 246246246,
         email: 'apolonio@cats.org',
         createdAt: new Date(),
+        password: '03/06/1978',
       }).save(),
     ]);
   }
