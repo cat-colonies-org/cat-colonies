@@ -1,77 +1,65 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
-import { Color } from '../colors/entities/color.entity';
-import { CreateColorInput } from './dto/create-color.input';
-import { UpdateColorInput } from './dto/update-color.input';
+import { Color } from './entities/color.entity';
 import { ColorsService } from './colors.service';
+import { CreateColorInput } from './dto/create-color.input';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdateColorInput } from './dto/update-color.input';
 import { RemoveColorResult } from './dto/remove-color.result';
 import { FindColorsArgs } from './dto/find-colors.args';
 import { FindColorsResult } from './dto/find-colors.result';
-
-const COLOR_ADDED_EVENT = 'colorAdded';
-const COLOR_UPDATED_EVENT = 'colorUpdated';
-const COLOR_REMOVED_EVENT = 'colorRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Color)
-export class ColorsResolver {
-  constructor(private readonly colorsService: ColorsService, @Inject(PUB_SUB) private readonly pubSub: RedisPubSub) {}
+export class ColorsResolver extends BaseResolver<Color> {
+  constructor(service: ColorsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Color.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Color)
   colorAdded() {
-    return this.pubSub.asyncIterator(COLOR_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Color)
   colorUpdated() {
-    return this.pubSub.asyncIterator(COLOR_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Color)
   colorRemoved() {
-    return this.pubSub.asyncIterator(COLOR_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Color)
   async createColor(@Args('createColorInput') createColorInput: CreateColorInput): Promise<Color> {
-    const color = await this.colorsService.create(createColorInput);
-    color && this.pubSub.publish(COLOR_ADDED_EVENT, { [COLOR_ADDED_EVENT]: color });
-    return color;
+    return this.create(createColorInput);
   }
 
   @Mutation(() => Color)
   async updateColor(@Args('updateColorInput') updateColorInput: UpdateColorInput): Promise<Color> {
-    const color = await this.colorsService.update(updateColorInput.id, updateColorInput);
-    color && this.pubSub.publish(COLOR_UPDATED_EVENT, { [COLOR_UPDATED_EVENT]: color });
-    return color;
+    return this.update(updateColorInput);
   }
 
   @Mutation(() => RemoveColorResult)
   async removeColor(@Args('id', { type: () => Int }) id: number): Promise<RemoveColorResult> {
-    const color = await this.colorsService.findOne(id);
-    if (!color) return { result: false };
-
-    const result = await this.colorsService.remove(id);
-    result && this.pubSub.publish(COLOR_REMOVED_EVENT, { [COLOR_REMOVED_EVENT]: color });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindColorsResult, { name: 'colors', nullable: true })
-  async find(@Args() filter: FindColorsArgs): Promise<FindColorsResult> {
-    const [items, total] = await this.colorsService.find(filter);
-    return { items, total };
+  async findColors(@Args() filter: FindColorsArgs): Promise<FindColorsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Color, { name: 'color', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Color> {
-    return this.colorsService.findOne(id);
+  findOneColor(@Args('id', { type: () => Int }) id: number): Promise<Color> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

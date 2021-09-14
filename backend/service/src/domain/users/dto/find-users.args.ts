@@ -1,7 +1,8 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
+import { FindArgs } from 'src/common/find.args';
 
 @ArgsType()
-export class FindAllUsersArgs {
+export class FindUsersArgs extends FindArgs {
   @Field(() => Int, { nullable: true })
   id?: number;
 
