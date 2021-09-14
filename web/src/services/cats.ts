@@ -1,4 +1,4 @@
-export type CatRow = {
+export type CatsListRow = {
   id: number;
   imageUrl: string;
   createdAt: Date;
@@ -13,7 +13,7 @@ export type CatRow = {
 
 export interface GetCatsListResult {
   total: number;
-  items: CatRow[];
+  items: CatsListRow[];
 }
 
 const options = {
@@ -58,8 +58,8 @@ export async function getCatsList(page: number, perPage: number): Promise<GetCat
       const cats = response?.data?.cats;
 
       const total: number = cats ? cats.total : 0;
-      const items: CatRow[] = cats
-        ? cats.items.map((cat: any): CatRow => {
+      const items: CatsListRow[] = cats
+        ? cats.items.map((cat: any): CatsListRow => {
             return {
               id: cat.id,
               imageUrl: cat.imageURL,

@@ -1,10 +1,10 @@
-import { CatRow, getCatsList } from '../../services/cats';
+import { CatsListRow, getCatsList } from '../../services/cats';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 const Cats = () => {
-  const [data, setData] = useState([] as CatRow[]);
+  const [data, setData] = useState([] as CatsListRow[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -43,7 +43,7 @@ const Cats = () => {
     },
   };
 
-  const columns: TableColumn<CatRow>[] = [
+  const columns: TableColumn<CatsListRow>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     {
       name: 'Foto',
