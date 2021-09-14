@@ -325,6 +325,7 @@ export class SeederService implements OnModuleInit {
         email: 'agapito@cats.org',
         createdAt: new Date(),
         password: '123456',
+        salt: 'NaCl',
       }).save(),
       User.create({
         id: 2,
@@ -335,6 +336,7 @@ export class SeederService implements OnModuleInit {
         email: 'matilde@cats.org',
         createdAt: new Date(),
         password: '654321',
+        salt: 'NaCl',
       }).save(),
       User.create({
         id: 3,
@@ -345,6 +347,7 @@ export class SeederService implements OnModuleInit {
         email: 'juan@cats.org',
         createdAt: new Date(),
         password: 'password',
+        salt: 'NaCl',
       }).save(),
       User.create({
         id: 4,
@@ -355,6 +358,7 @@ export class SeederService implements OnModuleInit {
         email: 'maria@cats.org',
         createdAt: new Date(),
         password: 'drowssap',
+        salt: 'NaCl',
       }).save(),
       User.create({
         id: 5,
@@ -365,6 +369,7 @@ export class SeederService implements OnModuleInit {
         email: 'apolonio@cats.org',
         createdAt: new Date(),
         password: '03/06/1978',
+        salt: 'NaCl',
       }).save(),
     ]);
   }

@@ -47,6 +47,10 @@ export class User extends BaseEntity {
   @Field(() => String)
   password: string;
 
+  @Column()
+  @Field(() => String)
+  salt: string;
+
   // validEmail(email: string): boolean {
   //   const re = new RegExp(
   //     "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" +

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { UserCredentials } from '../dto/user-credentials';
 import { User } from '../entities/user.entity';
@@ -13,7 +14,10 @@ export class AuthService {
     const results = await this.repository.find({ email: email });
 
     const user = results[0];
-    if (user === undefined || user.password != password) return false;
+    if (user === undefined) return false;
+
+    const pass = await bcrypt.hash(password, user.salt);
+    if (pass != user.password) return false;
 
     return true;
   }

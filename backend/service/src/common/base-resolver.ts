@@ -1,13 +1,13 @@
 import { PubSubEngine } from 'apollo-server-express';
 import { BaseEntity } from 'typeorm';
-import { BaseCrudService } from './base-crud.service';
+import { ICrudService } from './base-crud.service';
 
 export class BaseResolver<T extends BaseEntity> {
   addedEventId: string;
   updatedEventId: string;
   removedEventId: string;
 
-  constructor(private readonly service: BaseCrudService<T>, private readonly pubSub: PubSubEngine, className: string) {
+  constructor(private readonly service: ICrudService<T>, private readonly pubSub: PubSubEngine, className: string) {
     this.addedEventId = `${className}Added`;
     this.updatedEventId = `${className}Updated`;
     this.removedEventId = `${className}Removed`;
