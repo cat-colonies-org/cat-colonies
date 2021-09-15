@@ -9,69 +9,57 @@ import { RemoveCatResult } from './dto/remove-cat.result';
 import { FindCatsArgs } from './dto/find-cats.args';
 import { FindCatsResult } from './dto/find-cats.result';
 import { PubSubEngine } from 'graphql-subscriptions';
-
-const CAT_ADDED_EVENT = 'catAdded';
-const CAT_UPDATED_EVENT = 'catUpdated';
-const CAT_REMOVED_EVENT = 'catRemoved';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Cat)
-export class CatsResolver {
-  constructor(private readonly catsService: CatsService, @Inject(PUB_SUB) private readonly pubSub: PubSubEngine) {}
+export class CatsResolver extends BaseResolver<Cat> {
+  constructor(service: CatsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Cat.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Cat)
   catAdded() {
-    return this.pubSub.asyncIterator(CAT_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Cat)
   catUpdated() {
-    return this.pubSub.asyncIterator(CAT_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Cat)
   catRemoved() {
-    return this.pubSub.asyncIterator(CAT_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Cat)
   async createCat(@Args('createCatInput') createCatInput: CreateCatInput): Promise<Cat> {
-    const cat = await this.catsService.create(createCatInput);
-    cat && this.pubSub.publish(CAT_ADDED_EVENT, { [CAT_ADDED_EVENT]: cat });
-    return cat;
+    return this.create(createCatInput);
   }
 
   @Mutation(() => Cat)
   async updateCat(@Args('updateCatInput') updateCatInput: UpdateCatInput): Promise<Cat> {
-    const cat = await this.catsService.update(updateCatInput.id, updateCatInput);
-    cat && this.pubSub.publish(CAT_UPDATED_EVENT, { [CAT_UPDATED_EVENT]: cat });
-    return cat;
+    return this.update(updateCatInput);
   }
 
   @Mutation(() => RemoveCatResult)
   async removeCat(@Args('id', { type: () => Int }) id: number): Promise<RemoveCatResult> {
-    const cat = await this.catsService.findOne(id);
-    if (!cat) return { result: false };
-
-    const result = await this.catsService.remove(id);
-    result && this.pubSub.publish(CAT_REMOVED_EVENT, { [CAT_REMOVED_EVENT]: cat });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindCatsResult, { name: 'cats', nullable: true })
-  async find(@Args() filter: FindCatsArgs): Promise<FindCatsResult> {
-    const [items, total] = await this.catsService.find(filter);
-    return { items, total };
+  async findCats(@Args() filter: FindCatsArgs): Promise<FindCatsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Cat, { name: 'cat', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Cat> {
-    return this.catsService.findOne(id);
+  findOneCat(@Args('id', { type: () => Int }) id: number): Promise<Cat> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

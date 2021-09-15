@@ -1,40 +1,36 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
+import { Environment } from './entities/environment.entity';
 import { EnvironmentsService } from './environments.service';
 import { CreateEnvironmentInput } from './dto/create-environment.input';
-import { UpdateEnvironmentInput } from './dto/update-environment.input';
-import { Environment } from './entities/environment.entity';
 import { Inject } from '@nestjs/common';
 import { PUB_SUB } from 'src/pubsub.module';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { UpdateEnvironmentInput } from './dto/update-environment.input';
 import { RemoveEnvironmentResult } from './dto/remove-environment.result';
-import { FindEnvironmentArgs } from './dto/find-environments.args';
+import { FindEnvironmentsArgs } from './dto/find-environments.args';
 import { FindEnvironmentsResult } from './dto/find-environments.result';
-
-const ENVIRONMENT_ADDED_EVENT = 'environmentAdded';
-const ENVIRONMENT_UPDATED_EVENT = 'environmentUpdated';
-const ENVIRONMENT_REMOVED_EVENT = 'environmentRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Environment)
-export class EnvironmentsResolver {
-  constructor(
-    private readonly environmentsService: EnvironmentsService,
-    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
-  ) {}
+export class EnvironmentsResolver extends BaseResolver<Environment> {
+  constructor(service: EnvironmentsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Environment.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Environment)
   environmentAdded() {
-    return this.pubSub.asyncIterator(ENVIRONMENT_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Environment)
   environmentUpdated() {
-    return this.pubSub.asyncIterator(ENVIRONMENT_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Environment)
   environmentRemoved() {
-    return this.pubSub.asyncIterator(ENVIRONMENT_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
@@ -43,42 +39,31 @@ export class EnvironmentsResolver {
   async createEnvironment(
     @Args('createEnvironmentInput') createEnvironmentInput: CreateEnvironmentInput,
   ): Promise<Environment> {
-    const environment = await this.environmentsService.create(createEnvironmentInput);
-    environment && this.pubSub.publish(ENVIRONMENT_ADDED_EVENT, { [ENVIRONMENT_ADDED_EVENT]: environment });
-    return environment;
+    return this.create(createEnvironmentInput);
   }
 
   @Mutation(() => Environment)
   async updateEnvironment(
     @Args('updateEnvironmentInput') updateEnvironmentInput: UpdateEnvironmentInput,
   ): Promise<Environment> {
-    const environment = await this.environmentsService.update(updateEnvironmentInput.id, updateEnvironmentInput);
-    environment && this.pubSub.publish(ENVIRONMENT_UPDATED_EVENT, { [ENVIRONMENT_UPDATED_EVENT]: environment });
-    return environment;
+    return this.update(updateEnvironmentInput);
   }
 
-  @Mutation(() => Environment)
+  @Mutation(() => RemoveEnvironmentResult)
   async removeEnvironment(@Args('id', { type: () => Int }) id: number): Promise<RemoveEnvironmentResult> {
-    const environment = await this.environmentsService.findOne(id);
-    if (!environment) return { result: false };
-
-    const result = await this.environmentsService.remove(id);
-    result && this.pubSub.publish(ENVIRONMENT_REMOVED_EVENT, { [ENVIRONMENT_REMOVED_EVENT]: environment });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindEnvironmentsResult, { name: 'environments', nullable: true })
-  async find(@Args() filter: FindEnvironmentArgs): Promise<FindEnvironmentsResult> {
-    const [items, total] = await this.environmentsService.find(filter);
-    return { items, total };
+  async findEnvironments(@Args() filter: FindEnvironmentsArgs): Promise<FindEnvironmentsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Environment, { name: 'environment', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.environmentsService.findOne(id);
+  findOneEnvironment(@Args('id', { type: () => Int }) id: number): Promise<Environment> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

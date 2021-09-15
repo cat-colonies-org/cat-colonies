@@ -1,9 +1,9 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
-//@Unique(['idCard'])
-//@Unique(['email'])
-//@Unique(['phoneNumber'])
+@Unique(['idCard'])
+@Unique(['email'])
+@Unique(['phoneNumber'])
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
@@ -42,4 +42,20 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Boolean, { nullable: true })
   authorizesWhatsApp?: boolean;
+
+  @Column()
+  @Field(() => String)
+  password: string;
+
+  @Column()
+  @Field(() => String)
+  salt: string;
+
+  // validEmail(email: string): boolean {
+  //   const re = new RegExp(
+  //     "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" +
+  //       '@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?',
+  //   );
+  //   return re.test(email);
+  // }
 }

@@ -1,14 +1,24 @@
 import { BaseEntity, Repository } from 'typeorm';
 import { omit } from '../util';
-
-export class BaseCrudService<T extends BaseEntity> {
-  constructor(private readonly repository: Repository<T>) {}
+export interface ICrudService<T> {
+  create(createInput: Record<string, any>): Promise<T>;
+  find(opts: Record<string, any>): Promise<[T[], number]>;
+  findOne(id: number): Promise<T>;
+  update(id: number, updateInput: Record<string, any>): Promise<T>;
+  remove(id: number): Promise<boolean>;
+}
+export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
+  constructor(protected readonly repository: Repository<T>) {}
 
   async create(createInput: Record<string, any>): Promise<T> {
     const entity: T = this.repository.create();
     if (!entity) return;
     Object.assign(entity, createInput);
     return await entity.save();
+  }
+
+  async count(): Promise<number> {
+    return this.repository.count();
   }
 
   find(opts: Record<string, any>): Promise<[T[], number]> {

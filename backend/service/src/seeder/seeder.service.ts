@@ -2,7 +2,6 @@ import { Annotation } from 'src/domain/annotations/entities/annotation.entity';
 import { Environment } from 'src/domain/environments/entities/environment.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Town } from 'src/domain/towns/entities/town.entity';
-import { User } from 'src/domain/users/entities/user.entity';
 import { Color } from 'src/domain/colors/entities/color.entity';
 import { Pattern } from 'src/domain/patterns/entities/pattern.entity';
 import { EyeColor } from 'src/domain/eye-colors/entities/eye-color.entity';
@@ -10,10 +9,15 @@ import { CeaseCause } from 'src/domain/cease-causes/entities/cease-cause.entity'
 import { LocationType } from 'src/domain/location-types/entities/location-type.entity';
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Cat, Gender } from 'src/domain/cats/entities/cat.entity';
+import { UsersService } from 'src/domain/users/users.service';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
+  constructor(private readonly usersService: UsersService) {}
   async onModuleInit() {
+    // Do nothing if database isn't empty
+    if ((await this.usersService.count()) > 0) return;
+
     await this.seedUsers();
 
     await this.seedTowns();
@@ -316,51 +320,46 @@ export class SeederService implements OnModuleInit {
 
   private async seedUsers(): Promise<any> {
     return Promise.all([
-      User.create({
-        id: 1,
+      this.usersService.create({
         name: 'Agapito',
         surnames: 'Perez Ferrera',
         idCard: '11111111A',
         phoneNumber: 123123123,
         email: 'agapito@cats.org',
-        createdAt: new Date(),
-      }).save(),
-      User.create({
-        id: 2,
+        password: '123456',
+      }),
+      this.usersService.create({
         name: 'Matilde',
         surnames: 'Modesta Salmeron',
         idCard: '22222222B',
         phoneNumber: 456456456,
         email: 'matilde@cats.org',
-        createdAt: new Date(),
-      }).save(),
-      User.create({
-        id: 3,
+        password: '654321',
+      }),
+      this.usersService.create({
         name: 'Juan',
         surnames: 'Sanchez Brei',
         idCard: '33333333C',
         phoneNumber: 789789789,
         email: 'juan@cats.org',
-        createdAt: new Date(),
-      }).save(),
-      User.create({
-        id: 4,
+        password: 'password',
+      }),
+      this.usersService.create({
         name: 'Maria',
         surnames: 'del Amor Hermoso',
         idCard: '44444444D',
         phoneNumber: 135135135,
         email: 'maria@cats.org',
-        createdAt: new Date(),
-      }).save(),
-      User.create({
-        id: 5,
+        password: 'drowssap',
+      }),
+      this.usersService.create({
         name: 'Apolonio',
         surnames: 'García Serrano',
         idCard: '55555555E',
         phoneNumber: 246246246,
         email: 'apolonio@cats.org',
-        createdAt: new Date(),
-      }).save(),
+        password: '03/06/1978',
+      }),
     ]);
   }
 }

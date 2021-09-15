@@ -24,7 +24,7 @@ const getBool = (key: string, defaultValue: boolean): boolean => {
 };
 
 export default (): Configuration => ({
-  port: getNumber('PORT', 8080),
+  port: getNumber('BACKEND_PORT', 8080),
 
   orm: {
     type: 'postgres',

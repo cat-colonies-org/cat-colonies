@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 80",
     "build": "next build",
-    "start": "next start -p 3000",
-    "lint": "next lint"
+    "start": "next start -p 80",
+    "lint": "next lint",
+    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-web .",
+    "docker:push": "docker push daviddq/cat-colonies-web"
   },
   "dependencies": {
     "bootstrap": "^5.0.0-beta3",

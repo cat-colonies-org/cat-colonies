@@ -33,7 +33,7 @@ services:
     container_name: service
     environment:
       - NODE_ENV
-      - PORT
+      - BACKEND_PORT
       - DB_HOST
       - DB_PORT
       - DB_NAME
@@ -43,8 +43,18 @@ services:
     networks:
       - network
     ports:
-      - 80:80
+      - ${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}
+
     restart: unless-stopped
+
+  web:
+    image: daviddq/cat-colonies-web:latest
+    container_name: web
+    restart: unless-stopped
+    ports:
+      - ${FRONTEND_PORT:-80}:${FRONTEND_PORT:-80}
+    networks:
+      - network
 
 volumes:
   postgres-data:

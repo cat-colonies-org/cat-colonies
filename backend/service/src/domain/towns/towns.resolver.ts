@@ -1,77 +1,65 @@
 import { Resolver, Query, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
-import { TownsService } from './towns.service';
 import { Town } from './entities/town.entity';
+import { TownsService } from './towns.service';
 import { CreateTownInput } from './dto/create-town.input';
-import { UpdateTownInput } from './dto/update-town.input';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { PUB_SUB } from 'src/pubsub.module';
 import { Inject } from '@nestjs/common';
+import { PUB_SUB } from 'src/pubsub.module';
+import { UpdateTownInput } from './dto/update-town.input';
 import { RemoveTownResult } from './dto/remove-town.result';
 import { FindTownsArgs } from './dto/find-towns.args';
 import { FindTownsResult } from './dto/find-towns.result';
-
-const TOWN_ADDED_EVENT = 'townAdded';
-const TOWN_UPDATED_EVENT = 'townUpdated';
-const TOWN_REMOVED_EVENT = 'townRemoved';
+import { PubSubEngine } from 'graphql-subscriptions';
+import { BaseResolver } from 'src/common/base-resolver';
 
 @Resolver(() => Town)
-export class TownsResolver {
-  constructor(private readonly townsService: TownsService, @Inject(PUB_SUB) private readonly pubSub: RedisPubSub) {}
+export class TownsResolver extends BaseResolver<Town> {
+  constructor(service: TownsService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(service, pubSub, Town.name);
+  }
 
   // #region Subscriptions
   @Subscription(() => Town)
   townAdded() {
-    return this.pubSub.asyncIterator(TOWN_ADDED_EVENT);
+    return this.addedEvent();
   }
 
   @Subscription(() => Town)
   townUpdated() {
-    return this.pubSub.asyncIterator(TOWN_UPDATED_EVENT);
+    return this.updatedEvent();
   }
 
   @Subscription(() => Town)
   townRemoved() {
-    return this.pubSub.asyncIterator(TOWN_REMOVED_EVENT);
+    return this.removedEvent();
   }
   // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Town)
   async createTown(@Args('createTownInput') createTownInput: CreateTownInput): Promise<Town> {
-    const town = await this.townsService.create(createTownInput);
-    town && this.pubSub.publish(TOWN_ADDED_EVENT, { [TOWN_ADDED_EVENT]: town });
-    return town;
+    return this.create(createTownInput);
   }
 
   @Mutation(() => Town)
   async updateTown(@Args('updateTownInput') updateTownInput: UpdateTownInput): Promise<Town> {
-    const cat = await this.townsService.update(updateTownInput.id, updateTownInput);
-    cat && this.pubSub.publish(TOWN_UPDATED_EVENT, { [TOWN_UPDATED_EVENT]: cat });
-    return cat;
+    return this.update(updateTownInput);
   }
 
-  @Mutation(() => Town)
+  @Mutation(() => RemoveTownResult)
   async removeTown(@Args('id', { type: () => Int }) id: number): Promise<RemoveTownResult> {
-    const town = await this.townsService.findOne(id);
-    if (!town) return { result: false };
-
-    const result = await this.townsService.remove(id);
-    result && this.pubSub.publish(TOWN_REMOVED_EVENT, { [TOWN_REMOVED_EVENT]: town });
-
-    return { result };
+    return this.remove(id);
   }
   // #endregion Mutations
 
   // #region Queries
   @Query(() => FindTownsResult, { name: 'towns', nullable: true })
-  async find(@Args() filter: FindTownsArgs): Promise<FindTownsResult> {
-    const [items, total] = await this.townsService.find(filter);
-    return { items, total };
+  async findTowns(@Args() filter: FindTownsArgs): Promise<FindTownsResult> {
+    return this.find(filter);
   }
 
   @Query(() => Town, { name: 'town', nullable: true })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Town> {
-    return this.townsService.findOne(id);
+  findOneTown(@Args('id', { type: () => Int }) id: number): Promise<Town> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

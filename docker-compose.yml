@@ -39,7 +39,7 @@ services:
         condition: service_healthy
     restart: 'no'
     ports:
-      - 8080:8080
+      - ${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}
 
   web:
     container_name: web
@@ -55,7 +55,7 @@ services:
         condition: service_started
     restart: 'no'
     ports:
-      - 3000:3000
+      - ${FRONTEND_PORT:-80}:${FRONTEND_PORT:-80}
 
 volumes:
   postgres-data:
