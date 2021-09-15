@@ -10,9 +10,11 @@ import { CeaseCause } from 'src/domain/cease-causes/entities/cease-cause.entity'
 import { LocationType } from 'src/domain/location-types/entities/location-type.entity';
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Cat, Gender } from 'src/domain/cats/entities/cat.entity';
+import { UsersService } from 'src/domain/users/users.service';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
+  constructor(private readonly usersService: UsersService) {}
   async onModuleInit() {
     await this.seedUsers();
 
@@ -316,61 +318,46 @@ export class SeederService implements OnModuleInit {
 
   private async seedUsers(): Promise<any> {
     return Promise.all([
-      User.create({
-        id: 1,
+      this.usersService.create({
         name: 'Agapito',
         surnames: 'Perez Ferrera',
         idCard: '11111111A',
         phoneNumber: 123123123,
         email: 'agapito@cats.org',
-        createdAt: new Date(),
         password: '123456',
-        salt: 'NaCl',
-      }).save(),
-      User.create({
-        id: 2,
+      }),
+      this.usersService.create({
         name: 'Matilde',
         surnames: 'Modesta Salmeron',
         idCard: '22222222B',
         phoneNumber: 456456456,
         email: 'matilde@cats.org',
-        createdAt: new Date(),
         password: '654321',
-        salt: 'NaCl',
-      }).save(),
-      User.create({
-        id: 3,
+      }),
+      this.usersService.create({
         name: 'Juan',
         surnames: 'Sanchez Brei',
         idCard: '33333333C',
         phoneNumber: 789789789,
         email: 'juan@cats.org',
-        createdAt: new Date(),
         password: 'password',
-        salt: 'NaCl',
-      }).save(),
-      User.create({
-        id: 4,
+      }),
+      this.usersService.create({
         name: 'Maria',
         surnames: 'del Amor Hermoso',
         idCard: '44444444D',
         phoneNumber: 135135135,
         email: 'maria@cats.org',
-        createdAt: new Date(),
         password: 'drowssap',
-        salt: 'NaCl',
-      }).save(),
-      User.create({
-        id: 5,
+      }),
+      this.usersService.create({
         name: 'Apolonio',
         surnames: 'García Serrano',
         idCard: '55555555E',
         phoneNumber: 246246246,
         email: 'apolonio@cats.org',
-        createdAt: new Date(),
         password: '03/06/1978',
-        salt: 'NaCl',
-      }).save(),
+      }),
     ]);
   }
 }
