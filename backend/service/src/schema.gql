@@ -149,6 +149,10 @@ type FindUsersResult {
   items: [User!]!
 }
 
+type AccessToken {
+  result: String!
+}
+
 type RemoveCatResult {
   result: Boolean!
 }
@@ -231,7 +235,7 @@ type Query {
   town(id: Int!): Town
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
-  signin(userCredentials: UserCredentials!): Boolean!
+  signin(userCredentials: UserCredentials!): AccessToken!
 }
 
 input UserCredentials {
