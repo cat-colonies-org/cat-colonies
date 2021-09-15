@@ -11,14 +11,12 @@ export class AuthService {
 
   async signIn(userCredentials: UserCredentials): Promise<boolean> {
     const { email, password } = userCredentials;
-    const results = await this.repository.find({ email: email });
+    const results = await this.repository.find({ email });
 
     const user = results[0];
     if (user === undefined) return false;
 
     const pass = await bcrypt.hash(password, user.salt);
-    if (pass != user.password) return false;
-
-    return true;
+    return pass === user.password;
   }
 }

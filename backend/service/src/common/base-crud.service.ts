@@ -17,6 +17,10 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     return await entity.save();
   }
 
+  async count(): Promise<number> {
+    return this.repository.count();
+  }
+
   find(opts: Record<string, any>): Promise<[T[], number]> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);

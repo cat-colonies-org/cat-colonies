@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { BaseCrudService } from 'src/common/base-crud.service';
 import { Repository } from 'typeorm';
-import { UserCredentials } from './dto/user-credentials';
 import { User } from './entities/user.entity';
 
 @Injectable()
