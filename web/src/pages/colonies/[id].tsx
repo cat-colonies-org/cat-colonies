@@ -1,27 +1,13 @@
 /* eslint-disable @next/next/no-sync-scripts */
 import { CatsListRow, getCatsList } from '../../services/cats';
 import { Colony, getColony } from '../../services/colonies';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
-
-const styles = {
-  avatar: {
-    borderRadius: '50%',
-    width: '56px',
-    height: '56px',
-    margin: '2px',
-  },
-  map: {},
-};
 
 const ColonyDetails = () => {
   const columns: TableColumn<CatsListRow>[] = [
     { name: 'Id', selector: (cat) => cat.id },
-    {
-      name: 'Foto',
-      cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageUrl} />,
-    },
     { name: 'Fecha registro', selector: (cat) => cat.createdAt },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
     { name: 'Color', selector: (cat) => cat.color },
@@ -31,9 +17,6 @@ const ColonyDetails = () => {
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Dirección', selector: (cat) => cat.colonyAddress },
-    { name: 'Tipo de localización', selector: (cat) => cat.colonyLocationType },
-    { name: 'Entorno', selector: (cat) => cat.colonyEnvironment },
   ];
 
   const router = useRouter();
@@ -42,7 +25,13 @@ const ColonyDetails = () => {
   const [cats, setCats] = useState({} as CatsListRow[]);
   const [loading, setLoading] = useState(false);
 
-  const onInputChange = (event) => {};
+  const onInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+    setColony({ ...colony, [event.currentTarget.id]: event.currentTarget.value });
+  };
+
+  const onSubmit = (event: React.FormEvent): void => {
+    event.preventDefault();
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -78,7 +67,7 @@ const ColonyDetails = () => {
 
       <div className="d-flex flex-row flex-fill">
         <div className="p-7">
-          <form>
+          <form onSubmit={onSubmit}>
             <div className="form-group">
               <label>
                 Id
@@ -98,7 +87,7 @@ const ColonyDetails = () => {
             <div className="form-group">
               <label>
                 Dirección
-                <input id="address" className="form-control" value={colony?.address} />
+                <input id="address" className="form-control" value={colony.address} onChange={onInputChange} />
               </label>
               <label>
                 Localidad
@@ -133,7 +122,6 @@ const ColonyDetails = () => {
             height="350"
             scrolling="no"
             src="https://www.openstreetmap.org/export/embed.html?bbox=-0.5000281333923341%2C38.37085001158514%2C-0.49294710159301763%2C38.374559391551465&amp;layer=mapnik"
-            style={styles.map}
           ></iframe>
         </div>
       </div>
@@ -143,6 +131,7 @@ const ColonyDetails = () => {
       <DataTable
         columns={columns}
         data={cats}
+        dense
         highlightOnHover={false}
         striped={true}
         progressPending={loading}
