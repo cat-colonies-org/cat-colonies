@@ -2,7 +2,6 @@ import { Annotation } from 'src/domain/annotations/entities/annotation.entity';
 import { Environment } from 'src/domain/environments/entities/environment.entity';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Town } from 'src/domain/towns/entities/town.entity';
-import { User } from 'src/domain/users/entities/user.entity';
 import { Color } from 'src/domain/colors/entities/color.entity';
 import { Pattern } from 'src/domain/patterns/entities/pattern.entity';
 import { EyeColor } from 'src/domain/eye-colors/entities/eye-color.entity';

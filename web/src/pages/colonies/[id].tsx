@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-sync-scripts */
 import { CatsListRow, getCatsList } from '../../services/cats';
 import { Colony, getColony } from '../../services/colonies';
-import React, { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
@@ -25,11 +25,11 @@ const ColonyDetails = () => {
   const [cats, setCats] = useState({} as CatsListRow[]);
   const [loading, setLoading] = useState(false);
 
-  const onInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     setColony({ ...colony, [event.currentTarget.id]: event.currentTarget.value });
   };
 
-  const onSubmit = (event: React.FormEvent): void => {
+  const onSubmit = (event: FormEvent): void => {
     event.preventDefault();
   };
 

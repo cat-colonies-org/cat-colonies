@@ -38,7 +38,7 @@ export class EyeColorsResolver extends BaseResolver<EyeColor> {
   // #region Mutations
   @Mutation(() => EyeColor)
   async createEyeColor(@Args('createEyeColorInput') createEyeColorInput: CreateEyeColorInput): Promise<EyeColor> {
-    return this.create(CreateEyeColorInput);
+    return this.create(createEyeColorInput);
   }
 
   @Mutation(() => EyeColor)

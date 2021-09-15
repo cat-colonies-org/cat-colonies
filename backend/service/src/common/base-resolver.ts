@@ -56,6 +56,3 @@ export class BaseResolver<T extends BaseEntity> {
     return this.service.findOne(id);
   }
 }
-function PUB_SUB(PUB_SUB: any) {
-  throw new Error('Function not implemented.');
-}
