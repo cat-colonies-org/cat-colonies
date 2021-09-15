@@ -20,9 +20,7 @@ export class AuthService {
 
     const { email } = userCredentials;
     const payload: JwtPayload = { email };
-    const accessToken: AccessToken = { result: this.jwtService.sign(payload) };
-    console.log(accessToken);
-    return accessToken;
+    return { result: this.jwtService.sign(payload) };
   }
 
   private async validateUserPassword(userCredentials: UserCredentials): Promise<boolean> {
