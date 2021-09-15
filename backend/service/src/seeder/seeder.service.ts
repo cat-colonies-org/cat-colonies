@@ -16,6 +16,9 @@ import { UsersService } from 'src/domain/users/users.service';
 export class SeederService implements OnModuleInit {
   constructor(private readonly usersService: UsersService) {}
   async onModuleInit() {
+    // Do nothing if database isn't empty
+    if ((await this.usersService.count()) > 0) return;
+
     await this.seedUsers();
 
     await this.seedTowns();
