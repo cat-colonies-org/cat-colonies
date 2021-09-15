@@ -1,3 +1,5 @@
+import { getCriteriaString } from '../common/util';
+
 export type CatsListRow = {
   id: number;
   imageUrl: string;
@@ -24,12 +26,19 @@ const options = {
   },
 };
 
-export async function getCatsList(page: number, perPage: number): Promise<GetCatsListResult> {
-  const skip = Math.max(page - 1, 0) * perPage;
-  const take = perPage;
+export async function getCatsList({
+  filter,
+  page,
+  perPage,
+}: {
+  filter?: Record<string, any>;
+  page?: number;
+  perPage?: number;
+}): Promise<GetCatsListResult> {
+  const criteria = getCriteriaString({ filter, page, perPage });
 
   const query = `query {
-      cats (order: "id", descending: false, skip: ${skip}, take: ${take}) {
+      cats (${criteria}) {
         total
         items {
           id
