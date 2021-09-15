@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
-const Cats = () => {
+const CatsList = () => {
   const [data, setData] = useState([] as CatsListRow[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -14,7 +14,7 @@ const Cats = () => {
   const fetchData = async (page: number, newPerPage?: number) => {
     setLoading(true);
 
-    const cats = await getCatsList(page, newPerPage || perPage);
+    const cats = await getCatsList({ page, perPage: newPerPage || perPage });
 
     setData(cats.items);
     setTotalRows(cats.total);
@@ -87,4 +87,4 @@ const Cats = () => {
   );
 };
 
-export default Cats;
+export default CatsList;

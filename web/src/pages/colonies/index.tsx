@@ -1,7 +1,7 @@
+import { ColonyListRow, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { ColonyListRow, getColoniesList } from '../../services/colonies';
 
 export default function Colonies() {
   const [data, setData] = useState([] as ColonyListRow[]);

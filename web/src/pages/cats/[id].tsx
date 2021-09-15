@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-const Cat = () => {
+const CatDetails = () => {
   const router = useRouter();
 
   return (
@@ -12,4 +12,4 @@ const Cat = () => {
   );
 };
 
-export default Cat;
+export default CatDetails;
