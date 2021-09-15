@@ -1,4 +1,7 @@
 import { getCriteriaString } from '../common/util';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 export type CatsListRow = {
   id: number;
@@ -57,8 +60,7 @@ export async function getCatsList({
       }
     }`;
 
-  // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-  return await fetch('http://service:8080/graphql', {
+  return await fetch(publicRuntimeConfig.apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   })

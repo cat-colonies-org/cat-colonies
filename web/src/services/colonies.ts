@@ -1,4 +1,7 @@
 import { objToListString } from '../common/util';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 const colonyQueryFields = `      
   id
@@ -79,8 +82,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Ge
     }
   }`;
 
-  // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-  return await fetch('http://service:8080/graphql', {
+  return await fetch(publicRuntimeConfig.apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   })
@@ -114,8 +116,7 @@ export async function getColony(id: number): Promise<Colony> {
     }
   }`;
 
-  // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-  return await fetch('http://service:8080/graphql', {
+  return await fetch(publicRuntimeConfig.apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   })
@@ -134,7 +135,7 @@ export async function updateColony(id: number, data: any): Promise<Colony> {
     }
   }`;
 
-  return await fetch('http://service:8080/graphql', {
+  return await fetch(publicRuntimeConfig.apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   })
