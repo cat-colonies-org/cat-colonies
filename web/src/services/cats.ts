@@ -11,7 +11,7 @@ export type CatsListRow = {
   colonyEnvironment: string;
 };
 
-export interface GetCatsListResult {
+interface GetCatsListResult {
   total: number;
   items: CatsListRow[];
 }
