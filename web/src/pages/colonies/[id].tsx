@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-sync-scripts */
 import { CatsListRow, getCatsList } from '../../services/cats';
-import { Colony, getColony } from '../../services/colonies';
+import { Colony, getColony, updateColony } from '../../services/colonies';
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -29,8 +29,19 @@ const ColonyDetails = () => {
     setColony({ ...colony, [event.currentTarget.id]: event.currentTarget.value });
   };
 
-  const onSubmit = (event: FormEvent): void => {
+  const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
+
+    if (colony.id) {
+      const result = await updateColony(+colony.id, {
+        ...(colony.address && { address: colony.address }),
+        ...(colony.locationType?.id && { locationTypeId: colony.locationType.id }),
+        ...(colony.environment?.id && { environmentId: colony.environment.id }),
+        ...(colony.town?.id && { townId: colony.town.id }),
+      });
+
+      console.log(result);
+    }
   };
 
   const fetchData = async () => {

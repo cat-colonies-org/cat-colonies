@@ -1,15 +1,38 @@
+import { objToListString } from '../common/util';
+
+const colonyQueryFields = `      
+  id
+  createdAt
+  address
+  locationType { 
+    id 
+    description 
+  }
+  environment { 
+    id
+    description 
+  }
+  town { 
+    id 
+    name 
+  }
+`;
+
 export type Colony = {
   id: number;
   createdAt: Date;
   address: string;
+  locationTypeId: number;
   locationType: {
     id: number;
     description: string;
   };
+  environmentId: number;
   environment: {
     id: number;
     description: string;
   };
+  townId: number;
   town: {
     id: number;
     name: string;
@@ -31,7 +54,7 @@ interface GetColoniesListResult {
 }
 
 const options = {
-  method: 'post',
+  method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     // Authorization: "Bearer " + "## API KEY"
@@ -49,9 +72,9 @@ export async function getColoniesList(page: number, perPage: number): Promise<Ge
         id
         createdAt
         address
-        locationType { description }
-        environment { description }
-        town { name }
+        locationType { id description }
+        environment { id description }
+        town { id name }
       }
     }
   }`;
@@ -87,21 +110,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Ge
 export async function getColony(id: number): Promise<Colony> {
   const query = `query {
     colony (id:${id}) {
-      id
-      createdAt
-      address
-      locationType { 
-        id 
-        description 
-      }
-      environment { 
-        id
-        description 
-      }
-      town { 
-        id 
-        name 
-      }
+      ${colonyQueryFields}
     }
   }`;
 
@@ -113,5 +122,26 @@ export async function getColony(id: number): Promise<Colony> {
     .then((response) => response.json())
     .then((response): Colony => {
       return response?.data?.colony as Colony;
+    });
+}
+
+export async function updateColony(id: number, data: any): Promise<Colony> {
+  const toUpdateString = objToListString(data);
+
+  const query = `mutation {
+    updateColony (updateColonyInput: {id: ${id}, ${toUpdateString}}) {
+      ${colonyQueryFields}
+    }
+  }`;
+
+  return await fetch('http://service:8080/graphql', {
+    ...options,
+    body: JSON.stringify({ query }),
+  })
+    .then(async (response) => {
+      return response.json();
+    })
+    .then((response): Colony => {
+      return response?.data?.updateColony as Colony;
     });
 }

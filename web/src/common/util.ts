@@ -1,3 +1,10 @@
+export const objToListString = (obj: Record<string, any>): string => {
+  return Object.keys(obj).reduce((composed, key) => {
+    composed += composed ? ', ' : '';
+    return composed + `${key}: ${JSON.stringify(obj[key])}`;
+  }, '');
+};
+
 export const getCriteriaString = ({
   filter,
   page,
@@ -10,7 +17,7 @@ export const getCriteriaString = ({
   let criteria = 'order: "id"';
 
   if (filter) {
-    const filterString = Object.keys(filter).reduce((acc, key) => acc + `, ${key}: ${JSON.stringify(filter[key])}`, '');
+    const filterString = objToListString(filter);
     criteria += filterString;
   }
 
