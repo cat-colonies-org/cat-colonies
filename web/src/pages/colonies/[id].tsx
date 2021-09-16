@@ -75,7 +75,7 @@ const ColonyDetails = () => {
     map: {
       display: 'block',
       width: '100%',
-      height: '250px',
+      height: '295px',
     },
   };
 
@@ -83,12 +83,15 @@ const ColonyDetails = () => {
     <>
       <div className="container">
         <div className="row">
-          <div className="col-lg-8">
+          <div className="col-lg-7">
             <div className="container-md">
-              <div className="shadow p-3 mb-5 mt-4 bg-body rounded">
-                <p>Ficha de la colonia</p>
+              <div className="shadow p-3 bg-body rounded">
+                <p>
+                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  Datos generales
+                </p>
                 <form className="needs-validation" noValidate onSubmit={onSubmit}>
-                  <div className="row">
+                  <div className="row mt-3">
                     <div className="col-md-2">
                       <label htmlFor="id" className="form-label">
                         Id
@@ -128,7 +131,7 @@ const ColonyDetails = () => {
                     </div>
                   </div>
 
-                  <div className="row">
+                  <div className="row mt-3">
                     <div className="col-md-12">
                       <label htmlFor="address" className="form-label">
                         Calle
@@ -143,7 +146,7 @@ const ColonyDetails = () => {
                     </div>
                   </div>
 
-                  <div className="row">
+                  <div className="row mt-3">
                     <div className="col-md-6">
                       <label htmlFor="location" className="form-label">
                         Ubicación
@@ -170,7 +173,7 @@ const ColonyDetails = () => {
                     </div>
                   </div>
 
-                  <div className="row">
+                  <div className="row mt-3">
                     <div className="col-md-12">
                       <button className="btn btn-primary">Guardar</button>
                     </div>
@@ -179,9 +182,12 @@ const ColonyDetails = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
-            <div className="shadow p-3 mb-5 mt-4 bg-body rounded">
-              <p>Ubicación de la colonia</p>
+          <div className="col-lg-5">
+            <div className="shadow p-3 bg-body rounded">
+              <p>
+                <i className="far fa-map mr-2" aria-hidden="true"></i>
+                Ubicación
+              </p>
               <iframe
                 style={styles.map}
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1564.0051792651661!2d-0.49694479283032256!3d38.37188181628149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6236e5beba75f9%3A0xe54cc71b08152eeb!2sC.%20Roque%20Chab%C3%A1s%2C%2011%2C%2003011%20Alicante%20(Alacant)%2C%20Alicante!5e0!3m2!1ses!2ses!4v1631740183993!5m2!1ses!2ses"
@@ -191,17 +197,46 @@ const ColonyDetails = () => {
           </div>
         </div>
 
-        <p>Gatos de la colonia</p>
+        <div className="shadow p-3 bg-body rounded">
+          <p>
+            <i className="fas fa-chart-pie mr-2" aria-hidden="true"></i>
+            Estadísticas
+          </p>
+        </div>
 
-        <DataTable
-          columns={columns}
-          data={cats}
-          dense
-          highlightOnHover={false}
-          striped={true}
-          progressPending={loading}
-          onRowClicked={(row) => router.push(`/cats/${row.id}`)}
-        />
+        <div className="shadow p-3 bg-body rounded">
+          <p>
+            <i className="fa fa-female mr-2" aria-hidden="true"></i>
+            Gestoras
+          </p>
+
+          <DataTable
+            columns={columns}
+            data={cats}
+            dense
+            highlightOnHover={false}
+            striped={true}
+            progressPending={loading}
+            onRowClicked={(row) => router.push(`/cats/${row.id}`)}
+          />
+        </div>
+
+        <div className="shadow p-3 mb-5 bg-body rounded">
+          <p>
+            <i className="fas fa-cat mr-2" aria-hidden="true"></i>
+            Gatos
+          </p>
+
+          <DataTable
+            columns={columns}
+            data={cats}
+            dense
+            highlightOnHover={false}
+            striped={true}
+            progressPending={loading}
+            onRowClicked={(row) => router.push(`/cats/${row.id}`)}
+          />
+        </div>
       </div>
     </>
   );
