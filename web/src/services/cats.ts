@@ -1,7 +1,4 @@
-import { getCriteriaString } from '../common/util';
-import getConfig from 'next/config';
-
-const { publicRuntimeConfig } = getConfig();
+import { apiCall, getCriteriaString } from '../common/util';
 
 export type CatsListRow = {
   id: number;
@@ -16,18 +13,10 @@ export type CatsListRow = {
   colonyEnvironment: string;
 };
 
-interface GetCatsListResult {
+export interface CatsList {
   total: number;
   items: CatsListRow[];
 }
-
-const options = {
-  method: 'post',
-  headers: {
-    'Content-Type': 'application/json',
-    // Authorization: "Bearer " + "## API KEY"
-  },
-};
 
 export async function getCatsList({
   filter,
@@ -37,7 +26,7 @@ export async function getCatsList({
   filter?: Record<string, any>;
   page?: number;
   perPage?: number;
-}): Promise<GetCatsListResult> {
+}): Promise<CatsList> {
   const criteria = getCriteriaString({ filter, page, perPage });
 
   const query = `query {
@@ -60,33 +49,27 @@ export async function getCatsList({
       }
     }`;
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then((response) => response.json())
-    .then((response): GetCatsListResult => {
-      const cats = response?.data?.cats;
+  return await apiCall(query).then((response): CatsList => {
+    const cats = response?.data?.cats;
 
-      const total: number = cats ? cats.total : 0;
-      const items: CatsListRow[] = cats
-        ? cats.items.map((cat: any): CatsListRow => {
-            return {
-              id: cat.id,
-              imageUrl: cat.imageURL,
-              createdAt: cat.createdAt,
-              color: cat.color.description,
-              pattern: cat.pattern.description,
-              sterilized: cat.sterilized,
-              birthYear: cat.birthYear,
-              colonyAddress: cat.colony?.address,
-              colonyLocationType: cat.colony?.locationType.description,
-              colonyEnvironment: cat.colony?.environment.description,
-            };
-          })
-        : [];
-      // TODO: catch
+    const total: number = cats ? cats.total : 0;
+    const items: CatsListRow[] = cats
+      ? cats.items.map((cat: any): CatsListRow => {
+          return {
+            id: cat.id,
+            imageUrl: cat.imageURL,
+            createdAt: cat.createdAt,
+            color: cat.color.description,
+            pattern: cat.pattern.description,
+            sterilized: cat.sterilized,
+            birthYear: cat.birthYear,
+            colonyAddress: cat.colony?.address,
+            colonyLocationType: cat.colony?.locationType.description,
+            colonyEnvironment: cat.colony?.environment.description,
+          };
+        })
+      : [];
 
-      return { items, total };
-    });
+    return { items, total };
+  });
 }

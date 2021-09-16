@@ -1,7 +1,4 @@
-import { objToListString } from '../common/util';
-import getConfig from 'next/config';
-
-const { publicRuntimeConfig } = getConfig();
+import { apiCall, objToListString } from '../common/util';
 
 const colonyQueryFields = `      
   id
@@ -42,7 +39,7 @@ export type Colony = {
   };
 };
 
-export type ColonyListRow = {
+export type ColoniesListRow = {
   id: number;
   createdAt: Date;
   address: string;
@@ -51,20 +48,12 @@ export type ColonyListRow = {
   town: string;
 };
 
-interface GetColoniesListResult {
+export interface ColoniesList {
   total: number;
-  items: ColonyListRow[];
+  items: ColoniesListRow[];
 }
 
-const options = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    // Authorization: "Bearer " + "## API KEY"
-  },
-};
-
-export async function getColoniesList(page: number, perPage: number): Promise<GetColoniesListResult> {
+export async function getColoniesList(page: number, perPage: number): Promise<ColoniesList> {
   const skip = Math.max(page - 1, 0) * perPage;
   const take = perPage;
 
@@ -82,31 +71,25 @@ export async function getColoniesList(page: number, perPage: number): Promise<Ge
     }
   }`;
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then((response) => response.json())
-    .then((response): GetColoniesListResult => {
-      const colonies = response?.data?.colonies;
+  return await apiCall(query).then((response): ColoniesList => {
+    const colonies = response?.data?.colonies;
 
-      const total: number = colonies ? colonies.total : 0;
-      const items: ColonyListRow[] = colonies
-        ? colonies.items.map((colony: any): ColonyListRow => {
-            return {
-              id: colony.id,
-              createdAt: colony.createdAt,
-              address: colony.address,
-              locationType: colony.locationType?.description,
-              environment: colony.environment?.description,
-              town: colony.town?.name,
-            };
-          })
-        : [];
-      // TODO: catch
+    const total: number = colonies ? colonies.total : 0;
+    const items: ColoniesListRow[] = colonies
+      ? colonies.items.map((colony: any): ColoniesListRow => {
+          return {
+            id: colony.id,
+            createdAt: colony.createdAt,
+            address: colony.address,
+            locationType: colony.locationType?.description,
+            environment: colony.environment?.description,
+            town: colony.town?.name,
+          };
+        })
+      : [];
 
-      return { items, total };
-    });
+    return { items, total };
+  });
 }
 
 export async function getColony(id: number): Promise<Colony> {
@@ -116,14 +99,9 @@ export async function getColony(id: number): Promise<Colony> {
     }
   }`;
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then((response) => response.json())
-    .then((response): Colony => {
-      return response?.data?.colony as Colony;
-    });
+  return await apiCall(query).then((response): Colony => {
+    return response?.data?.colony as Colony;
+  });
 }
 
 export async function updateColony(id: number, data: any): Promise<Colony> {
@@ -135,14 +113,7 @@ export async function updateColony(id: number, data: any): Promise<Colony> {
     }
   }`;
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then(async (response) => {
-      return response.json();
-    })
-    .then((response): Colony => {
-      return response?.data?.updateColony as Colony;
-    });
+  return await apiCall(query).then((response): Colony => {
+    return response?.data?.updateColony as Colony;
+  });
 }

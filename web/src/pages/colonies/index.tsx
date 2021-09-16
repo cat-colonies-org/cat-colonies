@@ -1,10 +1,10 @@
-import { ColonyListRow, getColoniesList } from '../../services/colonies';
+import { ColoniesListRow, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 export default function Colonies() {
-  const [data, setData] = useState([] as ColonyListRow[]);
+  const [data, setData] = useState([] as ColoniesListRow[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -34,7 +34,7 @@ export default function Colonies() {
     fetchData(1, perPage);
   }, []);
 
-  const columns: TableColumn<ColonyListRow>[] = [
+  const columns: TableColumn<ColoniesListRow>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Registro', selector: (row) => row.createdAt },
     { name: 'Dirección', selector: (row) => row.address },
