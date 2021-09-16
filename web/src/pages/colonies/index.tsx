@@ -1,10 +1,10 @@
-import { ColoniesListRow, getColoniesList } from '../../services/colonies';
+import { Colony, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 export default function Colonies() {
-  const [data, setData] = useState([] as ColoniesListRow[]);
+  const [data, setData] = useState([] as Colony[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -34,13 +34,13 @@ export default function Colonies() {
     fetchData(1, perPage);
   }, []);
 
-  const columns: TableColumn<ColoniesListRow>[] = [
+  const columns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Registro', selector: (row) => row.createdAt.toString() },
     { name: 'Dirección', selector: (row) => row.address },
-    { name: 'Tipo ubicación', selector: (row) => row.locationType },
-    { name: 'Entorno', selector: (row) => row.environment },
-    { name: 'Localidad', selector: (row) => row.town },
+    { name: 'Tipo ubicación', selector: (row) => row.locationType.description },
+    { name: 'Entorno', selector: (row) => row.environment.description },
+    { name: 'Localidad', selector: (row) => row.town.name },
   ];
 
   return (

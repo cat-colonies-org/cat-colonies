@@ -21,26 +21,17 @@ export type Colony = {
   };
 };
 
-const colonyQlToObject = (colony: Record<string, any>): Colony => {
+export interface ColoniesList {
+  total: number;
+  items: Colony[];
+}
+
+const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   return {
     ...colony,
     createdAt: new Date(colony.createdAt),
   } as Colony;
 };
-
-export type ColoniesListRow = {
-  id: number;
-  createdAt: Date;
-  address: string;
-  locationType: string;
-  environment: string;
-  town: string;
-};
-
-export interface ColoniesList {
-  total: number;
-  items: ColoniesListRow[];
-}
 
 const colonyQueryFields: string = `
   id
@@ -68,17 +59,8 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
     const colonies = response?.data?.colonies;
 
     const total: number = colonies ? colonies.total : 0;
-    const items: ColoniesListRow[] = colonies
-      ? colonies.items.map((colony: any): ColoniesListRow => {
-          return {
-            id: colony.id,
-            createdAt: new Date(colony.createdAt),
-            address: colony.address,
-            locationType: colony.locationType?.description,
-            environment: colony.environment?.description,
-            town: colony.town?.name,
-          };
-        })
+    const items: Colony[] = colonies
+      ? colonies.items.map((colony: any): Colony => getColonyFromGraphQlResult(colony))
       : [];
 
     return { items, total };
@@ -93,7 +75,7 @@ export async function getColony(id: number): Promise<Colony> {
   }`;
 
   return await apiCall(query).then((response): Colony => {
-    return colonyQlToObject(response?.data?.colony);
+    return getColonyFromGraphQlResult(response?.data?.colony);
   });
 }
 
