@@ -49,7 +49,7 @@ const CatsList = () => {
       name: 'Foto',
       cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
     },
-    { name: 'Registro', selector: (cat) => cat.createdAt?.toLocaleDateString() },
+    { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
     {
       name: 'Esterilizado',

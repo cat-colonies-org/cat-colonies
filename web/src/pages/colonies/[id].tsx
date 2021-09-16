@@ -1,28 +1,28 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import { CatsListRow, getCatsList } from '../../services/cats';
+import { Cat, getCatsList } from '../../services/cats';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 const ColonyDetails = () => {
-  const columns: TableColumn<CatsListRow>[] = [
+  const columns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
-    { name: 'Fecha registro', selector: (cat) => cat.createdAt },
+    { name: 'Alta', selector: (cat) => cat.createdAt.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
-    { name: 'Color', selector: (cat) => cat.color },
-    { name: 'Patrón', selector: (cat) => cat.pattern },
     {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
+    { name: 'Color', selector: (cat) => cat.color.description },
+    { name: 'Patrón', selector: (cat) => cat.pattern.description },
   ];
 
   const router = useRouter();
 
   const [colony, setColony] = useState({} as Colony);
-  const [cats, setCats] = useState({} as CatsListRow[]);
+  const [cats, setCats] = useState({} as Cat[]);
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
@@ -62,92 +62,147 @@ const ColonyDetails = () => {
   };
 
   useEffect((): void => {
-    if (!router.query.id) {
-      router.push('/colonies');
-      return;
-    }
-
     fetchData();
   }, []);
 
+  const styles = {
+    blue: {
+      background: 'blue',
+    },
+    red: {
+      background: 'red',
+    },
+    map: {
+      display: 'block',
+      width: '100%',
+      height: '250px',
+    },
+  };
+
   return (
     <>
-      <h1>Colonia</h1>
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-8">
+            <div className="container-md">
+              <div className="shadow p-3 mb-5 mt-4 bg-body rounded">
+                <p>Ficha de la colonia</p>
+                <form className="needs-validation" noValidate onSubmit={onSubmit}>
+                  <div className="row">
+                    <div className="col-md-2">
+                      <label htmlFor="id" className="form-label">
+                        Id
+                      </label>
+                      <input
+                        id="id"
+                        type="text"
+                        className="form-control"
+                        value={colony?.id}
+                        placeholder="Nueva colonia"
+                        readOnly
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label htmlFor="createdAt" className="form-label">
+                        Alta
+                      </label>
+                      <input
+                        id="createdAt"
+                        type="text"
+                        className="form-control"
+                        value={colony?.createdAt?.toLocaleDateString()}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                    <div className="col-md-7">
+                      <label htmlFor="town" className="form-label">
+                        Localidad
+                      </label>
+                      <input
+                        id="town"
+                        type="text"
+                        className="form-control"
+                        value={colony?.town?.name}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                  </div>
 
-      <p>Ficha de la colonia</p>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <label htmlFor="address" className="form-label">
+                        Calle
+                      </label>
+                      <input
+                        id="address"
+                        type="text"
+                        className="form-control"
+                        value={colony?.address}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                  </div>
 
-      <div className="d-flex flex-row flex-fill">
-        <div className="p-7">
-          <form onSubmit={onSubmit}>
-            <div className="form-group">
-              <label>
-                Id
-                <input readOnly id="id" className="disabled form-control" value={colony?.id} />
-              </label>
-              <label>
-                Fecha registro
-                <input
-                  readOnly
-                  id="createdAt"
-                  className="disabled form-control"
-                  onChange={onInputChange}
-                  value={colony?.createdAt?.toString()}
-                />
-              </label>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label htmlFor="location" className="form-label">
+                        Ubicación
+                      </label>
+                      <input
+                        id="location"
+                        type="text"
+                        className="form-control"
+                        value={colony?.locationType?.description}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label htmlFor="environment" className="form-label">
+                        Entorno
+                      </label>
+                      <input
+                        id="environment"
+                        type="text"
+                        className="form-control"
+                        value={colony?.environment?.description}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-12">
+                      <button className="btn btn-primary">Guardar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="form-group">
-              <label>
-                Dirección
-                <input id="address" className="form-control" value={colony.address} onChange={onInputChange} />
-              </label>
-              <label>
-                Localidad
-                <input readOnly id="town" className="disabled form-control" value={colony?.town?.name} />
-              </label>
-              <label>
-                Ubicación
-                <input
-                  readOnly
-                  id="locationType"
-                  className="disabled form-control"
-                  value={colony?.locationType?.description}
-                />
-              </label>
-              <label>
-                Entorno
-                <input
-                  readOnly
-                  id="environment"
-                  className="disabled form-control"
-                  value={colony?.environment?.description}
-                />
-              </label>
-              <button className="btn btn-primary">Guardar</button>
+          </div>
+          <div className="col-lg-4">
+            <div className="shadow p-3 mb-5 mt-4 bg-body rounded">
+              <p>Ubicación de la colonia</p>
+              <iframe
+                style={styles.map}
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1564.0051792651661!2d-0.49694479283032256!3d38.37188181628149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6236e5beba75f9%3A0xe54cc71b08152eeb!2sC.%20Roque%20Chab%C3%A1s%2C%2011%2C%2003011%20Alicante%20(Alacant)%2C%20Alicante!5e0!3m2!1ses!2ses!4v1631740183993!5m2!1ses!2ses"
+                loading="lazy"
+              ></iframe>{' '}
             </div>
-          </form>
+          </div>
         </div>
-        <div className="p-3">
-          <iframe
-            id="map"
-            width="425"
-            height="350"
-            scrolling="no"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=-0.5000281333923341%2C38.37085001158514%2C-0.49294710159301763%2C38.374559391551465&amp;layer=mapnik"
-          ></iframe>
-        </div>
+
+        <p>Gatos de la colonia</p>
+
+        <DataTable
+          columns={columns}
+          data={cats}
+          dense
+          highlightOnHover={false}
+          striped={true}
+          progressPending={loading}
+          onRowClicked={(row) => router.push(`/cats/${row.id}`)}
+        />
       </div>
-
-      <p>Gatos de la colonia</p>
-
-      <DataTable
-        columns={columns}
-        data={cats}
-        dense
-        highlightOnHover={false}
-        striped={true}
-        progressPending={loading}
-        onRowClicked={(row) => router.push(`/cats/${row.id}`)}
-      />
     </>
   );
 };
