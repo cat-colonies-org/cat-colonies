@@ -1,23 +1,5 @@
 import { apiCall, objToListString } from '../common/util';
 
-const colonyQueryFields = `      
-  id
-  createdAt
-  address
-  locationType { 
-    id 
-    description 
-  }
-  environment { 
-    id
-    description 
-  }
-  town { 
-    id 
-    name 
-  }
-`;
-
 export type Colony = {
   id: number;
   createdAt: Date;
@@ -39,6 +21,13 @@ export type Colony = {
   };
 };
 
+const colonyQlToObject = (colony: Record<string, any>): Colony => {
+  return {
+    ...colony,
+    createdAt: new Date(colony.createdAt),
+  } as Colony;
+};
+
 export type ColoniesListRow = {
   id: number;
   createdAt: Date;
@@ -53,6 +42,15 @@ export interface ColoniesList {
   items: ColoniesListRow[];
 }
 
+const colonyQueryFields: string = `
+  id
+  createdAt
+  address
+  locationType { id description }
+  environment { id description }
+  town { id name }
+`;
+
 export async function getColoniesList(page: number, perPage: number): Promise<ColoniesList> {
   const skip = Math.max(page - 1, 0) * perPage;
   const take = perPage;
@@ -61,12 +59,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
     colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
       total
       items {
-        id
-        createdAt
-        address
-        locationType { id description }
-        environment { id description }
-        town { id name }
+        ${colonyQueryFields}
       }
     }
   }`;
@@ -79,7 +72,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
       ? colonies.items.map((colony: any): ColoniesListRow => {
           return {
             id: colony.id,
-            createdAt: colony.createdAt,
+            createdAt: new Date(colony.createdAt),
             address: colony.address,
             locationType: colony.locationType?.description,
             environment: colony.environment?.description,
@@ -100,7 +93,7 @@ export async function getColony(id: number): Promise<Colony> {
   }`;
 
   return await apiCall(query).then((response): Colony => {
-    return response?.data?.colony as Colony;
+    return colonyQlToObject(response?.data?.colony);
   });
 }
 
