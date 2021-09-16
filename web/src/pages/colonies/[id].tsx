@@ -4,9 +4,11 @@ import { Colony, getColony, updateColony } from '../../services/colonies';
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
+import { getUsersList, User } from '../../services/users';
+import { Chart } from 'react-google-charts';
 
 const ColonyDetails = () => {
-  const columns: TableColumn<Cat>[] = [
+  const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     { name: 'Alta', selector: (cat) => cat.createdAt.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
@@ -19,10 +21,18 @@ const ColonyDetails = () => {
     { name: 'Patrón', selector: (cat) => cat.pattern.description },
   ];
 
+  const managersColumns: TableColumn<User>[] = [
+    { name: 'Id', selector: (user) => user.id },
+    { name: 'Alta', selector: (user) => user.createdAt.toLocaleDateString() },
+    { name: 'Nombre', selector: (user) => user.name },
+    { name: 'Apellidos', selector: (user) => user.surnames },
+  ];
+
   const router = useRouter();
 
   const [colony, setColony] = useState({} as Colony);
   const [cats, setCats] = useState({} as Cat[]);
+  const [managers, setManagers] = useState({} as User[]);
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
@@ -55,6 +65,9 @@ const ColonyDetails = () => {
 
         const cats = await getCatsList({ filter: { colonyId: +id } });
         if (cats) setCats(cats.items);
+
+        const managers = await getUsersList({});
+        if (managers) setManagers(managers.items);
       }
     }
 
@@ -82,7 +95,7 @@ const ColonyDetails = () => {
   return (
     <>
       <div className="container">
-        <div className="row">
+        <div className="row mb-4">
           <div className="col-lg-7">
             <div className="container-md">
               <div className="shadow p-3 bg-body rounded">
@@ -197,45 +210,129 @@ const ColonyDetails = () => {
           </div>
         </div>
 
-        <div className="shadow p-3 bg-body rounded">
-          <p>
-            <i className="fas fa-chart-pie mr-2" aria-hidden="true"></i>
-            Estadísticas
-          </p>
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <div className="shadow p-3 bg-body rounded">
+              <p>
+                <i className="fa fa-female mr-2" aria-hidden="true"></i>
+                Gestoras
+              </p>
+
+              <DataTable
+                columns={managersColumns}
+                data={managers}
+                dense
+                highlightOnHover={false}
+                striped={true}
+                progressPending={loading}
+                onRowClicked={(row) => router.push(`/users/${row.id}`)}
+              />
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="shadow p-3 bg-body rounded">
+              <p>
+                <i className="fas fa-chart-pie mr-2" aria-hidden="true"></i>
+                Estadísticas
+              </p>
+
+              <div className="row">
+                <div className="col-sm">
+                  <Chart
+                    width={200}
+                    height={100}
+                    chartType="BarChart"
+                    loader={<div>Cargando gráfico...</div>}
+                    data={[
+                      ['Estado', 'Total'],
+                      ['Vivos', 10],
+                      ['Bajas', 0],
+                    ]}
+                    options={{
+                      title: 'Población',
+                      is3D: true,
+                      backgroundColor: '#fafafa',
+                    }}
+                  />
+                </div>
+                <div className="col-sm">
+                  <Chart
+                    width={200}
+                    height={100}
+                    chartType="BarChart"
+                    loader={<div>Cargando gráfico...</div>}
+                    data={[
+                      ['Estado', 'Sí', 'No'],
+                      ['', 4, 2],
+                    ]}
+                    options={{
+                      title: 'Esterilizados',
+                      is3D: true,
+                      backgroundColor: '#fafafa',
+                    }}
+                  />
+                </div>
+                <div className="col-sm">
+                  <Chart
+                    width={200}
+                    height={100}
+                    chartType="BarChart"
+                    loader={<div>Cargando gráfico...</div>}
+                    data={[
+                      ['Estado', 'Total'],
+                      ['Hembras', 6],
+                      ['Machos', 4],
+                    ]}
+                    options={{
+                      title: 'Sexo',
+                      is3D: true,
+                      backgroundColor: '#fafafa',
+                    }}
+                  />
+                </div>
+                <div className="col-sm">
+                  <Chart
+                    width={200}
+                    height={100}
+                    chartType="BarChart"
+                    loader={<div>Cargando gráfico...</div>}
+                    data={[
+                      ['Estado', 'Total'],
+                      ['Cachorros', 9],
+                      ['Adultos', 1],
+                    ]}
+                    options={{
+                      title: 'Edad',
+                      is3D: true,
+                      backgroundColor: '#fafafa',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="shadow p-3 bg-body rounded">
-          <p>
-            <i className="fa fa-female mr-2" aria-hidden="true"></i>
-            Gestoras
-          </p>
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
+              <p>
+                <i className="fas fa-cat mr-2" aria-hidden="true"></i>
+                Gatos
+              </p>
 
-          <DataTable
-            columns={columns}
-            data={cats}
-            dense
-            highlightOnHover={false}
-            striped={true}
-            progressPending={loading}
-            onRowClicked={(row) => router.push(`/cats/${row.id}`)}
-          />
-        </div>
-
-        <div className="shadow p-3 mb-5 bg-body rounded">
-          <p>
-            <i className="fas fa-cat mr-2" aria-hidden="true"></i>
-            Gatos
-          </p>
-
-          <DataTable
-            columns={columns}
-            data={cats}
-            dense
-            highlightOnHover={false}
-            striped={true}
-            progressPending={loading}
-            onRowClicked={(row) => router.push(`/cats/${row.id}`)}
-          />
+              <DataTable
+                columns={catsColumns}
+                data={cats}
+                dense
+                highlightOnHover={false}
+                striped={true}
+                progressPending={loading}
+                onRowClicked={(row) => router.push(`/cats/${row.id}`)}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
