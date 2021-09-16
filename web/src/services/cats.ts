@@ -1,22 +1,36 @@
 import { apiCall, getCriteriaString } from '../common/util';
 
-export type CatsListRow = {
+const catQueryFields: string = `
+  id
+  createdAt
+  birthYear
+  imageURL
+  sterilized
+  color { description }
+  pattern { description }
+`;
+
+export type Cat = {
   id: number;
-  imageUrl: string;
   createdAt: Date;
-  color: string;
-  pattern: string;
-  sterilized: boolean;
   birthYear: number;
-  colonyAddress: string;
-  colonyLocationType: string;
-  colonyEnvironment: string;
+  imageURL: string;
+  sterilized: boolean;
+  color: { id: number; description: string };
+  pattern: { id: number; description: string };
 };
 
 export interface CatsList {
   total: number;
-  items: CatsListRow[];
+  items: Cat[];
 }
+
+const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
+  return {
+    ...cat,
+    createdAt: new Date(cat.createdAt),
+  } as Cat;
+};
 
 export async function getCatsList({
   filter,
@@ -33,18 +47,7 @@ export async function getCatsList({
       cats (${criteria}) {
         total
         items {
-          id
-          imageURL
-          createdAt
-          color { description }
-          pattern { description }
-          sterilized
-          birthYear
-          colony {
-            address
-            locationType { description }
-            environment { description }
-          }
+          ${catQueryFields}
         }
       }
     }`;
@@ -53,20 +56,9 @@ export async function getCatsList({
     const cats = response?.data?.cats;
 
     const total: number = cats ? cats.total : 0;
-    const items: CatsListRow[] = cats
-      ? cats.items.map((cat: any): CatsListRow => {
-          return {
-            id: cat.id,
-            imageUrl: cat.imageURL,
-            createdAt: cat.createdAt,
-            color: cat.color.description,
-            pattern: cat.pattern.description,
-            sterilized: cat.sterilized,
-            birthYear: cat.birthYear,
-            colonyAddress: cat.colony?.address,
-            colonyLocationType: cat.colony?.locationType.description,
-            colonyEnvironment: cat.colony?.environment.description,
-          };
+    const items: Cat[] = cats
+      ? cats.items.map((cat: any): Cat => {
+          return getCatFromGraphQlResult(cat);
         })
       : [];
 

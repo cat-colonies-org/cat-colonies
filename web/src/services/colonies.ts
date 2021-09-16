@@ -1,20 +1,26 @@
 import { apiCall, objToListString } from '../common/util';
 
+const colonyQueryFields: string = `
+  id
+  createdAt
+  address
+  locationType { id description }
+  environment { id description }
+  town { id name }
+`;
+
 export type Colony = {
   id: number;
   createdAt: Date;
   address: string;
-  locationTypeId: number;
   locationType: {
     id: number;
     description: string;
   };
-  environmentId: number;
   environment: {
     id: number;
     description: string;
   };
-  townId: number;
   town: {
     id: number;
     name: string;
@@ -32,15 +38,6 @@ const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
     createdAt: new Date(colony.createdAt),
   } as Colony;
 };
-
-const colonyQueryFields: string = `
-  id
-  createdAt
-  address
-  locationType { id description }
-  environment { id description }
-  town { id name }
-`;
 
 export async function getColoniesList(page: number, perPage: number): Promise<ColoniesList> {
   const skip = Math.max(page - 1, 0) * perPage;

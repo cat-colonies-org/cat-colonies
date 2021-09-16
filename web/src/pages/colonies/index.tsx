@@ -36,7 +36,7 @@ export default function Colonies() {
 
   const columns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (row) => row.id },
-    { name: 'Registro', selector: (row) => row.createdAt.toString() },
+    { name: 'Registro', selector: (row) => row.createdAt.toLocaleDateString() },
     { name: 'Dirección', selector: (row) => row.address },
     { name: 'Tipo ubicación', selector: (row) => row.locationType.description },
     { name: 'Entorno', selector: (row) => row.environment.description },
