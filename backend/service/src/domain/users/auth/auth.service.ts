@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { AccessToken } from '../dto/access-token';
-import { JwtPayload } from '../dto/jwt-payload.interface';
-import { UserCredentials } from '../dto/user-credentials';
+import { AccessToken } from './dto/access-token';
+import { JwtPayload } from './dto/jwt-payload.interface';
+import { UserCredentials } from './user-credentials';
 import { User } from '../entities/user.entity';
 
 @Injectable()
