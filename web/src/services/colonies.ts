@@ -4,25 +4,28 @@ const colonyQueryFields: string = `
   id
   createdAt
   address
-  locationType { id description }
-  environment { id description }
-  town { id name }
+  locationTypeId
+  locationType { description }
+  environmentId
+  environment { description }
+  townId
+  town { name }
 `;
 
 export type Colony = {
   id: number;
   createdAt: Date;
   address: string;
+  locationTypeId: number;
+  environmentId: number;
+  townId: number;
   locationType: {
-    id: number;
     description: string;
   };
   environment: {
-    id: number;
     description: string;
   };
   town: {
-    id: number;
     name: string;
   };
 };

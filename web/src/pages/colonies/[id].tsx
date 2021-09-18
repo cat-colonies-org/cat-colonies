@@ -1,11 +1,14 @@
 /* eslint-disable @next/next/no-sync-scripts */
 import { Cat, getCatsList } from '../../services/cats';
+import { Chart } from 'react-google-charts';
 import { Colony, getColony, updateColony } from '../../services/colonies';
+import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
+import { getLocationTypesList, LocationType } from '../../services/locationTypes';
+import { getTownsList, Town } from '../../services/towns';
+import { getUsersList, User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { getUsersList, User } from '../../services/users';
-import { Chart } from 'react-google-charts';
 
 const ColonyDetails = () => {
   const catsColumns: TableColumn<Cat>[] = [
@@ -33,24 +36,30 @@ const ColonyDetails = () => {
   const [colony, setColony] = useState({} as Colony);
   const [cats, setCats] = useState({} as Cat[]);
   const [managers, setManagers] = useState({} as User[]);
+  const [environments, setEnvironments] = useState({} as Environment[]);
+  const [locationTypes, setLocationTypes] = useState({} as LocationType[]);
+  const [towns, setTowns] = useState({} as Town[]);
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     setColony({ ...colony, [event.currentTarget.id]: event.currentTarget.value });
   };
 
+  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
+    setColony({ ...colony, [event.currentTarget.id]: +event.currentTarget.value });
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
     if (colony.id) {
-      const result = await updateColony(+colony.id, {
+      await updateColony(+colony.id, {
         ...(colony.address && { address: colony.address }),
-        ...(colony.locationType?.id && { locationTypeId: colony.locationType.id }),
-        ...(colony.environment?.id && { environmentId: colony.environment.id }),
-        ...(colony.town?.id && { townId: colony.town.id }),
+        ...(colony.locationTypeId && { locationTypeId: +colony.locationTypeId }),
+        ...(colony.environmentId && { environmentId: +colony.environmentId }),
+        ...(colony.townId && { townId: +colony.townId }),
       });
-
-      console.log(result);
+      // TODO: notify that the colony has been updated
     }
   };
 
@@ -63,11 +72,19 @@ const ColonyDetails = () => {
       if (colony) {
         setColony(colony);
 
-        const cats = await getCatsList({ filter: { colonyId: +id } });
-        if (cats) setCats(cats.items);
+        const [cats, managers, environments, locationTypes, towns] = await Promise.all([
+          getCatsList({ filter: { colonyId: +id } }),
+          getUsersList({}),
+          getEnvironmentsList({}),
+          getLocationTypesList({}),
+          getTownsList({}),
+        ]);
 
-        const managers = await getUsersList({});
+        if (cats) setCats(cats.items);
         if (managers) setManagers(managers.items);
+        if (environments) setEnvironments(environments.items);
+        if (locationTypes) setLocationTypes(locationTypes.items);
+        if (towns) setTowns(towns.items);
       }
     }
 
@@ -134,13 +151,14 @@ const ColonyDetails = () => {
                       <label htmlFor="town" className="form-label">
                         Localidad
                       </label>
-                      <input
-                        id="town"
-                        type="text"
-                        className="form-control"
-                        value={colony?.town?.name}
-                        onChange={onInputChange}
-                      />
+                      <select id="townId" className="form-control" value={colony?.townId} onChange={onSelectChange}>
+                        {towns.length &&
+                          towns.map((item, i) => (
+                            <option key={i} value={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                   </div>
 
@@ -164,25 +182,37 @@ const ColonyDetails = () => {
                       <label htmlFor="location" className="form-label">
                         Ubicación
                       </label>
-                      <input
-                        id="location"
-                        type="text"
+                      <select
+                        id="locationTypeId"
                         className="form-control"
-                        value={colony?.locationType?.description}
-                        onChange={onInputChange}
-                      />
+                        value={colony?.locationTypeId}
+                        onChange={onSelectChange}
+                      >
+                        {locationTypes.length &&
+                          locationTypes.map((item, i) => (
+                            <option key={i} value={item.id}>
+                              {item.description}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                     <div className="col-md-6">
-                      <label htmlFor="environment" className="form-label">
+                      <label className="form-label" htmlFor="environment">
                         Entorno
                       </label>
-                      <input
-                        id="environment"
-                        type="text"
+                      <select
+                        id="environmentId"
                         className="form-control"
-                        value={colony?.environment?.description}
-                        onChange={onInputChange}
-                      />
+                        value={colony?.environmentId}
+                        onChange={onSelectChange}
+                      >
+                        {environments.length &&
+                          environments.map((item, i) => (
+                            <option key={i} value={item.id}>
+                              {item.description}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                   </div>
 
