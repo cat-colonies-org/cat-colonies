@@ -252,7 +252,7 @@ const ColonyDetails = () => {
                 columns={managersColumns}
                 data={managers}
                 dense
-                highlightOnHover={false}
+                highlightOnHover={true}
                 striped={true}
                 progressPending={loading}
                 onRowClicked={(row) => router.push(`/users/${row.id}`)}
@@ -356,7 +356,7 @@ const ColonyDetails = () => {
                 columns={catsColumns}
                 data={cats}
                 dense
-                highlightOnHover={false}
+                highlightOnHover={true}
                 striped={true}
                 progressPending={loading}
                 onRowClicked={(row) => router.push(`/cats/${row.id}`)}
