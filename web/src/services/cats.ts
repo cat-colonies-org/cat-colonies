@@ -3,21 +3,49 @@ import { apiCall, getCriteriaString } from '../common/util';
 export const catQueryFields: string = `
   id
   createdAt
+  ceasedAt
+  ceaseCauseId
+  ceaseCause { description }
   birthYear
-  imageURL
   sterilized
+  sterilizedAt
+  imageURL
+  gender
+  kitten
+  colonyId
+  colony { address }
+  colorId
   color { description }
+  patternId
   pattern { description }
+  eyeColorId
+  eyeColor { description }
 `;
+
+export enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+}
 
 export type Cat = {
   id: number;
   createdAt: Date;
+  ceasedAt: Date;
+  ceasedCuaseId: number;
   birthYear: number;
-  imageURL: string;
   sterilized: boolean;
-  color: { id: number; description: string };
-  pattern: { id: number; description: string };
+  sterilizedAt: Date;
+  imageURL: string;
+  gender: Gender;
+  kitten: boolean;
+  colonyId: number;
+  colony: { address: string };
+  colorId: number;
+  color: { description: string };
+  patternId: number;
+  pattern: { description: string };
+  eyeColorId: number;
+  eyeColor: { description: string };
 };
 
 export interface CatsList {

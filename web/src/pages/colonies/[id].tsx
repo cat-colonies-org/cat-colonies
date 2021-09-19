@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import { Cat } from '../../services/cats';
+import { Cat, Gender } from '../../services/cats';
 import { Chart } from 'react-google-charts';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { Environment, getEnvironmentsList } from '../../services/environments';
@@ -11,17 +11,33 @@ import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
+interface Stats {
+  total: number;
+
+  malesCount: number;
+  femalesCount: number;
+  esterilicedCount: number;
+  kittensCount: number;
+}
+
 const ColonyDetails = () => {
+  const router = useRouter();
+
   const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     // { name: 'Alta', selector: (cat) => cat.createdAt.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
     {
+      name: 'Genero',
+      selector: (cat) =>
+        cat.gender === Gender.Male ? 'Macho' : cat.gender === Gender.Female ? 'Hembra' : 'Indeterminado',
+    },
+    {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Color', selector: (cat) => cat.color.description },
+    { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') },
     { name: 'Patrón', selector: (cat) => cat.pattern.description },
   ];
 
@@ -32,12 +48,11 @@ const ColonyDetails = () => {
     { name: 'Apellidos', selector: (user) => user.surnames },
   ];
 
-  const router = useRouter();
-
   const [colony, setColony] = useState({} as Colony);
   const [environments, setEnvironments] = useState({} as Environment[]);
   const [locationTypes, setLocationTypes] = useState({} as LocationType[]);
   const [towns, setTowns] = useState({} as Town[]);
+  const [stats, setStats] = useState({} as Stats);
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
@@ -67,6 +82,33 @@ const ColonyDetails = () => {
     }
   };
 
+  const reduceAndSetStats = (cats: Cat[]): void => {
+    let stats: Stats = {
+      total: 0,
+      malesCount: 0,
+      femalesCount: 0,
+      esterilicedCount: 0,
+      kittensCount: 0,
+    };
+
+    stats = cats.reduce((stats: Stats, cat: Cat): Stats => {
+      if (cat.ceasedAt || cat.ceasedCuaseId) return stats;
+
+      ++stats.total;
+
+      stats.malesCount += cat.gender === Gender.Male ? 1 : 0;
+      stats.femalesCount += cat.gender === Gender.Female ? 1 : 0;
+      stats.esterilicedCount += cat.sterilized ? 1 : 0;
+      stats.kittensCount += cat.kitten ? 1 : 0;
+
+      return stats;
+    }, stats);
+
+    console.log(stats);
+
+    setStats(stats);
+  };
+
   const fetchData = async () => {
     setLoading(true);
 
@@ -85,6 +127,7 @@ const ColonyDetails = () => {
         if (environments) setEnvironments(environments.items);
         if (locationTypes) setLocationTypes(locationTypes.items);
         if (towns) setTowns(towns.items);
+        if (colony.cats) reduceAndSetStats(colony.cats);
       }
     }
 
