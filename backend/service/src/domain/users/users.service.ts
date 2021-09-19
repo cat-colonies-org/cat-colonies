@@ -11,7 +11,7 @@ export class UsersService extends BaseCrudService<User> {
     super(repository);
   }
 
-  override async create(createInput: Record<string, any>): Promise<User> {
+  override async create(createInput: Partial<User>): Promise<User> {
     const user: User = this.repository.create();
     if (!user) return;
     Object.assign(user, createInput);

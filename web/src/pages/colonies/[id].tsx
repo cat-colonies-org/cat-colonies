@@ -1,19 +1,19 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import { Cat, getCatsList } from '../../services/cats';
+import { Cat } from '../../services/cats';
 import { Chart } from 'react-google-charts';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
 import { getLocationTypesList, LocationType } from '../../services/locationTypes';
 import { getTownsList, Town } from '../../services/towns';
-import { getUsersList, User } from '../../services/users';
+import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 const ColonyDetails = () => {
   const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
-    { name: 'Alta', selector: (cat) => cat.createdAt.toLocaleDateString() },
+    // { name: 'Alta', selector: (cat) => cat.createdAt.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
     {
       name: 'Esterilizado',
@@ -26,7 +26,7 @@ const ColonyDetails = () => {
 
   const managersColumns: TableColumn<User>[] = [
     { name: 'Id', selector: (user) => user.id },
-    { name: 'Alta', selector: (user) => user.createdAt.toLocaleDateString() },
+    // { name: 'Alta', selector: (user) => user.createdAt.toLocaleDateString() },
     { name: 'Nombre', selector: (user) => user.name },
     { name: 'Apellidos', selector: (user) => user.surnames },
   ];
@@ -34,8 +34,6 @@ const ColonyDetails = () => {
   const router = useRouter();
 
   const [colony, setColony] = useState({} as Colony);
-  const [cats, setCats] = useState({} as Cat[]);
-  const [managers, setManagers] = useState({} as User[]);
   const [environments, setEnvironments] = useState({} as Environment[]);
   const [locationTypes, setLocationTypes] = useState({} as LocationType[]);
   const [towns, setTowns] = useState({} as Town[]);
@@ -72,16 +70,12 @@ const ColonyDetails = () => {
       if (colony) {
         setColony(colony);
 
-        const [cats, managers, environments, locationTypes, towns] = await Promise.all([
-          getCatsList({ filter: { colonyId: +id } }),
-          getUsersList({}),
+        const [environments, locationTypes, towns] = await Promise.all([
           getEnvironmentsList({}),
           getLocationTypesList({}),
           getTownsList({}),
         ]);
 
-        if (cats) setCats(cats.items);
-        if (managers) setManagers(managers.items);
         if (environments) setEnvironments(environments.items);
         if (locationTypes) setLocationTypes(locationTypes.items);
         if (towns) setTowns(towns.items);
@@ -250,7 +244,7 @@ const ColonyDetails = () => {
 
               <DataTable
                 columns={managersColumns}
-                data={managers}
+                data={colony.managers}
                 dense
                 highlightOnHover={true}
                 striped={true}
@@ -354,7 +348,7 @@ const ColonyDetails = () => {
 
               <DataTable
                 columns={catsColumns}
-                data={cats}
+                data={colony.cats}
                 dense
                 highlightOnHover={true}
                 striped={true}

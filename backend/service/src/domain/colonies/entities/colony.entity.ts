@@ -3,7 +3,17 @@ import { Cat } from 'src/domain/cats/entities/cat.entity';
 import { Environment } from 'src/domain/environments/entities/environment.entity';
 import { LocationType } from 'src/domain/location-types/entities/location-type.entity';
 import { Town } from 'src/domain/towns/entities/town.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/domain/users/entities/user.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -20,6 +30,14 @@ export class Colony extends BaseEntity {
   @Field(() => String)
   address: string;
 
+  @OneToMany(() => Cat, (cat) => cat.colony)
+  @Field(() => [Cat], { nullable: true })
+  cats?: Promise<Cat[]>;
+
+  @ManyToMany(() => User, (user) => user.colonies)
+  @Field(() => [User])
+  managers: Promise<User[]>;
+
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   locationTypeId?: number;
@@ -27,10 +45,6 @@ export class Colony extends BaseEntity {
   @ManyToOne(() => LocationType, (locationType) => locationType.colonies)
   @Field(() => LocationType)
   locationType: Promise<LocationType>;
-
-  @OneToMany(() => Cat, (cat) => cat.colony)
-  @Field(() => [Cat], { nullable: true })
-  cats?: Promise<Cat[]>;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })

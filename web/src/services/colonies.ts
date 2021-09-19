@@ -1,9 +1,13 @@
 import { apiCall, objToListString } from '../common/util';
+import { Cat, catQueryFields } from './cats';
+import { User, userQueryFields } from './users';
 
-const colonyQueryFields: string = `
+export const colonyQueryFields: string = `
   id
   createdAt
   address
+  managers { ${userQueryFields} }
+  cats { ${catQueryFields} }
   locationTypeId
   locationType { description }
   environmentId
@@ -19,15 +23,11 @@ export type Colony = {
   locationTypeId: number;
   environmentId: number;
   townId: number;
-  locationType: {
-    description: string;
-  };
-  environment: {
-    description: string;
-  };
-  town: {
-    name: string;
-  };
+  managers: User[];
+  cats: Cat[];
+  locationType: { description: string };
+  environment: { description: string };
+  town: { name: string };
 };
 
 export interface ColoniesList {

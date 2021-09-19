@@ -1,6 +1,6 @@
 import { apiCall, getCriteriaString } from '../common/util';
 
-const userQueryFields: string = `
+export const userQueryFields: string = `
   id
   createdAt
   name

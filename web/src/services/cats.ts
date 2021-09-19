@@ -1,6 +1,6 @@
 import { apiCall, getCriteriaString } from '../common/util';
 
-const catQueryFields: string = `
+export const catQueryFields: string = `
   id
   createdAt
   birthYear
