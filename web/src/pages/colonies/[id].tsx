@@ -6,6 +6,7 @@ import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
 import { getLocationTypesList, LocationType } from '../../services/locationTypes';
 import { getTownsList, Town } from '../../services/towns';
+import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -51,13 +52,18 @@ const ColonyDetails = () => {
     event.preventDefault();
 
     if (colony.id) {
-      await updateColony(+colony.id, {
+      const updatePromise = updateColony(+colony.id, {
         ...(colony.address && { address: colony.address }),
         ...(colony.locationTypeId && { locationTypeId: +colony.locationTypeId }),
         ...(colony.environmentId && { environmentId: +colony.environmentId }),
         ...(colony.townId && { townId: +colony.townId }),
       });
-      // TODO: notify that the colony has been updated
+
+      toast.promise(updatePromise, {
+        pending: 'Conectando con el servidor...',
+        success: 'Los datos se actualizaron con éxito 👍',
+        error: 'Hubo un error actualizando los datos 🤯',
+      });
     }
   };
 
