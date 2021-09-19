@@ -26,23 +26,39 @@ type Town {
   colonies: [Colony!]!
 }
 
-type Colony {
+type User {
   id: Int!
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
   createdAt: DateTime!
-  address: String!
-  locationTypeId: Int
-  locationType: LocationType!
-  cats: [Cat!]
-  environmentId: Int
-  environment: Environment!
-  townId: Int!
-  town: Town!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+  password: String!
+  salt: String!
+  colonies: [Colony!]!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Colony {
+  id: Int!
+  createdAt: DateTime!
+  address: String!
+  cats: [Cat!]
+  managers: [User!]!
+  locationTypeId: Int
+  locationType: LocationType!
+  environmentId: Int
+  environment: Environment!
+  townId: Int!
+  town: Town!
+}
 
 type Color {
   id: Int!
@@ -115,20 +131,6 @@ type RemoveEnvironmentResult {
 type FindEnvironmentsResult {
   total: Int!
   items: [Environment!]!
-}
-
-type User {
-  id: Int!
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
-  createdAt: DateTime!
-  ceasedAt: DateTime
-  authorizesWhatsApp: Boolean
-  password: String!
-  salt: String!
 }
 
 type RemoveTownResult {
