@@ -31,7 +31,8 @@ export type Cat = {
   id: number;
   createdAt: Date;
   ceasedAt: Date;
-  ceasedCuaseId: number;
+  ceaseCauseId: number;
+  ceaseCause: { description: string };
   birthYear: number;
   sterilized: boolean;
   sterilizedAt: Date;
