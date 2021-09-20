@@ -1,0 +1,11 @@
+version: '3.2'
+
+services:
+  migration:
+    container_name: migration
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/usr/local/app/data
+      - ./output:/usr/local/app/output
