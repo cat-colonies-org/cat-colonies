@@ -75,17 +75,17 @@ const ColonyDetails = () => {
 
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onDateChange = (newValue: Date): void => {
