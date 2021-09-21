@@ -15,6 +15,37 @@ const catFormatter = (cat) => {
   );`;
 };
 
+const locationTypeFormatter = (locationType) => {
+  return `INSERT INTO locationType ("id", "description") VALUES (
+    ${locationType.id}, 
+    '${locationType.description}'
+  );`;
+};
+
+const townFormatter = (town) => {
+  return `INSERT INTO town ("id", "name") VALUES (
+    ${town.id}, 
+    '${town.name}'
+  );`;
+};
+
+const environmentFormatter = (environment) => {
+  return `INSERT INTO environment ("id", "description") VALUES (
+    ${environment.id}, 
+    '${environment.description}'
+  );`;
+};
+
+const colonyFormatter = (colony) => {
+  return `INSERT INTO colony ("id", "createdAt", "locationTypeId", "environmentId", "townId") VALUES (
+    ${colony.id}, 
+    ${dateToIso(colony.createdAt)},
+    ${colony.locationTypeId}, 
+    ${colony.environmentId}, 
+    ${colony.townId}, 
+  );`;
+};
+
 const ceaseCauseFormatter = (cause) => {
   return `INSERT INTO cease_cause (id, description) VALUES (
       ${cause.id}, 
@@ -29,4 +60,12 @@ const eyeColorFormatter = (eyeColor) => {
   );`;
 };
 
-module.exports = { catFormatter, ceaseCauseFormatter, eyeColorFormatter };
+module.exports = {
+  catFormatter,
+  ceaseCauseFormatter,
+  eyeColorFormatter,
+  colonyFormatter,
+  locationTypeFormatter,
+  environmentFormatter,
+  townFormatter,
+};

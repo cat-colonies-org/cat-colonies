@@ -18,6 +18,20 @@ const EyeColor = Object.freeze({
   NS_NC: null,
 });
 
+const LocationType = Object.freeze({
+  SolarPrivado: 1,
+  SolarPublico: 2,
+  CentroEducativo: 3,
+  Campo: 4,
+  NS_NC: null,
+});
+
+const EnvironemntType = Object.freeze({
+  Urbano: 1,
+  Periferia: 2,
+  NS_NC: null,
+});
+
 const strToDate = (str) => {
   if (!str) return null;
   return new Date(str.replace(' 00:00:00', 'Z'));
@@ -47,6 +61,20 @@ const strToCeaseCauseId = (str) => {
   return CeaseCause.NS_NC;
 };
 
+const strToLocationType = (str) => {
+  if (str.toLowerCase().includes('privado')) return LocationType.SolarPrivado;
+  if (str.toLowerCase().includes('público')) return LocationType.SolarPublico;
+  if (str.toLowerCase().includes('educativo')) return LocationType.CentroEducativo;
+  if (str.toLowerCase().includes('campo')) return LocationType.Campo;
+  return LocationType.NS_NC;
+};
+
+const strToEnvironment = (str) => {
+  if (str.toLowerCase().includes('urbano')) return EnvironemntType.Urbano;
+  if (str.toLowerCase().includes('perifer')) return EnvironemntType.Periferia;
+  return EnvironemntType.NS_NC;
+};
+
 const strToEyeColorId = (str) => {
   if (str.toLowerCase().includes('ama')) return EyeColor.Amarillo;
   if (str.toLowerCase().includes('ambar')) return EyeColor.Ambar;
@@ -71,4 +99,6 @@ module.exports = {
   strToCeaseCauseId,
   strToEyeColorId,
   strToKitten,
+  strToLocationType,
+  strToEnvironment,
 };
