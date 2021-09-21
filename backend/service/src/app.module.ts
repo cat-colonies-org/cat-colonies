@@ -17,10 +17,12 @@ import { ColorsModule } from './domain/colors/colors.module';
 import { EyeColorsModule } from './domain/eye-colors/eye-colors.module';
 import { LocationTypesModule } from './domain/location-types/location-types.module';
 import { PatternsModule } from './domain/patterns/patterns.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     AnnotationsModule,
+    AuthModule,
     CatsModule,
     CeaseCausesModule,
     ColoniesModule,
@@ -38,6 +40,7 @@ import { PatternsModule } from './domain/patterns/patterns.module';
     GraphQLModule.forRoot({
       include: [
         AnnotationsModule,
+        AuthModule,
         CatsModule,
         CeaseCausesModule,
         ColoniesModule,

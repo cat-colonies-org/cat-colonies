@@ -5,8 +5,8 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { AccessToken } from './dto/access-token';
 import { JwtPayload } from './dto/jwt-payload.interface';
-import { UserCredentials } from './user-credentials';
-import { User } from '../entities/user.entity';
+import { UserCredentials } from './dto/user-credentials';
+import { User } from '../domain/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
