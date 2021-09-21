@@ -5,8 +5,10 @@ import '../styles/globals.css';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import type { AppProps } from 'next/app';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
@@ -21,18 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         />
 
-        <script
-          defer
-          src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
-          integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
-          crossOrigin="anonymous"
-        ></script>
-        <script
-          defer
-          src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
-          integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
-          crossOrigin="anonymous"
-        ></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
 
         <script
           src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -52,10 +43,19 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <Layout>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={true}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnHover
+        />
         <Component {...pageProps} />
       </Layout>
     </>
   );
 }
 
-export default MyApp;
+export default App;

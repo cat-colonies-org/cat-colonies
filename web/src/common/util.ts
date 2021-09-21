@@ -1,3 +1,7 @@
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+
 export const objToListString = (obj: Record<string, any>): string => {
   return Object.keys(obj).reduce((composed, key) => {
     composed += composed ? ', ' : '';
@@ -28,4 +32,20 @@ export const getCriteriaString = ({
   }
 
   return criteria;
+};
+
+export const apiCall = async (query: string) => {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // Authorization: "Bearer " + "## API KEY"
+    },
+  };
+
+  return await fetch(publicRuntimeConfig.apiBaseUrl, {
+    ...options,
+    body: JSON.stringify({ query }),
+  }).then((response) => response.json());
+  // TODO: catch
 };

@@ -1,5 +1,15 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Colony } from 'src/domain/colonies/entities/colony.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
 @Unique(['idCard'])
 @Unique(['email'])
@@ -50,6 +60,11 @@ export class User extends BaseEntity {
   @Column()
   @Field(() => String)
   salt: string;
+
+  @ManyToMany(() => Colony, (colony) => colony.managers)
+  @JoinTable()
+  @Field(() => [Colony])
+  colonies: Promise<Colony[]>;
 
   // validEmail(email: string): boolean {
   //   const re = new RegExp(

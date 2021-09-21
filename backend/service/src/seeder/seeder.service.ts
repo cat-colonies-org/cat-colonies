@@ -18,8 +18,6 @@ export class SeederService implements OnModuleInit {
     // Do nothing if database isn't empty
     if ((await this.usersService.count()) > 0) return;
 
-    await this.seedUsers();
-
     await this.seedTowns();
     await this.seedLocationTypes();
     await this.seedEnvironments();
@@ -32,6 +30,8 @@ export class SeederService implements OnModuleInit {
     await this.seedCats();
 
     await this.seedAnnotations();
+
+    await this.seedUsers();
   }
 
   private async seedTowns(): Promise<any> {
@@ -319,6 +319,8 @@ export class SeederService implements OnModuleInit {
   }
 
   private async seedUsers(): Promise<any> {
+    const colonies = await Colony.find();
+
     return Promise.all([
       this.usersService.create({
         name: 'Agapito',
@@ -327,6 +329,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 123123123,
         email: 'agapito@cats.org',
         password: '123456',
+        colonies: Promise.resolve([colonies[0]]),
       }),
       this.usersService.create({
         name: 'Matilde',
@@ -335,6 +338,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 456456456,
         email: 'matilde@cats.org',
         password: '654321',
+        colonies: Promise.resolve([colonies[1]]),
       }),
       this.usersService.create({
         name: 'Juan',
@@ -343,6 +347,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 789789789,
         email: 'juan@cats.org',
         password: 'password',
+        colonies: Promise.resolve([colonies[2], colonies[1]]),
       }),
       this.usersService.create({
         name: 'Maria',
@@ -359,6 +364,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 246246246,
         email: 'apolonio@cats.org',
         password: '03/06/1978',
+        colonies: Promise.resolve([colonies[3]]),
       }),
     ]);
   }

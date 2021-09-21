@@ -1,10 +1,10 @@
-import { CatsListRow, getCatsList } from '../../services/cats';
+import { Cat, getCatsList } from '../../services/cats';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 const CatsList = () => {
-  const [data, setData] = useState([] as CatsListRow[]);
+  const [data, setData] = useState([] as Cat[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -43,24 +43,21 @@ const CatsList = () => {
     },
   };
 
-  const columns: TableColumn<CatsListRow>[] = [
+  const columns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     {
       name: 'Foto',
-      cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageUrl} />,
+      cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
     },
-    { name: 'Registro', selector: (cat) => cat.createdAt },
+    { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
     { name: 'Nacimiento', selector: (cat) => cat.birthYear },
-    { name: 'Color', selector: (cat) => cat.color },
-    { name: 'Patrón', selector: (cat) => cat.pattern },
     {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Dirección', selector: (cat) => cat.colonyAddress },
-    { name: 'Tipo de localización', selector: (cat) => cat.colonyLocationType },
-    { name: 'Entorno', selector: (cat) => cat.colonyEnvironment },
+    { name: 'Color', selector: (cat) => cat.color?.description },
+    { name: 'Patrón', selector: (cat) => cat.pattern?.description },
   ];
 
   return (

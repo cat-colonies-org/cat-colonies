@@ -4,14 +4,16 @@ import Navbar from './Navbar';
 const Layout = ({ children }: { children: any }) => {
   return (
     <>
-      <div className="wrapper row">
-        <div id="sidebar" className="col-2">
-          <Sidebar />
-        </div>
+      <div className="container-fluid">
+        <div className="row">
+          <div id="sidebar" className="col-md-2">
+            <Sidebar />
+          </div>
 
-        <div className="col-10">
-          <Navbar />
-          <main>{children}</main>
+          <div className="col-md-10">
+            <Navbar />
+            <main>{children}</main>
+          </div>
         </div>
       </div>
     </>

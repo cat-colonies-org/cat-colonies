@@ -1,21 +1,19 @@
-import { objToListString } from '../common/util';
+import { apiCall, objToListString } from '../common/util';
+import { Cat, catQueryFields } from './cats';
+import { User, userQueryFields } from './users';
 
-const colonyQueryFields = `      
+export const colonyQueryFields: string = `
   id
   createdAt
   address
-  locationType { 
-    id 
-    description 
-  }
-  environment { 
-    id
-    description 
-  }
-  town { 
-    id 
-    name 
-  }
+  managers { ${userQueryFields} }
+  cats { ${catQueryFields} }
+  locationTypeId
+  locationType { description }
+  environmentId
+  environment { description }
+  townId
+  town { name }
 `;
 
 export type Colony = {
@@ -23,45 +21,28 @@ export type Colony = {
   createdAt: Date;
   address: string;
   locationTypeId: number;
-  locationType: {
-    id: number;
-    description: string;
-  };
   environmentId: number;
-  environment: {
-    id: number;
-    description: string;
-  };
   townId: number;
-  town: {
-    id: number;
-    name: string;
-  };
+  managers: User[];
+  cats: Cat[];
+  locationType: { description: string };
+  environment: { description: string };
+  town: { name: string };
 };
 
-export type ColonyListRow = {
-  id: number;
-  createdAt: Date;
-  address: string;
-  locationType: string;
-  environment: string;
-  town: string;
-};
-
-interface GetColoniesListResult {
+export interface ColoniesList {
   total: number;
-  items: ColonyListRow[];
+  items: Colony[];
 }
 
-const options = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    // Authorization: "Bearer " + "## API KEY"
-  },
+const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
+  return {
+    ...colony,
+    createdAt: new Date(colony.createdAt),
+  } as Colony;
 };
 
-export async function getColoniesList(page: number, perPage: number): Promise<GetColoniesListResult> {
+export async function getColoniesList(page: number, perPage: number): Promise<ColoniesList> {
   const skip = Math.max(page - 1, 0) * perPage;
   const take = perPage;
 
@@ -69,42 +50,21 @@ export async function getColoniesList(page: number, perPage: number): Promise<Ge
     colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
       total
       items {
-        id
-        createdAt
-        address
-        locationType { id description }
-        environment { id description }
-        town { id name }
+        ${colonyQueryFields}
       }
     }
   }`;
 
-  // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-  return await fetch('http://service:8080/graphql', {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then((response) => response.json())
-    .then((response): GetColoniesListResult => {
-      const colonies = response?.data?.colonies;
+  return await apiCall(query).then((response): ColoniesList => {
+    const colonies = response?.data?.colonies;
 
-      const total: number = colonies ? colonies.total : 0;
-      const items: ColonyListRow[] = colonies
-        ? colonies.items.map((colony: any): ColonyListRow => {
-            return {
-              id: colony.id,
-              createdAt: colony.createdAt,
-              address: colony.address,
-              locationType: colony.locationType?.description,
-              environment: colony.environment?.description,
-              town: colony.town?.name,
-            };
-          })
-        : [];
-      // TODO: catch
+    const total: number = colonies ? colonies.total : 0;
+    const items: Colony[] = colonies
+      ? colonies.items.map((colony: any): Colony => getColonyFromGraphQlResult(colony))
+      : [];
 
-      return { items, total };
-    });
+    return { items, total };
+  });
 }
 
 export async function getColony(id: number): Promise<Colony> {
@@ -114,15 +74,9 @@ export async function getColony(id: number): Promise<Colony> {
     }
   }`;
 
-  // await fetch('http://cats.daviddiaz.es:8080/graphql', options) // TODO: llevar a configuración
-  return await fetch('http://service:8080/graphql', {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then((response) => response.json())
-    .then((response): Colony => {
-      return response?.data?.colony as Colony;
-    });
+  return await apiCall(query).then((response): Colony => {
+    return getColonyFromGraphQlResult(response?.data?.colony);
+  });
 }
 
 export async function updateColony(id: number, data: any): Promise<Colony> {
@@ -134,14 +88,7 @@ export async function updateColony(id: number, data: any): Promise<Colony> {
     }
   }`;
 
-  return await fetch('http://service:8080/graphql', {
-    ...options,
-    body: JSON.stringify({ query }),
-  })
-    .then(async (response) => {
-      return response.json();
-    })
-    .then((response): Colony => {
-      return response?.data?.updateColony as Colony;
-    });
+  return await apiCall(query).then((response): Colony => {
+    return response?.data?.updateColony as Colony;
+  });
 }

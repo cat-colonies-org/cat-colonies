@@ -11,17 +11,20 @@
     "docker:push": "docker push daviddq/cat-colonies-web"
   },
   "dependencies": {
-    "bootstrap": "^5.0.0-beta3",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-data-grid": "^7.0.0-beta.5",
     "react-data-table-component": "^7.0.0",
+    "react-datepicker": "^4.2.1",
     "react-dom": "17.0.2",
+    "react-google-charts": "^3.0.15",
+    "react-toastify": "^8.0.2",
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.6",
     "@types/react": "17.0.20",
+    "@types/react-datepicker": "^4.1.7",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "eslint": "^7.32.0",
