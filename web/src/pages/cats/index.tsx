@@ -56,8 +56,8 @@ const CatsList = () => {
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Color', selector: (cat) => cat.color.description },
-    { name: 'Patrón', selector: (cat) => cat.pattern.description },
+    { name: 'Color', selector: (cat) => cat.color?.description },
+    { name: 'Patrón', selector: (cat) => cat.pattern?.description },
   ];
 
   return (
