@@ -3,7 +3,6 @@ import { AccessToken } from './dto/access-token';
 import { UserCredentials } from './dto/user-credentials';
 import { AuthService } from './auth.service';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 
 @Resolver()
