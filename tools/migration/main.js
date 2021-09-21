@@ -13,13 +13,28 @@ const strToDate = (str) => {
   return new Date(str.replace(' 00:00:00', 'Z'));
 };
 
+const dateToIso = (date) => {
+  return `'${date.toISOString().replace(/T.*/g, '')}'`;
+};
+
+const strToGender = (str) => {
+  if (str.toLowerCase().includes('macho')) return 'Male';
+  if (str.toLowerCase().includes('hembra')) return 'Female';
+  return 'Unknown';
+};
+
+const strToSterilized = (str) => {
+  if (str.toLowerCase().includes('si')) return true;
+  return false;
+};
+
 const strToCeaseCauseId = (str) => {
   if (str.toLowerCase().includes('desaparecid')) return 1;
   if (str.toLowerCase().includes('atropello')) return 2;
   if (str.toLowerCase().includes('adoptad')) return 3;
   if (str.toLowerCase().includes('acogid')) return 4;
   if (str.toLowerCase().includes('eutanasia')) return 5;
-  return 6;
+  return null;
 };
 
 const strToEyeColorId = (str) => {
@@ -109,8 +124,6 @@ const importCats = async () => {
 
   return (await CSVToJSON().fromString(stdout)).map((mdbCat) => {
     // CAPA: 'EUROPEO Y BLANCO',
-    // ESTERIL: '48',
-    // SEXO: '48',
     // 'IMÁGEN': '48',
 
     return {
@@ -119,6 +132,8 @@ const importCats = async () => {
       createdAt: strToDate(mdbCat['Fecha Alta']),
       birthYear: +mdbCat['AÑO NACIDO'],
       kitten: strToKitten(mdbCat['CACHORRO']),
+      sterilized: strToSterilized(mdbCat['ESTERIL']),
+      gender: strToGender(mdbCat['SEXO']),
       ceasedAt: strToDate(mdbCat['BAJA']),
       ceaseCauseId: strToCeaseCauseId(mdbCat['CAUSA']),
       eyeColorId: strToEyeColorId(mdbCat['OJOS']),
@@ -127,27 +142,29 @@ const importCats = async () => {
 };
 
 const catFormatter = (cat) => {
-  return `INSERT INTO cats (id, colonyId, createdAt, birthYear, kitten, ceasedAt, ceaseCauseId, eyeColorId) VALUES (
+  return `INSERT INTO cat ("id", "colonyId", "createdAt", "birthYear", "gender", "sterilized", "kitten", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
     ${cat.id}, 
-    ${cat.colonyId}, 
-    '${cat.createdAt.toLocaleDateString()}',
+    ${cat.colonyId},
+    ${dateToIso(cat.createdAt)},
     ${cat.birthYear}, 
+    '${cat.gender}', 
+    ${cat.esterilized ? 'True' : 'False'}, 
     ${cat.kitten ? 'True' : 'False'}, 
-    ${cat.ceasedAt ? "'" + cat.ceasedAt.toLocaleDateString() + "'" : null},
-    ${cat.ceaseCauseId},
-    ${cat.eyeColorId}
+    ${cat.eyeColorId},
+    ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
+    ${cat.ceaseCauseId}
   );`;
 };
 
 const ceaseCauseFormatter = (cause) => {
-  return `INSERT INTO ceaseCauses (id, description) VALUES (
+  return `INSERT INTO cease_cause (id, description) VALUES (
       ${cause.id}, 
       '${cause.description}'
     );`;
 };
 
 const eyeColorFormatter = (eyeColor) => {
-  return `INSERT INTO eyeColors (id, description) VALUES (
+  return `INSERT INTO eye_color (id, description) VALUES (
     ${eyeColor.id}, 
     '${eyeColor.description}'
   );`;
