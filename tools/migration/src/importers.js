@@ -9,9 +9,32 @@ const {
   strToKitten,
   strToCeaseCauseId,
   strToEyeColorId,
+  strToLocationType,
+  strToEnvironment,
 } = require('./mappers');
 
 const MDB_PATH = './data/CENSO COLONIAS FELINAS ALBATERA.accdb';
+
+const importTowns = async () => {
+  return Promise.resolve([{ id: 1, name: 'Albatera' }]);
+};
+
+const importLocationTypes = async () => {
+  return Promise.resolve([
+    { id: 1, description: 'Solar privado' },
+    { id: 2, description: 'Solar público' },
+    { id: 3, description: 'Centro educativo' },
+    { id: 4, description: 'Campo' },
+  ]);
+};
+
+const importEnvironments = async () => {
+  return Promise.resolve([
+    { id: 1, description: 'Urbano' },
+    { id: 2, description: 'Perifería' },
+    { id: 3, description: 'Selecciona' },
+  ]);
+};
 
 const importCeaseCauses = async () => {
   return Promise.resolve([
@@ -59,4 +82,26 @@ const importCats = async () => {
   });
 };
 
-module.exports = { importCeaseCauses, importEyeColors, importCats };
+const importColonies = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" colonias`);
+
+  return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+    return {
+      id: +mdbColony['Id COLONIA'],
+      createdAt: strToDate(mdbColony['Fecha alta']),
+      locationTypeId: strToLocationType(mdbColony['Ubicación']),
+      environmentId: strToEnvironment(mdbColony['Entorno']),
+      townId: 1,
+    };
+  });
+};
+
+module.exports = {
+  importCeaseCauses,
+  importEyeColors,
+  importCats,
+  importColonies,
+  importLocationTypes,
+  importEnvironments,
+  importTowns,
+};

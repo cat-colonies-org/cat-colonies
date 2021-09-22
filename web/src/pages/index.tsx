@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import withPrivateRoute from '../components/withPrivateRoute';
 
 const Home: NextPage = () => {
   return (
@@ -9,4 +10,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default withPrivateRoute(Home);

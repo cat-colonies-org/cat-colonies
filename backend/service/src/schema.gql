@@ -210,9 +210,15 @@ type FindPatternsResult {
   items: [Pattern!]!
 }
 
+type AccessToken {
+  result: String!
+}
+
 type Query {
   annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
+  signin(userCredentials: UserCredentials!): AccessToken!
+  test: Boolean!
   cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
   ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
@@ -233,6 +239,11 @@ type Query {
   town(id: Int!): Town
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
+}
+
+input UserCredentials {
+  email: String!
+  password: String!
 }
 
 type Mutation {

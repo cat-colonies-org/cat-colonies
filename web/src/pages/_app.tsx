@@ -2,13 +2,15 @@
 /* eslint-disable @next/next/no-sync-scripts */
 
 import '../styles/globals.css';
-import Head from 'next/head';
-import Layout from '../components/Layout';
-import type { AppProps } from 'next/app';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import Head from 'next/head';
+import DefaultLayout from '../components/DefaultLayout';
+import type { AppProps } from 'next/app';
 
 function App({ Component, pageProps }: AppProps) {
+  const Layout = (Component as any).Layout || DefaultLayout;
+
   return (
     <>
       <Head>

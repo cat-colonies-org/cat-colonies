@@ -1,42 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
-const { dateToIso } = require('./mappers');
-const { importCeaseCauses, importEyeColors, importCats } = require('./importers');
-
 const OUTPUT_PATH = './output';
 
-const catFormatter = (cat) => {
-  return `INSERT INTO cat ("id", "colonyId", "createdAt", "birthYear", "gender", "sterilized", "kitten", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
-    ${cat.id}, 
-    ${cat.colonyId},
-    ${dateToIso(cat.createdAt)},
-    ${cat.birthYear}, 
-    '${cat.gender}', 
-    ${cat.esterilized ? 'True' : 'False'}, 
-    ${cat.kitten ? 'True' : 'False'}, 
-    ${cat.eyeColorId},
-    ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
-    ${cat.ceaseCauseId}
-  );`;
-};
+const {
+  importCeaseCauses,
+  importEyeColors,
+  importCats,
+  importColonies,
+  importLocationTypes,
+  importEnvironments,
+  importTowns,
+} = require('./importers');
 
-const ceaseCauseFormatter = (cause) => {
-  return `INSERT INTO cease_cause (id, description) VALUES (
-      ${cause.id}, 
-      '${cause.description}'
-    );`;
-};
+const {
+  catFormatter,
+  ceaseCauseFormatter,
+  eyeColorFormatter,
+  colonyFormatter,
+  locationTypeFormatter,
+  environmentFormatter,
+  townFormatter,
+} = require('./formatters');
 
-const eyeColorFormatter = (eyeColor) => {
-  return `INSERT INTO eye_color (id, description) VALUES (
-    ${eyeColor.id}, 
-    '${eyeColor.description}'
-  );`;
-};
-
-const exportFile = (filename, data, formatter) => {
-  const sql = data.reduce((acc, current) => {
+const exportFile = async (filename, importer, formatter) => {
+  const sql = (await importer()).reduce((acc, current) => {
     return `${acc}${formatter(current).replace(/\n/g, ' ').replace(/\s+/g, ' ')}\n`;
   }, '');
 
@@ -44,7 +32,13 @@ const exportFile = (filename, data, formatter) => {
 };
 
 (async () => {
-  exportFile('eye-colors.sql', await importEyeColors(), eyeColorFormatter);
-  exportFile('cease-causes.sql', await importCeaseCauses(), ceaseCauseFormatter);
-  exportFile('cats.sql', await importCats(), catFormatter);
+  Promise.all([
+    exportFile('towns.sql', importTowns, townFormatter),
+    exportFile('location-types.sql', importLocationTypes, locationTypeFormatter),
+    exportFile('environments.sql', importEnvironments, environmentFormatter),
+    exportFile('colonies.sql', importColonies, colonyFormatter),
+    exportFile('eye-colors.sql', importEyeColors, eyeColorFormatter),
+    exportFile('cease-causes.sql', importCeaseCauses, ceaseCauseFormatter),
+    exportFile('cats.sql', importCats, catFormatter),
+  ]);
 })();

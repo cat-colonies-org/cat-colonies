@@ -2,8 +2,9 @@ import { Colony, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
+import withPrivateRoute from '../../components/withPrivateRoute';
 
-export default function Colonies() {
+const Colonies = () => {
   const [data, setData] = useState([] as Colony[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -65,4 +66,6 @@ export default function Colonies() {
       />
     </>
   );
-}
+};
+
+export default withPrivateRoute(Colonies);

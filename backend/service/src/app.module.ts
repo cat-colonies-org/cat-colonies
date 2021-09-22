@@ -40,6 +40,7 @@ import { AuthModule } from './auth/auth.module';
     GraphQLModule.forRoot({
       include: [
         AnnotationsModule,
+        AuthModule,
         CatsModule,
         CeaseCausesModule,
         ColoniesModule,

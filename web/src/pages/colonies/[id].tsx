@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
+import withPrivateRoute from '../../components/withPrivateRoute';
 
 registerLocale('es', es);
 
@@ -52,7 +53,7 @@ const ColonyDetails = () => {
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
     { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') },
-    { name: 'Patrón', selector: (cat) => cat.pattern.description },
+    { name: 'Patrón', selector: (cat) => cat.pattern?.description },
     { name: 'Baja', selector: (cat) => new Date(cat.ceasedAt).toLocaleDateString() },
     { name: 'Causa baja', selector: (cat) => cat.ceaseCause?.description },
   ];
@@ -75,17 +76,17 @@ const ColonyDetails = () => {
 
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    alert(event);
+    toast.warning('No implementado 😅');
   };
 
   const onDateChange = (newValue: Date): void => {
@@ -465,4 +466,4 @@ const ColonyDetails = () => {
   );
 };
 
-export default ColonyDetails;
+export default withPrivateRoute(ColonyDetails);
