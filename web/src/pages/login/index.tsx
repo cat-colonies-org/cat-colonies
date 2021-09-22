@@ -2,14 +2,18 @@ import { FormEvent, useState } from 'react';
 import { signIn } from '../../services/auth';
 import { toast } from 'react-toastify';
 import LoginLayout from '../../components/LoginLayout';
+import Router from 'next/router';
 
 const Login = () => {
   const [state, setState] = useState({ email: '', password: '' });
 
   const onLoginClick = async (event: FormEvent<HTMLButtonElement>) => {
     const loggedIn = await signIn(state.email, state.password);
-    if (loggedIn) toast.success('Ingresado con éxito');
-    else toast.error('Error al ingresar');
+    if (loggedIn) {
+      await Router.push('/');
+    } else {
+      toast.error('Error al ingresar');
+    }
   };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>) => {

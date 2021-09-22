@@ -11,6 +11,8 @@
     "docker:push": "docker push daviddq/cat-colonies-web"
   },
   "dependencies": {
+    "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-data-grid": "^7.0.0-beta.5",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.6",
+    "@types/js-cookie": "^2.2.7",
     "@types/react": "17.0.20",
     "@types/react-datepicker": "^4.1.7",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
