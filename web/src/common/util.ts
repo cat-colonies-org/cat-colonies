@@ -1,7 +1,3 @@
-import getConfig from 'next/config';
-
-const { publicRuntimeConfig } = getConfig();
-
 export const objToListString = (obj: Record<string, any>): string => {
   return Object.keys(obj).reduce((composed, key) => {
     composed += composed ? ', ' : '';
@@ -35,6 +31,8 @@ export const getCriteriaString = ({
 };
 
 export const apiCall = async (query: string) => {
+  const apiBaseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+
   const options = {
     method: 'POST',
     headers: {
@@ -43,7 +41,7 @@ export const apiCall = async (query: string) => {
     },
   };
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
+  return await fetch(apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   }).then((response) => response.json());
