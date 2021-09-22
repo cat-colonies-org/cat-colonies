@@ -25,12 +25,9 @@ export class AuthService {
 
   private async validateUserPassword(userCredentials: UserCredentials): Promise<boolean> {
     const { email, password } = userCredentials;
-    const results = await this.repository.find({ email });
+    const user = await this.repository.findOne({ email: email });
+    if (!user) return false;
 
-    const user = results[0];
-    if (user === undefined) return false;
-    const pass = await bcrypt.hash(password, user.salt);
-
-    return pass === user.password;
+    return user.password === (await bcrypt.hash(password, user.salt));
   }
 }
