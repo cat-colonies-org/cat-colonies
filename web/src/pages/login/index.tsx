@@ -12,6 +12,7 @@ const Login = () => {
     if (loggedIn) {
       await Router.push('/');
     } else {
+      setState({ email: state.email, password: '' });
       toast.error('Error al ingresar');
     }
   };

@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import withPrivateRoute from '../../components/withPrivateRoute';
 
 const CatDetails = () => {
   const router = useRouter();
@@ -12,4 +13,4 @@ const CatDetails = () => {
   );
 };
 
-export default CatDetails;
+export default withPrivateRoute(CatDetails);

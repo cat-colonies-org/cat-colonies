@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
+import withPrivateRoute from '../../components/withPrivateRoute';
 
 registerLocale('es', es);
 
@@ -465,4 +466,4 @@ const ColonyDetails = () => {
   );
 };
 
-export default ColonyDetails;
+export default withPrivateRoute(ColonyDetails);

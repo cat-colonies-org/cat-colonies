@@ -1,7 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { FormEvent } from 'react';
+import { AuthToken } from '../common/authToken';
+import { useRouter } from 'next/router';
 
 const Sidebar = () => {
+  const router = useRouter();
+
+  const onLogoutClick = (event: FormEvent<HTMLButtonElement>) => {
+    AuthToken.logout();
+    router.push('/login');
+  };
+
   return (
     <nav>
       <div className="sidebar-header">
@@ -50,6 +60,8 @@ const Sidebar = () => {
             </li>
           </ul>
         </li>
+
+        <button onClick={onLogoutClick}>Salir</button>
 
         {/* <li>
           <a>Contact</a>

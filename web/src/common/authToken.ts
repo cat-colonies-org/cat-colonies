@@ -38,4 +38,8 @@ export class AuthToken {
   static async storeToken(token: string) {
     Cookie.set(TOKEN_STORAGE_KEY, token);
   }
+
+  static logout() {
+    Cookie.remove(TOKEN_STORAGE_KEY);
+  }
 }
