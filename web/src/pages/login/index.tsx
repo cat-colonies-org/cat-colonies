@@ -1,6 +1,21 @@
+import { FormEvent, useState } from 'react';
+import { signIn } from '../../services/auth';
+import { toast } from 'react-toastify';
 import LoginLayout from '../../components/LoginLayout';
 
 const Login = () => {
+  const [state, setState] = useState({ email: '', password: '' });
+
+  const onLoginClick = async (event: FormEvent<HTMLButtonElement>) => {
+    const loggedIn = await signIn(state.email, state.password);
+    if (loggedIn) toast.success('Ingresado con éxito');
+    else toast.error('Error al ingresar');
+  };
+
+  const onInputChange = (event: FormEvent<HTMLInputElement>) => {
+    setState({ ...state, [event.currentTarget.id]: event.currentTarget.value });
+  };
+
   return (
     <section className="vh-100">
       <div className="container py-5 h-100">
@@ -12,14 +27,26 @@ const Login = () => {
                   <label className="form-label" htmlFor="typeEmailX">
                     Email
                   </label>
-                  <input type="email" id="typeEmailX" className="form-control form-control-lg" />
+                  <input
+                    type="email"
+                    id="email"
+                    className="form-control form-control-lg"
+                    value={state.email}
+                    onChange={onInputChange}
+                  />
                 </div>
 
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="typePasswordX">
                     Password
                   </label>
-                  <input type="password" id="typePasswordX" className="form-control form-control-lg" />
+                  <input
+                    type="password"
+                    id="password"
+                    className="form-control form-control-lg"
+                    value={state.password}
+                    onChange={onInputChange}
+                  />
                 </div>
 
                 <div className="form-check d-flex justify-content-start mb-4">
@@ -29,7 +56,7 @@ const Login = () => {
                   </label>
                 </div>
 
-                <button className="btn btn-primary btn-lg btn-block" type="submit">
+                <button className="btn btn-primary btn-lg btn-block" onClick={onLoginClick}>
                   Acceder
                 </button>
               </div>
