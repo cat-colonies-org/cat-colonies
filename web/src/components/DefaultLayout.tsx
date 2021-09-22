@@ -1,7 +1,7 @@
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
-const Layout = ({ children }: { children: any }) => {
+const DefaultLayout = ({ children }: { children: any }) => {
   return (
     <>
       <div className="container-fluid">
@@ -20,4 +20,4 @@ const Layout = ({ children }: { children: any }) => {
   );
 };
 
-export default Layout;
+export default DefaultLayout;
