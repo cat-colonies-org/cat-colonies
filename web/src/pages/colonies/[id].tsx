@@ -68,41 +68,49 @@ const ColonyDetails = () => {
   ];
 
   const [colony, setColony] = useState({} as Colony);
-  const [environments, setEnvironments] = useState({} as Environment[]);
-  const [locationTypes, setLocationTypes] = useState({} as LocationType[]);
-  const [towns, setTowns] = useState({} as Town[]);
-  const [stats, setStats] = useState(zeroStats as Stats);
+  const [environments, setEnvironments] = useState([] as Environment[]);
+  const [locationTypes, setLocationTypes] = useState([] as LocationType[]);
+  const [towns, setTowns] = useState([] as Town[]);
+  const [stats, setStats] = useState(zeroStats);
   const [loading, setLoading] = useState(false);
-  const [modalOneOpen, setModalOneOpen] = useState(false);
+  const [newTownModalOpen, setNewTownModalOpen] = useState(false);
 
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    console.log(event);
-    setModalOneOpen(true);
+
+    setNewTownModalOpen(true);
   };
 
-  const handleCloseModalOne = () => setModalOneOpen(false);
+  const handleCloseModalOne = () => setNewTownModalOpen(false);
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
+
     toast.warning('No implementado 😅');
   };
 
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
+
     toast.warning('No implementado 😅');
   };
 
   const onDateChange = (newValue: Date): void => {
-    setColony({ ...colony, createdAt: newValue });
+    setColony((prev) => {
+      return { ...prev, createdAt: newValue };
+    });
   };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
-    setColony({ ...colony, [event.currentTarget.id]: event.currentTarget.value });
+    setColony((prev) => {
+      return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
+    });
   };
 
   const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
-    setColony({ ...colony, [event.currentTarget.id]: +event.currentTarget.value });
+    setColony((prev) => {
+      return { ...prev, [event.currentTarget.id]: +event.currentTarget.value };
+    });
   };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
@@ -184,7 +192,7 @@ const ColonyDetails = () => {
 
   return (
     <>
-      <NewTownModal id="newTownModal" isOpen={modalOneOpen} onRequestClose={handleCloseModalOne} />
+      <NewTownModal id="newTownModal" isOpen={newTownModalOpen} onRequestClose={handleCloseModalOne} />
 
       <div className="container">
         <div className="row mb-4">
@@ -327,11 +335,11 @@ const ColonyDetails = () => {
                 <i className="far fa-map mr-2" aria-hidden="true"></i>
                 Ubicación
               </p>
-              <iframe
+              {/* <iframe
                 style={styles.map}
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1564.0051792651661!2d-0.49694479283032256!3d38.37188181628149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6236e5beba75f9%3A0xe54cc71b08152eeb!2sC.%20Roque%20Chab%C3%A1s%2C%2011%2C%2003011%20Alicante%20(Alacant)%2C%20Alicante!5e0!3m2!1ses!2ses!4v1631740183993!5m2!1ses!2ses"
                 loading="lazy"
-              ></iframe>
+              ></iframe> */}
             </div>
           </div>
         </div>

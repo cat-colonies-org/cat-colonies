@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 
 interface NewModalProps {
   id: string;
@@ -8,26 +9,42 @@ interface NewModalProps {
 }
 
 const NewTownModal = ({ id, isOpen, onRequestClose }: NewModalProps) => {
-  const [name, setName] = useState('');
+  const [state, setState] = useState({ name: '' });
+  const nameInput = useRef(null);
 
-  const onNameChange = (event: FormEvent<HTMLInputElement>) => {
-    setName(event.currentTarget.value);
+  const onAfterOpen = () => {
+    setState({ name: '' });
+    nameInput?.current?.focus();
   };
 
-  const onKeyUp = (event: any) => {
-    if (event.key === 'Enter') {
-      console.log(event);
-    }
+  const onSubmit = (event: FormEvent): void => {
+    event.preventDefault();
+  };
+
+  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
+    setState({ ...state, [event.currentTarget.id]: event.currentTarget.value });
+  };
+
+  const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
+    event.preventDefault();
+
+    // TODO: crear ciudad
+    // TODO: devolver nuevo código
+
+    toast.success(`Ciudad ${state.name} creada 👍`);
+
+    onRequestClose();
   };
 
   return (
     <Modal
       id={id}
       isOpen={isOpen}
+      onAfterOpen={onAfterOpen}
       onRequestClose={onRequestClose}
       shouldCloseOnOverlayClick={true}
       shouldCloseOnEsc={true}
-      ariaHideApp={true}
+      ariaHideApp={false}
       shouldFocusAfterRender={true}
       shouldReturnFocusAfterClose={true}
       style={{
@@ -45,7 +62,7 @@ const NewTownModal = ({ id, isOpen, onRequestClose }: NewModalProps) => {
         },
       }}
     >
-      <form>
+      <form onSubmit={onSubmit}>
         <div className="row">
           <div className="col">
             <h5>Nueva localidad</h5>
@@ -57,12 +74,14 @@ const NewTownModal = ({ id, isOpen, onRequestClose }: NewModalProps) => {
               id="name"
               type="text"
               className="form-control"
-              value={name}
-              onChange={onNameChange}
+              value={state.name}
+              onChange={onInputChange}
               placeholder="Nombre de la localidad"
-              onKeyUp={onKeyUp}
+              ref={nameInput}
             />
-            <button className="btn btn-primary mt-3">Crear</button>
+            <button className="btn btn-primary mt-3" onClick={onCreateTownClick}>
+              Crear
+            </button>
           </div>
         </div>
       </form>
