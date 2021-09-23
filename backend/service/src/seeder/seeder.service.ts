@@ -10,6 +10,7 @@ import { LocationType } from 'src/domain/location-types/entities/location-type.e
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Cat, Gender } from 'src/domain/cats/entities/cat.entity';
 import { UsersService } from 'src/domain/users/users.service';
+import { Role, Roles } from 'src/domain/roles/entities/role.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -19,6 +20,7 @@ export class SeederService implements OnModuleInit {
     if ((await this.usersService.count()) > 0) return;
 
     await this.seedTowns();
+    await this.seedRoles();
     await this.seedLocationTypes();
     await this.seedEnvironments();
     await this.seedColonies();
@@ -40,6 +42,13 @@ export class SeederService implements OnModuleInit {
       Town.create({ id: 2, name: 'Albatera' }).save(),
       Town.create({ id: 3, name: 'Alhama de Granada' }).save(),
       Town.create({ id: 4, name: 'Almoradí' }).save(),
+    ]);
+  }
+
+  private async seedRoles(): Promise<any> {
+    return Promise.all([
+      Role.create({ id: Roles.Administrator, description: 'Administrador' }).save(),
+      Role.create({ id: Roles.Manager, description: 'Gestor' }).save(),
     ]);
   }
 
@@ -330,6 +339,7 @@ export class SeederService implements OnModuleInit {
         email: 'agapito@cats.org',
         password: '123456',
         colonies: Promise.resolve([colonies[0]]),
+        roleId: Roles.Administrator,
       }),
       this.usersService.create({
         name: 'Matilde',
@@ -339,6 +349,7 @@ export class SeederService implements OnModuleInit {
         email: 'matilde@cats.org',
         password: '654321',
         colonies: Promise.resolve([colonies[1]]),
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Juan',
@@ -348,6 +359,7 @@ export class SeederService implements OnModuleInit {
         email: 'juan@cats.org',
         password: 'password',
         colonies: Promise.resolve([colonies[2], colonies[1]]),
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Maria',
@@ -356,6 +368,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 135135135,
         email: 'maria@cats.org',
         password: 'drowssap',
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Apolonio',
@@ -365,6 +378,7 @@ export class SeederService implements OnModuleInit {
         email: 'apolonio@cats.org',
         password: '03/06/1978',
         colonies: Promise.resolve([colonies[3]]),
+        roleId: Roles.Manager,
       }),
     ]);
   }

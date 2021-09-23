@@ -18,6 +18,7 @@ import { EyeColorsModule } from './domain/eye-colors/eye-colors.module';
 import { LocationTypesModule } from './domain/location-types/location-types.module';
 import { PatternsModule } from './domain/patterns/patterns.module';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './domain/roles/roles.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthModule } from './auth/auth.module';
     LocationTypesModule,
     PatternsModule,
     PubSubModule,
+    RolesModule,
     SeederModule,
     TownsModule,
     UsersModule,
@@ -49,6 +51,7 @@ import { AuthModule } from './auth/auth.module';
         EyeColorsModule,
         LocationTypesModule,
         PatternsModule,
+        RolesModule,
         TownsModule,
         UsersModule,
       ],

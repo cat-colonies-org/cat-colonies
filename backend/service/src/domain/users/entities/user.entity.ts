@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
+import { Role } from 'src/domain/roles/entities/role.entity';
 import {
   BaseEntity,
   Column,
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -65,6 +67,14 @@ export class User extends BaseEntity {
   @JoinTable()
   @Field(() => [Colony])
   colonies: Promise<Colony[]>;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  roleId?: number;
+
+  @ManyToOne(() => Role, (role) => role.users)
+  @Field(() => Role, { nullable: true })
+  role?: Promise<Role>;
 
   // validEmail(email: string): boolean {
   //   const re = new RegExp(
