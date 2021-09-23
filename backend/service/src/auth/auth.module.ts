@@ -7,14 +7,15 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
+import appConfig from 'src/configuration';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: 'tobechanged', //TODO This must be moved to configuration file
+      secret: appConfig().jwt.secret,
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: appConfig().jwt.expiresIn,
       },
     }),
     TypeOrmModule.forFeature([User]),
