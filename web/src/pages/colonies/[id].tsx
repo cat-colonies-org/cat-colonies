@@ -123,6 +123,7 @@ const ColonyDetails = () => {
   // #endregion LocationType
 
   // #region Environment
+
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
@@ -141,13 +142,6 @@ const ColonyDetails = () => {
     toast.error(`Error creando entorno "${environment}"`);
   };
   // #endregion Environment
-
-  const onDateChange = (newValue: Date): void => {
-    setColony((prev) => {
-      return { ...prev, createdAt: newValue };
-    });
-  };
-
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     setColony((prev) => {
       return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
