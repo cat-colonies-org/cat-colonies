@@ -19,7 +19,8 @@ export class AuthService {
     if (!(await this.validateUserPassword(userCredentials))) throw new UnauthorizedException('Invalid credentials');
 
     const { email } = userCredentials;
-    const payload: JwtPayload = { email };
+    const { roleId } = await this.repository.findOne({ email: email });
+    const payload: JwtPayload = { email, roleId };
     return { result: this.jwtService.sign(payload) };
   }
 
