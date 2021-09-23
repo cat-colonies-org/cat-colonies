@@ -54,7 +54,7 @@ const ColonyDetails = () => {
     },
     { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') },
     { name: 'Patrón', selector: (cat) => cat.pattern?.description },
-    { name: 'Baja', selector: (cat) => new Date(cat.ceasedAt).toLocaleDateString() },
+    { name: 'Baja', selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : '') },
     { name: 'Causa baja', selector: (cat) => cat.ceaseCause?.description },
   ];
 
