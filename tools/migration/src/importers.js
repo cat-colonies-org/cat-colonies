@@ -82,13 +82,31 @@ const importCats = async () => {
   });
 };
 
+const importAddresses = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" calle`);
+
+  return (await CSVToJSON().fromString(stdout)).map((mdbStreet) => {
+    return {
+      id: +mdbStreet['Id'],
+      address: mdbStreet['CALLEJERO'],
+      area: mdbStreet['ÁREA'],
+    };
+  });
+};
+
 const importColonies = async () => {
   const { stdout } = await exec(`mdb-export "${MDB_PATH}" colonias`);
 
+  const addresses = await importAddresses();
+
   return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+    const addressId = +mdbColony['Dirección'];
+    const address = addresses[addressId]?.address || '';
+
     return {
       id: +mdbColony['Id COLONIA'],
       createdAt: strToDate(mdbColony['Fecha alta']),
+      address,
       locationTypeId: strToLocationType(mdbColony['Ubicación']),
       environmentId: strToEnvironment(mdbColony['Entorno']),
       townId: 1,

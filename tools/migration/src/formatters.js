@@ -40,9 +40,10 @@ const colonyFormatter = (colony) => {
   return `INSERT INTO colony ("id", "createdAt", "locationTypeId", "environmentId", "townId") VALUES (
     ${colony.id}, 
     ${dateToIso(colony.createdAt)},
+    '${colony.address}', 
     ${colony.locationTypeId}, 
     ${colony.environmentId}, 
-    ${colony.townId}, 
+    ${colony.townId}
   );`;
 };
 

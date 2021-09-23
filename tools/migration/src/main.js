@@ -11,6 +11,7 @@ const {
   importLocationTypes,
   importEnvironments,
   importTowns,
+  importStreets,
 } = require('./importers');
 
 const {
