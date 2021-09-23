@@ -19,14 +19,14 @@ const NewLocationTypeModal = ({
 }: NewLocationTypeModalProps) => {
   const onCreateLocationType = async (result: InputModalResult): Promise<void> => {
     if (result.value) {
-      const locationTypeName = result.value;
+      const locationTypeDescription = result.value;
 
-      const locationType = await createLocationType(locationTypeName);
+      const locationType = await createLocationType(locationTypeDescription);
       console.log(locationType);
       if (locationType) {
         onNewLocationType(locationType);
       } else {
-        onLocationTypeError(locationTypeName);
+        onLocationTypeError(locationTypeDescription);
       }
     }
   };
@@ -35,7 +35,7 @@ const NewLocationTypeModal = ({
     <InputModal
       id={id}
       title="Nueva Ubicación"
-      caption="Nombre"
+      caption="Descripción"
       buttonCaption="Crear"
       onClose={onClose}
       onReturn={onCreateLocationType}

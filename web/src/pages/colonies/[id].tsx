@@ -1,4 +1,3 @@
-import 'react-datepicker/dist/react-datepicker.css';
 import { Cat, Gender } from '../../services/cats';
 import { Chart } from 'react-google-charts';
 import { Colony, getColony, updateColony } from '../../services/colonies';
@@ -10,13 +9,10 @@ import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import es from 'date-fns/locale/es';
+import NewEnvironmentModal from '../../components/new-environment-modal';
 import NewLocationTypeModal from '../../components/new-location-type-modal';
 import NewTownModal from '../../components/new-town-modal';
 import withPrivateRoute from '../../components/with-private-route';
-
-registerLocale('es', es);
 
 const ColonyDetails = () => {
   const router = useRouter();
@@ -86,6 +82,7 @@ const ColonyDetails = () => {
     return a.description.localeCompare(b.description);
   };
 
+  // #region Town
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
@@ -103,6 +100,14 @@ const ColonyDetails = () => {
   const onTownError = (townName: string): void => {
     toast.error(`Error creando localidad "${townName}"`);
   };
+  // #endregion Town
+
+  // #region LocationType
+  const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
+    event.preventDefault();
+
+    setNewLocationTypeModalOpen(true);
+  };
 
   const onNewLocationType = (locationType: LocationType): void => {
     toast.success(`Creada nueva localidad "${locationType.description}" con id "${locationType.id}"`);
@@ -115,20 +120,27 @@ const ColonyDetails = () => {
   const onLocationTypeError = (locationTypeName: string): void => {
     toast.error(`Error creando ubicatón "${locationTypeName}"`);
   };
+  // #endregion LocationType
 
-  // ******************
-
-  const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
-
-    setNewLocationTypeModalOpen(true);
-  };
-
+  // #region Environment
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
-    toast.warning('No implementado 😅');
+    setNewEnvironmentModalOpen(true);
   };
+
+  const onNewEnvironment = (environment: Environment): void => {
+    toast.success(`Creado nuevo entorno "${environment.description}" con id "${environment.id}"`);
+    setEnvironments((prev) => [...prev, { ...environment }].sort(descriptionSorter));
+    setColony((prev) => {
+      return { ...prev, environmentId: environment.id };
+    });
+  };
+
+  const onEnvironmentError = (environment: string): void => {
+    toast.error(`Error creando entorno "${environment}"`);
+  };
+  // #endregion Environment
 
   const onDateChange = (newValue: Date): void => {
     setColony((prev) => {
@@ -217,14 +229,6 @@ const ColonyDetails = () => {
     fetchData();
   }, []);
 
-  const styles = {
-    map: {
-      display: 'block',
-      width: '100%',
-      height: '350px',
-    },
-  };
-
   return (
     <>
       <NewTownModal
@@ -243,9 +247,17 @@ const ColonyDetails = () => {
         onLocationTypeError={onLocationTypeError}
       />
 
+      <NewEnvironmentModal
+        id="newEnvironmentModal"
+        isOpen={newEnvironmentModalOpen}
+        onClose={() => setNewEnvironmentModalOpen(false)}
+        onNewEnvironment={onNewEnvironment}
+        onEnvironmentError={onEnvironmentError}
+      />
+
       <div className="container">
         <div className="row mb-4">
-          <div className="col-lg-7">
+          <div className="col-lg-12">
             <div className="container-md">
               <div className="shadow p-3 bg-body rounded">
                 <p>
@@ -271,11 +283,11 @@ const ColonyDetails = () => {
                       <label htmlFor="createdAt" className="form-label">
                         Alta
                       </label>
-                      <DatePicker
+                      <input
+                        type="text"
                         className="form-control"
-                        selected={colony.createdAt}
-                        onChange={onDateChange}
-                        locale="es"
+                        readOnly
+                        value={colony?.createdAt?.toLocaleDateString()}
                       />
                     </div>
                     <div className="col-md-7">
@@ -376,19 +388,6 @@ const ColonyDetails = () => {
                   </div>
                 </form>
               </div>
-            </div>
-          </div>
-          <div className="col-lg-5">
-            <div className="shadow p-3 bg-body rounded">
-              <p>
-                <i className="far fa-map mr-2" aria-hidden="true"></i>
-                Ubicación
-              </p>
-              {/* <iframe
-                style={styles.map}
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1564.0051792651661!2d-0.49694479283032256!3d38.37188181628149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6236e5beba75f9%3A0xe54cc71b08152eeb!2sC.%20Roque%20Chab%C3%A1s%2C%2011%2C%2003011%20Alicante%20(Alacant)%2C%20Alicante!5e0!3m2!1ses!2ses!4v1631740183993!5m2!1ses!2ses"
-                loading="lazy"
-              ></iframe> */}
             </div>
           </div>
         </div>

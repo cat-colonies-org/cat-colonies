@@ -53,7 +53,7 @@ export async function getLocationTypesList({
   });
 }
 
-export async function createLocationType(description: string): Promise<Town> {
+export async function createLocationType(description: string): Promise<LocationType> {
   const query = `mutation {
     createLocationType(createLocationTypeInput: {description: "${description}"}) { id description }
   }`;
