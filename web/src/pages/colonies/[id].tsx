@@ -81,9 +81,13 @@ const ColonyDetails = () => {
     setNewTownModalOpen(true);
   };
 
+  const townSorter = (a: Town, b: Town): number => {
+    return a.name.localeCompare(b.name);
+  };
+
   const onNewTownSucess = (town: Town): void => {
     toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
-    setTowns((prev) => [...prev, { ...town }]);
+    setTowns((prev) => [...prev, { ...town }].sort(townSorter));
     setColony((prev) => {
       return { ...prev, townId: town.id };
     });
@@ -182,7 +186,7 @@ const ColonyDetails = () => {
 
         if (environments) setEnvironments(environments.items);
         if (locationTypes) setLocationTypes(locationTypes.items);
-        if (towns) setTowns(towns.items);
+        if (towns) setTowns(towns.items.sort(townSorter));
         if (colony.cats) reduceAndSetStats(colony.cats);
       }
     }
