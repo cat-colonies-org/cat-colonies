@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from '../../services/auth';
 import { toast } from 'react-toastify';
-import LoginLayout from '../../components/LoginLayout';
+import LoginLayout from '../../components/login-layout';
 import Router from 'next/router';
 
 const Login = () => {

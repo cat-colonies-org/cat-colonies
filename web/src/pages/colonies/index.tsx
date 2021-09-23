@@ -2,7 +2,7 @@ import { Colony, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import withPrivateRoute from '../../components/withPrivateRoute';
+import withPrivateRoute from '../../components/with-private-route';
 
 const Colonies = () => {
   const [data, setData] = useState([] as Colony[]);

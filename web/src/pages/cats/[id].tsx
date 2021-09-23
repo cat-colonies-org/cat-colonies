@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import withPrivateRoute from '../../components/withPrivateRoute';
+import withPrivateRoute from '../../components/with-private-route';
 
 const CatDetails = () => {
   const router = useRouter();

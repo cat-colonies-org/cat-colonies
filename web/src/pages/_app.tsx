@@ -5,7 +5,7 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Head from 'next/head';
-import DefaultLayout from '../components/DefaultLayout';
+import DefaultLayout from '../components/default-layout';
 import type { AppProps } from 'next/app';
 
 function App({ Component, pageProps }: AppProps) {

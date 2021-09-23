@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-sync-scripts */
 import 'react-datepicker/dist/react-datepicker.css';
 import { Cat, Gender } from '../../services/cats';
 import { Chart } from 'react-google-charts';
@@ -13,7 +12,8 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
-import withPrivateRoute from '../../components/withPrivateRoute';
+import withPrivateRoute from '../../components/with-private-route';
+import NewTownModal from '../../components/new-town-modal';
 
 registerLocale('es', es);
 
@@ -73,11 +73,15 @@ const ColonyDetails = () => {
   const [towns, setTowns] = useState({} as Town[]);
   const [stats, setStats] = useState(zeroStats as Stats);
   const [loading, setLoading] = useState(false);
+  const [modalOneOpen, setModalOneOpen] = useState(false);
 
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    toast.warning('No implementado 😅');
+    console.log(event);
+    setModalOneOpen(true);
   };
+
+  const handleCloseModalOne = () => setModalOneOpen(false);
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
@@ -180,6 +184,8 @@ const ColonyDetails = () => {
 
   return (
     <>
+      <NewTownModal id="newTownModal" isOpen={modalOneOpen} onRequestClose={handleCloseModalOne} />
+
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-7">
@@ -189,7 +195,7 @@ const ColonyDetails = () => {
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Datos generales
                 </p>
-                <form className="needs-validation" noValidate onSubmit={onSubmit}>
+                <form onSubmit={onSubmit}>
                   <div className="row mt-3">
                     <div className="col-md-2">
                       <label htmlFor="id" className="form-label">

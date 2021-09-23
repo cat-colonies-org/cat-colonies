@@ -2,7 +2,7 @@ import { Cat, getCatsList } from '../../services/cats';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import withPrivateRoute from '../../components/withPrivateRoute';
+import withPrivateRoute from '../../components/with-private-route';
 
 const CatsList = () => {
   const [data, setData] = useState([] as Cat[]);
