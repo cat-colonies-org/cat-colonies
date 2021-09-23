@@ -1,5 +1,5 @@
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import Sidebar from './sidebar';
+import Navbar from './navbar';
 
 const DefaultLayout = ({ children }: { children: any }) => {
   return (
