@@ -48,16 +48,30 @@ const colonyFormatter = (colony) => {
 };
 
 const ceaseCauseFormatter = (cause) => {
-  return `INSERT INTO cease_cause (id, description) VALUES (
+  return `INSERT INTO cease_cause ("id", "description") VALUES (
       ${cause.id}, 
       '${cause.description}'
     );`;
 };
 
 const eyeColorFormatter = (eyeColor) => {
-  return `INSERT INTO eye_color (id, description) VALUES (
+  return `INSERT INTO eye_color ("id", "description") VALUES (
     ${eyeColor.id}, 
     '${eyeColor.description}'
+  );`;
+};
+
+const userFormatter = (user) => {
+  return `INSERT INTO user ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp") VALUES (
+    ${user.id}, 
+    ${dateToIso(user.createdAt)},
+    '${user.name}',
+    '${user.surnames}',
+    '${user.idCard}',
+    ${user.phoneNumber || 0},
+    '${user.email}',
+    ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
+    ${user.authorizesWhatsApp ? 'True' : 'False'},
   );`;
 };
 
@@ -69,4 +83,5 @@ module.exports = {
   locationTypeFormatter,
   environmentFormatter,
   townFormatter,
+  userFormatter,
 };

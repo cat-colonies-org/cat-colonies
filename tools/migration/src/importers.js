@@ -114,6 +114,27 @@ const importColonies = async () => {
   });
 };
 
+const importUsers = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras`);
+
+  // Id GESTORA,NOMBRE,APELLIDOS,DNI,TELÉFONO,CORREO ELECTRONICO,FECHA ALTA,FECHA BAJA,Autoriza WhatsApp,Motivo baja
+
+  return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+    return {
+      id: +mdbColony['Id GESTORA'],
+      createdAt: strToDate(mdbColony['FECHA ALTA']),
+      name: mdbColony['NOMBRE'],
+      surnames: mdbColony['APELLIDOS'],
+      idCard: mdbColony['DNI'],
+      phoneNumber: mdbColony['TELÉFONO'],
+      email: mdbColony['CORREO ELECTRONICO'],
+      ceasedAt: strToDate(mdbColony['FECHA BAJA']),
+      authorizesWhatsApp: mdbColony['Autoriza WhatsApp'] ? true : false,
+      ceaseCause: mdbColony['Motivo baja'],
+    };
+  });
+};
+
 module.exports = {
   importCeaseCauses,
   importEyeColors,
@@ -122,4 +143,5 @@ module.exports = {
   importLocationTypes,
   importEnvironments,
   importTowns,
+  importUsers,
 };
