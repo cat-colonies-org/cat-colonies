@@ -12,8 +12,9 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
-import withPrivateRoute from '../../components/with-private-route';
+import NewLocationTypeModal from '../../components/new-location-type-modal';
 import NewTownModal from '../../components/new-town-modal';
+import withPrivateRoute from '../../components/with-private-route';
 
 registerLocale('es', es);
 
@@ -74,6 +75,16 @@ const ColonyDetails = () => {
   const [stats, setStats] = useState(zeroStats);
   const [loading, setLoading] = useState(false);
   const [newTownModalOpen, setNewTownModalOpen] = useState(false);
+  const [newLocationTypeModalOpen, setNewLocationTypeModalOpen] = useState(false);
+  const [newEnvironmentModalOpen, setNewEnvironmentModalOpen] = useState(false);
+
+  const nameSorter = (a: Town, b: Town): number => {
+    return a.name.localeCompare(b.name);
+  };
+
+  const descriptionSorter = (a: LocationType, b: LocationType): number => {
+    return a.description.localeCompare(b.description);
+  };
 
   const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
@@ -81,28 +92,36 @@ const ColonyDetails = () => {
     setNewTownModalOpen(true);
   };
 
-  const townSorter = (a: Town, b: Town): number => {
-    return a.name.localeCompare(b.name);
-  };
-
-  const onNewTownSucess = (town: Town): void => {
+  const onNewTown = (town: Town): void => {
     toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
-    setTowns((prev) => [...prev, { ...town }].sort(townSorter));
+    setTowns((prev) => [...prev, { ...town }].sort(nameSorter));
     setColony((prev) => {
       return { ...prev, townId: town.id };
     });
   };
 
-  const onNewTownError = (townName: string): void => {
-    toast.success(`Error creando localidad "${townName}"`);
+  const onTownError = (townName: string): void => {
+    toast.error(`Error creando localidad "${townName}"`);
   };
 
-  const handleCloseModalOne = () => setNewTownModalOpen(false);
+  const onNewLocationType = (locationType: LocationType): void => {
+    toast.success(`Creada nueva localidad "${locationType.description}" con id "${locationType.id}"`);
+    setLocationTypes((prev) => [...prev, { ...locationType }].sort(descriptionSorter));
+    setColony((prev) => {
+      return { ...prev, locationTypeId: locationType.id };
+    });
+  };
+
+  const onLocationTypeError = (locationTypeName: string): void => {
+    toast.error(`Error creando ubicatón "${locationTypeName}"`);
+  };
+
+  // ******************
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
-    toast.warning('No implementado 😅');
+    setNewLocationTypeModalOpen(true);
   };
 
   const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
@@ -186,7 +205,7 @@ const ColonyDetails = () => {
 
         if (environments) setEnvironments(environments.items);
         if (locationTypes) setLocationTypes(locationTypes.items);
-        if (towns) setTowns(towns.items.sort(townSorter));
+        if (towns) setTowns(towns.items.sort(nameSorter));
         if (colony.cats) reduceAndSetStats(colony.cats);
       }
     }
@@ -211,9 +230,17 @@ const ColonyDetails = () => {
       <NewTownModal
         id="newTownModal"
         isOpen={newTownModalOpen}
-        onRequestClose={handleCloseModalOne}
-        onNewTownSuccess={onNewTownSucess}
-        onNewTownError={onNewTownError}
+        onClose={() => setNewTownModalOpen(false)}
+        onNewTown={onNewTown}
+        onTownError={onTownError}
+      />
+
+      <NewLocationTypeModal
+        id="newLocationTypeModal"
+        isOpen={newLocationTypeModalOpen}
+        onClose={() => setNewLocationTypeModalOpen(false)}
+        onNewLocationType={onNewLocationType}
+        onLocationTypeError={onLocationTypeError}
       />
 
       <div className="container">

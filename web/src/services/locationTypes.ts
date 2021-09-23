@@ -52,3 +52,13 @@ export async function getLocationTypesList({
     return { items, total };
   });
 }
+
+export async function createLocationType(description: string): Promise<Town> {
+  const query = `mutation {
+    createLocationType(createLocationTypeInput: {description: "${description}"}) { id description }
+  }`;
+
+  return await apiCall(query).then((response): LocationType => {
+    return response?.data?.createLocationType;
+  });
+}

@@ -4,21 +4,21 @@ import InputModal, { InputModalResult } from './input-modal';
 interface NewTownModalProps {
   id: string;
   isOpen: boolean;
-  onRequestClose: any;
-  onNewTownSuccess: any;
-  onNewTownError: any;
+  onClose: any;
+  onNewTown: any;
+  onTownError: any;
 }
 
-const NewTownModal = ({ id, isOpen, onRequestClose, onNewTownSuccess, onNewTownError }: NewTownModalProps) => {
+const NewTownModal = ({ id, isOpen, onClose, onNewTown, onTownError }: NewTownModalProps) => {
   const onCreateTown = async (result: InputModalResult): Promise<void> => {
     if (result.value) {
       const townName = result.value;
 
       const town = await createTown(townName);
       if (town) {
-        onNewTownSuccess(town);
+        onNewTown(town);
       } else {
-        onNewTownError(townName);
+        onTownError(townName);
       }
     }
   };
@@ -29,9 +29,9 @@ const NewTownModal = ({ id, isOpen, onRequestClose, onNewTownSuccess, onNewTownE
       title="Nueva Localidad"
       caption="Nombre"
       buttonCaption="Crear"
-      onClose={onRequestClose}
-      onReturn={onCreateTown}
       isOpen={isOpen}
+      onReturn={onCreateTown}
+      onClose={onClose}
     />
   );
 };

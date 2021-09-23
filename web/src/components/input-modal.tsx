@@ -35,9 +35,9 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
   const onValueAccepted = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
-    if (state?.value) return onReturn(state);
+    if (state?.value) onReturn(state);
 
-    onClose();
+    onClose?.call();
   };
 
   return (
