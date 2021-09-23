@@ -81,6 +81,18 @@ const ColonyDetails = () => {
     setNewTownModalOpen(true);
   };
 
+  const onNewTownSucess = (town: Town): void => {
+    toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
+    setTowns((prev) => [...prev, { ...town }]);
+    setColony((prev) => {
+      return { ...prev, townId: town.id };
+    });
+  };
+
+  const onNewTownError = (townName: string): void => {
+    toast.success(`Error creando localidad "${townName}"`);
+  };
+
   const handleCloseModalOne = () => setNewTownModalOpen(false);
 
   const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
@@ -192,7 +204,13 @@ const ColonyDetails = () => {
 
   return (
     <>
-      <NewTownModal id="newTownModal" isOpen={newTownModalOpen} onRequestClose={handleCloseModalOne} />
+      <NewTownModal
+        id="newTownModal"
+        isOpen={newTownModalOpen}
+        onRequestClose={handleCloseModalOne}
+        onNewTownSuccess={onNewTownSucess}
+        onNewTownError={onNewTownError}
+      />
 
       <div className="container">
         <div className="row mb-4">

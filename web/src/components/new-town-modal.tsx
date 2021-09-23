@@ -1,5 +1,4 @@
 import { FormEvent, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 import Modal from 'react-modal';
 import { createTown } from '../services/towns';
 
@@ -7,9 +6,11 @@ interface NewModalProps {
   id: string;
   isOpen: boolean;
   onRequestClose: any;
+  onNewTownSuccess: any;
+  onNewTownError: any;
 }
 
-const NewTownModal = ({ id, isOpen, onRequestClose }: NewModalProps) => {
+const NewTownModal = ({ id, isOpen, onRequestClose, onNewTownSuccess, onNewTownError }: NewModalProps) => {
   const [state, setState] = useState({ name: '' });
   const nameInput = useRef<HTMLInputElement>(null);
 
@@ -26,15 +27,16 @@ const NewTownModal = ({ id, isOpen, onRequestClose }: NewModalProps) => {
     setState({ ...state, [event.currentTarget.id]: event.currentTarget.value });
   };
 
-  const onCreateTownClick = async (event: FormEvent<HTMLButtonElement>): void => {
+  const onCreateTownClick = async (event: FormEvent<HTMLButtonElement>): Promise<void> => {
     event.preventDefault();
 
     if (state.name) {
-      // TODO: devolver nuevo código
-
       const town = await createTown(state.name);
-      if (town) toast.success(`Localidad "${town.name}" creada con id "${town.id}" 👍`);
-      else toast.error(`Error al crear localidad "${state.name}"`);
+      if (town) {
+        onNewTownSuccess(town);
+      } else {
+        onNewTownError(state.name);
+      }
     }
 
     onRequestClose();
