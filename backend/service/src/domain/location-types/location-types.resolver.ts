@@ -36,17 +36,21 @@ export class LocationTypesResolver extends BaseResolver<LocationType> {
 
   // #region Mutations
   @Mutation(() => LocationType)
-  async createCat(@Args('createCatInput') createCatInput: CreateLocationTypeInput): Promise<LocationType> {
-    return this.create(createCatInput);
+  async createLocationType(
+    @Args('createLocationTypeInput') createLocationTypeInput: CreateLocationTypeInput,
+  ): Promise<LocationType> {
+    return this.create(createLocationTypeInput);
   }
 
   @Mutation(() => LocationType)
-  async updateCat(@Args('updateCatInput') updateCatInput: UpdateLocationTypeInput): Promise<LocationType> {
-    return this.update(updateCatInput);
+  async updateLocationType(
+    @Args('updateLocationTypeInput') updateLocationTypeInput: UpdateLocationTypeInput,
+  ): Promise<LocationType> {
+    return this.update(updateLocationTypeInput);
   }
 
   @Mutation(() => RemoveLocationTypeResult)
-  async removeCat(@Args('id', { type: () => Int }) id: number): Promise<RemoveLocationTypeResult> {
+  async removeLocationType(@Args('id', { type: () => Int }) id: number): Promise<RemoveLocationTypeResult> {
     return this.remove(id);
   }
   // #endregion Mutations
@@ -58,7 +62,7 @@ export class LocationTypesResolver extends BaseResolver<LocationType> {
   }
 
   @Query(() => LocationType, { name: 'locationType', nullable: true })
-  findOneCat(@Args('id', { type: () => Int }) id: number): Promise<LocationType> {
+  findOneLocationType(@Args('id', { type: () => Int }) id: number): Promise<LocationType> {
     return this.findOne(id);
   }
   // #endregion Queries

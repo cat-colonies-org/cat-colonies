@@ -250,9 +250,9 @@ type Mutation {
   createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
   updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
   removeAnnotation(id: Int!): RemoveAnnotationResult!
-  createCat(createCatInput: CreateLocationTypeInput!): LocationType!
-  updateCat(updateCatInput: UpdateLocationTypeInput!): LocationType!
-  removeCat(id: Int!): RemoveLocationTypeResult!
+  createCat(createCatInput: CreateCatInput!): Cat!
+  updateCat(updateCatInput: UpdateCatInput!): Cat!
+  removeCat(id: Int!): RemoveCatResult!
   createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
   updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
   removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
@@ -268,6 +268,9 @@ type Mutation {
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
+  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
+  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
+  removeLocationType(id: Int!): RemoveLocationTypeResult!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
@@ -290,12 +293,28 @@ input UpdateAnnotationInput {
   id: Int!
 }
 
-input CreateLocationTypeInput {
-  description: String!
+input CreateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  sterilizedAt: DateTime
+  colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
 }
 
-input UpdateLocationTypeInput {
-  description: String
+input UpdateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  sterilizedAt: DateTime
+  colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyesId: Int
+  gender: Gender
+  kitten: Boolean
   id: Int!
 }
 
@@ -349,6 +368,15 @@ input CreateEyeColorInput {
 input UpdateEyeColorInput {
   id: Int!
   description: String
+}
+
+input CreateLocationTypeInput {
+  description: String!
+}
+
+input UpdateLocationTypeInput {
+  description: String
+  id: Int!
 }
 
 input CreatePatternInput {
