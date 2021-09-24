@@ -22,6 +22,13 @@ const locationTypeFormatter = (locationType) => {
   );`;
 };
 
+const roleFormatter = (role) => {
+  return `INSERT INTO role ("id", "description") VALUES (
+    ${role.id}, 
+    '${role.description}'
+  );`;
+};
+
 const townFormatter = (town) => {
   return `INSERT INTO town ("id", "name") VALUES (
     ${town.id}, 
@@ -62,7 +69,7 @@ const eyeColorFormatter = (eyeColor) => {
 };
 
 const userFormatter = (user) => {
-  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "salt") VALUES (
+  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "salt", "roleId") VALUES (
     ${user.id}, 
     ${dateToIso(user.createdAt)},
     '${user.name}',
@@ -73,7 +80,8 @@ const userFormatter = (user) => {
     ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
     ${user.authorizesWhatsApp ? 'True' : 'False'},
     '${user.password}',
-    '${user.salt}'
+    '${user.salt}',
+    ${user.roleId}
   );`;
 };
 
@@ -86,4 +94,5 @@ module.exports = {
   environmentFormatter,
   townFormatter,
   userFormatter,
+  roleFormatter,
 };

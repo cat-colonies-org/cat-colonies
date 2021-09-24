@@ -13,6 +13,7 @@ const {
   importEnvironments,
   importTowns,
   importUsers,
+  importRoles,
 } = require('./importers');
 
 const {
@@ -24,6 +25,7 @@ const {
   environmentFormatter,
   townFormatter,
   userFormatter,
+  roleFormatter,
 } = require('./formatters');
 
 const exportFile = async (filename, importer, formatter) => {
@@ -52,5 +54,6 @@ const exportFile = async (filename, importer, formatter) => {
   await exportFile('cease-causes.sql', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cats.sql', importCats, catFormatter);
 
+  await exportFile('roles.sql', importRoles, roleFormatter);
   await exportFile('users.sql', importUsers, userFormatter);
 })();

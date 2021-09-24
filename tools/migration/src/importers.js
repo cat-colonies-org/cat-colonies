@@ -27,6 +27,13 @@ const importTowns = async () => {
   return Promise.resolve([{ id: 1, name: 'Albatera' }]);
 };
 
+const importRoles = async () => {
+  return Promise.resolve([
+    { id: 1, description: 'Administrador' },
+    { id: 2, description: 'Gestor' },
+  ]);
+};
+
 const importLocationTypes = async () => {
   return Promise.resolve([
     { id: 0, description: 'Desconocido' },
@@ -125,11 +132,18 @@ const importColonies = async () => {
 };
 
 const importUsers = async () => {
-  const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras`);
+  const AdminRoleId = 1;
+  const ManagerRoleId = 2;
 
-  return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras`);
+  let maxId = -1;
+
+  const users = (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+    const id = +mdbColony['Id GESTORA'];
+    maxId = Math.max(maxId, id);
+
     return {
-      id: +mdbColony['Id GESTORA'],
+      id,
       createdAt: strToDate(mdbColony['FECHA ALTA']),
       name: capitalize(mdbColony['NOMBRE']),
       surnames: capitalize(mdbColony['APELLIDOS']),
@@ -141,8 +155,24 @@ const importUsers = async () => {
       ceaseCause: mdbColony['Motivo baja'],
       password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
       salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
+      roleId: ManagerRoleId,
     };
   });
+
+  users.push({
+    id: maxId + 1,
+    createdAt: new Date(),
+    name: 'Administrador',
+    surnames: '',
+    idCard: '',
+    phoneNumber: 999999999,
+    email: 'admin@cats.org',
+    password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
+    salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
+    roleId: AdminRoleId,
+  });
+
+  return users;
 };
 
 module.exports = {
@@ -154,4 +184,5 @@ module.exports = {
   importEnvironments,
   importTowns,
   importUsers,
+  importRoles,
 };
