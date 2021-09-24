@@ -15,12 +15,21 @@ const {
 
 const MDB_PATH = './data/CENSO COLONIAS FELINAS ALBATERA.accdb';
 
+const capitalize = (str) => {
+  return str
+    ?.toLocaleLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(' ');
+};
+
 const importTowns = async () => {
   return Promise.resolve([{ id: 1, name: 'Albatera' }]);
 };
 
 const importLocationTypes = async () => {
   return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
     { id: 1, description: 'Solar privado' },
     { id: 2, description: 'Solar público' },
     { id: 3, description: 'Centro educativo' },
@@ -30,6 +39,7 @@ const importLocationTypes = async () => {
 
 const importEnvironments = async () => {
   return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
     { id: 1, description: 'Urbano' },
     { id: 2, description: 'Perifería' },
     { id: 3, description: 'Selecciona' },
@@ -38,17 +48,18 @@ const importEnvironments = async () => {
 
 const importCeaseCauses = async () => {
   return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
     { id: 1, description: 'Desaparición' },
     { id: 2, description: 'Atropello' },
     { id: 3, description: 'Adopción' },
     { id: 4, description: 'Acogida' },
     { id: 5, description: 'Eutanasia' },
-    { id: 6, description: 'NS/NC' },
   ]);
 };
 
 const importEyeColors = async () => {
   return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
     { id: 1, description: 'Amarillo' },
     { id: 2, description: 'Ambar' },
     { id: 3, description: 'Azul' },
@@ -56,7 +67,6 @@ const importEyeColors = async () => {
     { id: 5, description: 'Marrón' },
     { id: 6, description: 'Miel' },
     { id: 7, description: 'Verde' },
-    { id: 8, description: 'NS/NC' },
   ]);
 };
 
@@ -117,12 +127,12 @@ const importColonies = async () => {
 const importUsers = async () => {
   const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras`);
 
-  const users = (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+  return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
     return {
       id: +mdbColony['Id GESTORA'],
       createdAt: strToDate(mdbColony['FECHA ALTA']),
-      name: mdbColony['NOMBRE'],
-      surnames: mdbColony['APELLIDOS'],
+      name: capitalize(mdbColony['NOMBRE']),
+      surnames: capitalize(mdbColony['APELLIDOS']),
       idCard: mdbColony['DNI'],
       phoneNumber: mdbColony['TELÉFONO'],
       email: mdbColony['CORREO ELECTRONICO'],
@@ -133,20 +143,6 @@ const importUsers = async () => {
       salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
     };
   });
-
-  users.push({
-    id: 9999,
-    createdAt: new Date(),
-    name: 'Administrador',
-    surnames: '',
-    idCard: '',
-    phoneNumber: 9999,
-    email: 'admin@cats.org',
-    password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
-    salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
-  });
-
-  return users;
 };
 
 module.exports = {

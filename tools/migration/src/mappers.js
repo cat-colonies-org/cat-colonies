@@ -1,13 +1,14 @@
 const CeaseCause = Object.freeze({
+  Desconodido: 0,
   Desaparicion: 1,
   Atropello: 2,
   Adopcion: 3,
   Acogida: 4,
   Eutanasia: 5,
-  NS_NC: null,
 });
 
 const EyeColor = Object.freeze({
+  Desconocido: 0,
   Amarillo: 1,
   Ambar: 2,
   Azul: 3,
@@ -15,21 +16,20 @@ const EyeColor = Object.freeze({
   Marron: 5,
   Miel: 6,
   Verde: 7,
-  NS_NC: null,
 });
 
 const LocationType = Object.freeze({
+  Desconocido: 0,
   SolarPrivado: 1,
   SolarPublico: 2,
   CentroEducativo: 3,
   Campo: 4,
-  NS_NC: null,
 });
 
 const EnvironemntType = Object.freeze({
+  Desconocido: 0,
   Urbano: 1,
   Periferia: 2,
-  NS_NC: null,
 });
 
 const strToDate = (str) => {
@@ -58,7 +58,7 @@ const strToCeaseCauseId = (str) => {
   if (str.toLowerCase().includes('adoptad')) return CeaseCause.Adopcion;
   if (str.toLowerCase().includes('acogid')) return CeaseCause.Acogida;
   if (str.toLowerCase().includes('eutanasia')) return CeaseCause.Eutanasia;
-  return CeaseCause.NS_NC;
+  return CeaseCause.Desconodido;
 };
 
 const strToLocationType = (str) => {
@@ -66,13 +66,13 @@ const strToLocationType = (str) => {
   if (str.toLowerCase().includes('público')) return LocationType.SolarPublico;
   if (str.toLowerCase().includes('educativo')) return LocationType.CentroEducativo;
   if (str.toLowerCase().includes('campo')) return LocationType.Campo;
-  return LocationType.NS_NC;
+  return LocationType.Desconocido;
 };
 
 const strToEnvironment = (str) => {
   if (str.toLowerCase().includes('urbano')) return EnvironemntType.Urbano;
   if (str.toLowerCase().includes('perifer')) return EnvironemntType.Periferia;
-  return EnvironemntType.NS_NC;
+  return EnvironemntType.Desconocido;
 };
 
 const strToEyeColorId = (str) => {
@@ -83,7 +83,7 @@ const strToEyeColorId = (str) => {
   if (str.toLowerCase().includes('marron')) return EyeColor.Marron;
   if (str.toLowerCase().includes('miel')) return EyeColor.Miel;
   if (str.toLowerCase().includes('verde')) return EyeColor.Verde;
-  return EyeColor.NS_NC;
+  return EyeColor.Desconocido;
 };
 
 const strToKitten = (str) => {
