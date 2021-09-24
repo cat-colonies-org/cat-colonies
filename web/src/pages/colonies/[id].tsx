@@ -197,7 +197,7 @@ const ColonyDetails = () => {
             stats.males += cat.gender === Gender.Male ? 1 : 0;
             stats.females += cat.gender === Gender.Female ? 1 : 0;
             stats.esteriliced += cat.sterilized ? 1 : 0;
-            stats.kittens += cat.kitten ? 1 : 0;
+            stats.kittens += isKitten(cat) ? 1 : 0;
           }
 
           return stats;
