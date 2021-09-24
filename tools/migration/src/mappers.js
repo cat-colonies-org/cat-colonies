@@ -42,9 +42,9 @@ const dateToIso = (date) => {
 };
 
 const birthYearToBornAt = (year) => {
-  if (year==0) return null;
-  return new Date('05/15/' + year.toString().substring(2)+ 'Z');
-}
+  if (year == 0) return null;
+  return new Date('05/15/' + year.toString().substring(2) + 'Z');
+};
 
 const strToGender = (str) => {
   if (str.toLowerCase().includes('macho')) return 'Male';

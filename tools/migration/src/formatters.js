@@ -5,7 +5,7 @@ const catFormatter = (cat) => {
     ${cat.id}, 
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
-    ${cat.bornAt ? dateToIso(cat.bornAt) : null}',
+    ${cat.bornAt ? dateToIso(cat.bornAt) : null},
     '${cat.gender}', 
     ${cat.esterilized ? 'True' : 'False'}, 
     ${cat.eyeColorId},
