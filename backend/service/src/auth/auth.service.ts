@@ -15,20 +15,19 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(userCredentials: UserCredentials): Promise<AccessToken> {
-    if (!(await this.validateUserPassword(userCredentials))) throw new UnauthorizedException('Invalid credentials');
+  async signIn(providedCredentials: UserCredentials): Promise<AccessToken> {
+    const user = await this.repository.findOne({ email: providedCredentials.email });
+    if (!(await this.validateUserPassword(providedCredentials, user)))
+      throw new UnauthorizedException('Invalid credentials');
 
-    const { email } = userCredentials;
-    const { roleId } = await this.repository.findOne({ email: email });
+    const { email, roleId } = user;
     const payload: JwtPayload = { email, roleId };
     return { result: this.jwtService.sign(payload) };
   }
 
-  private async validateUserPassword(userCredentials: UserCredentials): Promise<boolean> {
-    const { email, password } = userCredentials;
-    const user = await this.repository.findOne({ email: email });
+  private async validateUserPassword(providedCredentials: UserCredentials, user?: User): Promise<boolean> {
     if (!user) return false;
 
-    return user.password === (await bcrypt.hash(password, user.salt));
+    return user.password === (await bcrypt.hash(providedCredentials.password, user.salt));
   }
 }
