@@ -41,6 +41,11 @@ const dateToIso = (date) => {
   return `'${date.toISOString().replace(/T.*/g, '')}'`;
 };
 
+const birthYearToBornAt = (year) => {
+  if (year==0) return null;
+  return new Date('05/15/' + year.toString().substring(2)+ 'Z');
+}
+
 const strToGender = (str) => {
   if (str.toLowerCase().includes('macho')) return 'Male';
   if (str.toLowerCase().includes('hembra')) return 'Female';
@@ -86,19 +91,14 @@ const strToEyeColorId = (str) => {
   return EyeColor.Desconocido;
 };
 
-const strToKitten = (str) => {
-  if (str.toLowerCase().includes('si')) return true;
-  return false;
-};
-
 module.exports = {
   strToDate,
   dateToIso,
+  birthYearToBornAt,
   strToGender,
   strToSterilized,
   strToCeaseCauseId,
   strToEyeColorId,
-  strToKitten,
   strToLocationType,
   strToEnvironment,
 };

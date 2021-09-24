@@ -1,14 +1,13 @@
 const { dateToIso } = require('./mappers');
 
 const catFormatter = (cat) => {
-  return `INSERT INTO cat ("id", "colonyId", "createdAt", "birthYear", "gender", "sterilized", "kitten", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
+  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
     ${cat.id}, 
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
-    ${cat.birthYear}, 
+    ${cat.bornAt ? dateToIso(cat.bornAt) : null}',
     '${cat.gender}', 
     ${cat.esterilized ? 'True' : 'False'}, 
-    ${cat.kitten ? 'True' : 'False'}, 
     ${cat.eyeColorId},
     ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
     ${cat.ceaseCauseId}

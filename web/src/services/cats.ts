@@ -6,12 +6,11 @@ export const catQueryFields: string = `
   ceasedAt
   ceaseCauseId
   ceaseCause { description }
-  birthYear
+  bornAt
   sterilized
   sterilizedAt
   imageURL
   gender
-  kitten
   colonyId
   colony { address }
   colorId
@@ -33,12 +32,11 @@ export type Cat = {
   ceasedAt: Date;
   ceaseCauseId: number;
   ceaseCause: { description: string };
-  birthYear: number;
+  bornAt: Date;
   sterilized: boolean;
   sterilizedAt: Date;
   imageURL: string;
   gender: Gender;
-  kitten: boolean;
   colonyId: number;
   colony: { address: string };
   colorId: number;
