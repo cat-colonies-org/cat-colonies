@@ -175,6 +175,17 @@ const importUsers = async () => {
   return users;
 };
 
+const importColonyUserRelation = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras_colonia`);
+
+  return (await CSVToJSON().fromString(stdout)).map((mdbEntry) => {
+    return {
+      userId: +mdbEntry['Id Gestora'],
+      colonyId: +mdbEntry['Id Colonia'],
+    };
+  });
+};
+
 module.exports = {
   importCeaseCauses,
   importEyeColors,
@@ -185,4 +196,5 @@ module.exports = {
   importTowns,
   importUsers,
   importRoles,
+  importColoniesUserRelation: importColonyUserRelation,
 };

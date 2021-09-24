@@ -14,6 +14,7 @@ const {
   importTowns,
   importUsers,
   importRoles,
+  importColoniesUserRelation,
 } = require('./importers');
 
 const {
@@ -26,6 +27,7 @@ const {
   townFormatter,
   userFormatter,
   roleFormatter,
+  colonyUserRelationFormatter,
 } = require('./formatters');
 
 const exportFile = async (filename, importer, formatter) => {
@@ -56,4 +58,5 @@ const exportFile = async (filename, importer, formatter) => {
 
   await exportFile('roles.sql', importRoles, roleFormatter);
   await exportFile('users.sql', importUsers, userFormatter);
+  await exportFile('user-colonies.sql', importColoniesUserRelation, colonyUserRelationFormatter);
 })();

@@ -85,6 +85,13 @@ const userFormatter = (user) => {
   );`;
 };
 
+const colonyUserRelationFormatter = (entity) => {
+  return `INSERT INTO "user_colonies_colony" ("userId", "colonyId") VALUES (
+    ${entity.userId}, 
+    ${entity.colonyId}
+  );`;
+};
+
 module.exports = {
   catFormatter,
   ceaseCauseFormatter,
@@ -95,4 +102,5 @@ module.exports = {
   townFormatter,
   userFormatter,
   roleFormatter,
+  colonyUserRelationFormatter,
 };
