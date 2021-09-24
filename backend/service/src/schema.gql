@@ -113,6 +113,7 @@ type Cat {
 enum Gender {
   Male
   Female
+  Unknown
 }
 
 type Annotation {

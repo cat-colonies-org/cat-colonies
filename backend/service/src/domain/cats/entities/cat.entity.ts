@@ -10,6 +10,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, Pri
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
+  Unknown = 'Unknown',
 }
 registerEnumType(Gender, { name: 'Gender', description: '' });
 
