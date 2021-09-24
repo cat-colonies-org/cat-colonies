@@ -56,6 +56,8 @@ const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
   return {
     ...cat,
     createdAt: new Date(cat.createdAt),
+    ceasedAt: new Date(cat.ceasedAt),
+    bornAt: new Date(cat.bornAt),
   } as Cat;
 };
 

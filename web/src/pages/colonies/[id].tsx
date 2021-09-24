@@ -17,6 +17,16 @@ import withPrivateRoute from '../../components/with-private-route';
 const ColonyDetails = () => {
   const router = useRouter();
 
+  const isKitten = (cat: Cat): boolean => {
+    if (!cat?.bornAt) return false;
+
+    const sixMonths = 6 * 30 * 24 * 60 * 60 * 1000;
+    const today: Date = new Date();
+    const birthDate: Date = new Date(cat.bornAt);
+
+    return today.getTime() - birthDate.getTime() <= sixMonths;
+  };
+
   interface Stats {
     active: number;
     total: number;
@@ -38,21 +48,24 @@ const ColonyDetails = () => {
   const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString() },
-    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString()},
+    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString() },
     {
       name: 'Genero',
-      selector: (cat) =>
-        cat.gender === Gender.Male ? 'Macho' : cat.gender === Gender.Female ? 'Hembra' : 'Indeterminado',
+      selector: (cat) => (cat.gender === Gender.Male ? 'Macho' : cat.gender === Gender.Female ? 'Hembra' : ''),
     },
     {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
-      format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
+      format: (cat) => (cat.sterilized ? 'Sí' : ''),
     },
-  //  { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') }, // TODO
+    {
+      name: 'Cachorro',
+      selector: (cat) => (isKitten(cat) ? 'Sí' : ''),
+    },
     { name: 'Patrón', selector: (cat) => cat.pattern?.description },
+    { name: 'Color', selector: (cat) => cat.color?.description },
     { name: 'Baja', selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : '') },
-    { name: 'Causa baja', selector: (cat) => cat.ceaseCause?.description },
+    { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
   ];
 
   const managersColumns: TableColumn<User>[] = [
