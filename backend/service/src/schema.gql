@@ -92,7 +92,7 @@ type Cat {
   ceasedAt: DateTime
   ceaseCauseId: Int
   ceaseCause: CeaseCause
-  birthYear: Int
+  bornAt: DateTime
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
@@ -102,7 +102,6 @@ type Cat {
   patternId: Int
   pattern: Pattern
   gender: Gender
-  kitten: Boolean
   eyeColorId: Int
   eyeColor: EyeColor
   imageURL: String

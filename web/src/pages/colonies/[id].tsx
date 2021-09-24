@@ -38,7 +38,7 @@ const ColonyDetails = () => {
   const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id },
     { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString() },
-    { name: 'Nacimiento', selector: (cat) => cat.birthYear },
+    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString()},
     {
       name: 'Genero',
       selector: (cat) =>
@@ -49,7 +49,7 @@ const ColonyDetails = () => {
       selector: (cat) => cat.sterilized,
       format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
     },
-    { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') },
+  //  { name: 'Cachorro', selector: (cat) => (cat.kitten ? 'Sí' : 'No') }, // TODO
     { name: 'Patrón', selector: (cat) => cat.pattern?.description },
     { name: 'Baja', selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : '') },
     { name: 'Causa baja', selector: (cat) => cat.ceaseCause?.description },

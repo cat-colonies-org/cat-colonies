@@ -6,7 +6,7 @@ const {
   strToDate,
   strToGender,
   strToSterilized,
-  strToKitten,
+  birthYearToBornAt,
   strToCeaseCauseId,
   strToEyeColorId,
   strToLocationType,
@@ -83,13 +83,11 @@ const importCats = async () => {
   return (await CSVToJSON().fromString(stdout)).map((mdbCat) => {
     // CAPA: 'EUROPEO Y BLANCO',
     // 'IMÁGEN': '48',
-
     return {
       id: +mdbCat['Id GATO'],
       colonyId: +mdbCat['Id Colonia'],
       createdAt: strToDate(mdbCat['Fecha Alta']),
-      birthYear: +mdbCat['AÑO NACIDO'],
-      kitten: strToKitten(mdbCat['CACHORRO']),
+      bornAt: birthYearToBornAt(mdbCat['AÑO NACIDO']),
       esterilized: strToSterilized(mdbCat['ESTERIL']),
       gender: strToGender(mdbCat['SEXO']),
       ceasedAt: strToDate(mdbCat['BAJA']),
