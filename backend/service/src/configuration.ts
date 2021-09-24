@@ -48,7 +48,7 @@ export default (): Configuration => ({
   },
 
   jwt: {
-    secret: getString('JWT_SECRET', 'secret!'),
+    secret: getString('JWT_SECRET', 'jwt-secret!'),
     expiresIn: getNumber('JWT_EXPIRES_IN', 3600), //seconds
   },
 });
