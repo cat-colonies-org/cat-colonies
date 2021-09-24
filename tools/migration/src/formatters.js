@@ -16,7 +16,7 @@ const catFormatter = (cat) => {
 };
 
 const locationTypeFormatter = (locationType) => {
-  return `INSERT INTO locationType ("id", "description") VALUES (
+  return `INSERT INTO location_type ("id", "description") VALUES (
     ${locationType.id}, 
     '${locationType.description}'
   );`;
@@ -37,7 +37,7 @@ const environmentFormatter = (environment) => {
 };
 
 const colonyFormatter = (colony) => {
-  return `INSERT INTO colony ("id", "createdAt", "locationTypeId", "environmentId", "townId") VALUES (
+  return `INSERT INTO colony ("id", "createdAt", "address", "locationTypeId", "environmentId", "townId") VALUES (
     ${colony.id}, 
     ${dateToIso(colony.createdAt)},
     '${colony.address}', 
@@ -62,7 +62,7 @@ const eyeColorFormatter = (eyeColor) => {
 };
 
 const userFormatter = (user) => {
-  return `INSERT INTO user ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp") VALUES (
+  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "salt") VALUES (
     ${user.id}, 
     ${dateToIso(user.createdAt)},
     '${user.name}',
@@ -72,6 +72,8 @@ const userFormatter = (user) => {
     '${user.email}',
     ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
     ${user.authorizesWhatsApp ? 'True' : 'False'},
+    '${user.password}',
+    '${user.salt}'
   );`;
 };
 

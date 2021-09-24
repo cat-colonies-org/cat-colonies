@@ -73,7 +73,7 @@ const importCats = async () => {
       createdAt: strToDate(mdbCat['Fecha Alta']),
       birthYear: +mdbCat['AÑO NACIDO'],
       kitten: strToKitten(mdbCat['CACHORRO']),
-      sterilized: strToSterilized(mdbCat['ESTERIL']),
+      esterilized: strToSterilized(mdbCat['ESTERIL']),
       gender: strToGender(mdbCat['SEXO']),
       ceasedAt: strToDate(mdbCat['BAJA']),
       ceaseCauseId: strToCeaseCauseId(mdbCat['CAUSA']),
@@ -117,9 +117,7 @@ const importColonies = async () => {
 const importUsers = async () => {
   const { stdout } = await exec(`mdb-export "${MDB_PATH}" gestoras`);
 
-  // Id GESTORA,NOMBRE,APELLIDOS,DNI,TELÉFONO,CORREO ELECTRONICO,FECHA ALTA,FECHA BAJA,Autoriza WhatsApp,Motivo baja
-
-  return (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
+  const users = (await CSVToJSON().fromString(stdout)).map((mdbColony) => {
     return {
       id: +mdbColony['Id GESTORA'],
       createdAt: strToDate(mdbColony['FECHA ALTA']),
@@ -131,8 +129,24 @@ const importUsers = async () => {
       ceasedAt: strToDate(mdbColony['FECHA BAJA']),
       authorizesWhatsApp: mdbColony['Autoriza WhatsApp'] ? true : false,
       ceaseCause: mdbColony['Motivo baja'],
+      password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
+      salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
     };
   });
+
+  users.push({
+    id: 9999,
+    createdAt: new Date(),
+    name: 'Administrador',
+    surnames: '',
+    idCard: '',
+    phoneNumber: 9999,
+    email: 'admin@cats.org',
+    password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
+    salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
+  });
+
+  return users;
 };
 
 module.exports = {
