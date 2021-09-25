@@ -51,7 +51,7 @@ const CatsList = () => {
       cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
     },
     { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
-    { name: 'Nacimiento', selector: (cat) => cat.birthYear },
+    { name: 'Nacimiento', selector: (cat) => cat.bornAt?.toLocaleDateString() },
     {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
