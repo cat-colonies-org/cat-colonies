@@ -57,14 +57,13 @@ const ColonyDetails = () => {
     {
       name: 'Esterilizado',
       selector: (cat) => cat.sterilized,
-      format: (cat) => (cat.sterilized ? 'Sí' : ''),
+      format: (cat) => (cat.sterilized ? 'Esterilizado' : ''),
     },
     {
       name: 'Cachorro',
-      selector: (cat) => (isKitten(cat) ? 'Sí' : ''),
+      selector: (cat) => (isKitten(cat) ? 'Cachorro' : ''),
     },
-    { name: 'Patrón', selector: (cat) => cat.pattern?.description },
-    { name: 'Color', selector: (cat) => cat.color?.description },
+    { name: 'Capa', selector: (cat) => `${cat.pattern?.description || '' + ' '}${cat.color?.description || ''}` },
     { name: 'Baja', selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : '') },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
   ];
@@ -87,6 +86,10 @@ const ColonyDetails = () => {
   const [newTownModalOpen, setNewTownModalOpen] = useState(false);
   const [newLocationTypeModalOpen, setNewLocationTypeModalOpen] = useState(false);
   const [newEnvironmentModalOpen, setNewEnvironmentModalOpen] = useState(false);
+
+  const valueAndPercent = (value: number, total: number): string => {
+    return total ? `${value} (${((value / total) * 100).toFixed(2)}%)` : `${value}`;
+  };
 
   const nameSorter = (a: { name: string }, b: { name: string }): number => {
     return a.name.localeCompare(b.name);
@@ -412,50 +415,29 @@ const ColonyDetails = () => {
 
               <div className="row">
                 <div className="col-sm">
-                  Población
+                  <span className="lead">Población</span>
                   <p>Activos: {stats.active}</p>
                   <p>Bajas: {stats.total - stats.active}</p>
                 </div>
                 <div className="col-sm">
-                  Sexo
+                  <span className="lead">Sexo</span>
+                  <p>Machos: {valueAndPercent(stats.males, stats.active)}</p>
+                  <p>Hembras: {valueAndPercent(stats.females, stats.active)}</p>
+                  <p>Desconocido: {valueAndPercent(stats.active - stats.males - stats.females, stats.active)}</p>
+                </div>
+                <div className="col-sm">
+                  <span className="lead">Esterilizados</span>
+                  <p>Machos: {valueAndPercent(stats.malesEsteriliced, stats.active)}</p>
+                  <p>Hembras: {valueAndPercent(stats.femalesEsteriliced, stats.active)}</p>
                   <p>
-                    Machos: {stats.males} ({((stats.males / stats.active) * 100).toFixed(2)}%)
-                  </p>
-                  <p>
-                    Hembras: {stats.females} ({((stats.females / stats.active) * 100).toFixed(2)}%)
-                  </p>
-                  <p>
-                    Desconocido: {stats.active - stats.males - stats.females} (
-                    {(((stats.active - stats.males - stats.females) / stats.active) * 100).toFixed(2)}%)
+                    Desconocido:{' '}
+                    {valueAndPercent(stats.active - stats.malesEsteriliced - stats.femalesEsteriliced, stats.active)}
                   </p>
                 </div>
                 <div className="col-sm">
-                  Esterilizados
-                  <p>
-                    Machos: {stats.malesEsteriliced} ({((stats.malesEsteriliced / stats.active) * 100).toFixed(2)}%)
-                  </p>
-                  <p>
-                    Hembras: {stats.femalesEsteriliced} ({((stats.femalesEsteriliced / stats.active) * 100).toFixed(2)}
-                    %)
-                  </p>
-                  <p>
-                    Desconocido: {stats.active - stats.malesEsteriliced - stats.femalesEsteriliced} (
-                    {(
-                      ((stats.active - stats.malesEsteriliced - stats.femalesEsteriliced) / stats.active) *
-                      100
-                    ).toFixed(2)}
-                    %)
-                  </p>
-                </div>
-                <div className="col-sm">
-                  Edad
-                  <p>
-                    Cachorros: {stats.kittens} ({((stats.kittens / stats.active) * 100).toFixed(2)}%)
-                  </p>
-                  <p>
-                    Adultos: {stats.active - stats.kittens} (
-                    {(((stats.active - stats.kittens) / stats.active) * 100).toFixed(2)}%)
-                  </p>
+                  <span className="lead">Edad</span>
+                  <p>Cachorros: {valueAndPercent(stats.kittens, stats.active)}</p>
+                  <p>Adultos: {valueAndPercent(stats.active - stats.kittens, stats.active)}</p>
                 </div>
               </div>
             </div>
