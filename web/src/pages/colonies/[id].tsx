@@ -1,5 +1,4 @@
 import { Cat, Gender } from '../../services/cats';
-import { Chart } from 'react-google-charts';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
@@ -32,7 +31,8 @@ const ColonyDetails = () => {
     total: number;
     males: number;
     females: number;
-    esteriliced: number;
+    malesEsteriliced: number;
+    femalesEsteriliced: number;
     kittens: number;
   }
 
@@ -41,7 +41,8 @@ const ColonyDetails = () => {
     total: 0,
     males: 0,
     females: 0,
-    esteriliced: 0,
+    malesEsteriliced: 0,
+    femalesEsteriliced: 0,
     kittens: 0,
   });
 
@@ -87,11 +88,11 @@ const ColonyDetails = () => {
   const [newLocationTypeModalOpen, setNewLocationTypeModalOpen] = useState(false);
   const [newEnvironmentModalOpen, setNewEnvironmentModalOpen] = useState(false);
 
-  const nameSorter = (a: Town, b: Town): number => {
+  const nameSorter = (a: { name: string }, b: { name: string }): number => {
     return a.name.localeCompare(b.name);
   };
 
-  const descriptionSorter = (a: LocationType, b: LocationType): number => {
+  const descriptionSorter = (a: { description: name }, b: { description: name }): number => {
     return a.description.localeCompare(b.description);
   };
 
@@ -194,9 +195,11 @@ const ColonyDetails = () => {
 
           if (!cat.ceasedAt && !cat.ceaseCauseId) {
             ++stats.active;
+
             stats.males += cat.gender === Gender.Male ? 1 : 0;
             stats.females += cat.gender === Gender.Female ? 1 : 0;
-            stats.esteriliced += cat.sterilized ? 1 : 0;
+            stats.malesEsteriliced += cat.gender === Gender.Male && cat.sterilized ? 1 : 0;
+            stats.femalesEsteriliced += cat.gender === Gender.Female && cat.sterilized ? 1 : 0;
             stats.kittens += isKitten(cat) ? 1 : 0;
           }
 
@@ -222,8 +225,8 @@ const ColonyDetails = () => {
           getTownsList({}),
         ]);
 
-        if (environments) setEnvironments(environments.items);
-        if (locationTypes) setLocationTypes(locationTypes.items);
+        if (environments) setEnvironments(environments.items.sort(descriptionSorter));
+        if (locationTypes) setLocationTypes(locationTypes.items.sort(descriptionSorter));
         if (towns) setTowns(towns.items.sort(nameSorter));
         if (colony.cats) reduceAndSetStats(colony.cats);
       }
@@ -410,79 +413,49 @@ const ColonyDetails = () => {
               <div className="row">
                 <div className="col-sm">
                   Población
-                  <Chart
-                    width={200}
-                    height={150}
-                    chartType="PieChart"
-                    loader={<div>Cargando gráfico...</div>}
-                    data={[
-                      ['Estado', 'Total'],
-                      ['Activos', stats.active],
-                      ['Total', stats.total],
-                    ]}
-                    options={{
-                      is3D: true,
-                      pieSliceText: 'value',
-                      backgroundColor: '#fafafa',
-                    }}
-                  />
-                </div>
-                <div className="col-sm">
-                  Esterilizados
-                  <Chart
-                    width={200}
-                    height={150}
-                    chartType="PieChart"
-                    loader={<div>Cargando gráfico...</div>}
-                    data={[
-                      ['Estado', 'Total'],
-                      ['Sí', stats.esteriliced],
-                      ['No', stats.active - stats.esteriliced],
-                    ]}
-                    options={{
-                      is3D: true,
-                      pieSliceText: 'value',
-                      backgroundColor: '#fafafa',
-                    }}
-                  />
+                  <p>Activos: {stats.active}</p>
+                  <p>Bajas: {stats.total - stats.active}</p>
                 </div>
                 <div className="col-sm">
                   Sexo
-                  <Chart
-                    width={200}
-                    height={150}
-                    chartType="PieChart"
-                    loader={<div>Cargando gráfico...</div>}
-                    data={[
-                      ['Estado', 'Total'],
-                      ['Hembras', stats.females],
-                      ['Machos', stats.males],
-                    ]}
-                    options={{
-                      is3D: true,
-                      pieSliceText: 'value',
-                      backgroundColor: '#fafafa',
-                    }}
-                  />
+                  <p>
+                    Machos: {stats.males} ({((stats.males / stats.active) * 100).toFixed(2)}%)
+                  </p>
+                  <p>
+                    Hembras: {stats.females} ({((stats.females / stats.active) * 100).toFixed(2)}%)
+                  </p>
+                  <p>
+                    Desconocido: {stats.active - stats.males - stats.females} (
+                    {(((stats.active - stats.males - stats.females) / stats.active) * 100).toFixed(2)}%)
+                  </p>
+                </div>
+                <div className="col-sm">
+                  Esterilizados
+                  <p>
+                    Machos: {stats.malesEsteriliced} ({((stats.malesEsteriliced / stats.active) * 100).toFixed(2)}%)
+                  </p>
+                  <p>
+                    Hembras: {stats.femalesEsteriliced} ({((stats.femalesEsteriliced / stats.active) * 100).toFixed(2)}
+                    %)
+                  </p>
+                  <p>
+                    Desconocido: {stats.active - stats.malesEsteriliced - stats.femalesEsteriliced} (
+                    {(
+                      ((stats.active - stats.malesEsteriliced - stats.femalesEsteriliced) / stats.active) *
+                      100
+                    ).toFixed(2)}
+                    %)
+                  </p>
                 </div>
                 <div className="col-sm">
                   Edad
-                  <Chart
-                    width={200}
-                    height={150}
-                    chartType="PieChart"
-                    loader={<div>Cargando gráfico...</div>}
-                    data={[
-                      ['Estado', 'Total'],
-                      ['Cachorros', stats.kittens],
-                      ['Adultos', stats.active - stats.kittens],
-                    ]}
-                    options={{
-                      is3D: true,
-                      pieSliceText: 'value',
-                      backgroundColor: '#fafafa',
-                    }}
-                  />
+                  <p>
+                    Cachorros: {stats.kittens} ({((stats.kittens / stats.active) * 100).toFixed(2)}%)
+                  </p>
+                  <p>
+                    Adultos: {stats.active - stats.kittens} (
+                    {(((stats.active - stats.kittens) / stats.active) * 100).toFixed(2)}%)
+                  </p>
                 </div>
               </div>
             </div>
