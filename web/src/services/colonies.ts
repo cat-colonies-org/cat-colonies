@@ -35,10 +35,16 @@ export interface ColoniesList {
   items: Colony[];
 }
 
+const idSorter = (a: { id: number }, b: { id: number }): number => {
+  return a.id - b.id;
+};
+
 const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   return {
     ...colony,
     createdAt: new Date(colony.createdAt),
+    managers: colony.managers.sort(idSorter),
+    cats: colony.cats.sort(idSorter),
   } as Colony;
 };
 
