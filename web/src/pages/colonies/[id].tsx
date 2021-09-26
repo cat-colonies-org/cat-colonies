@@ -2,7 +2,7 @@ import { Cat, Gender } from '../../services/cats';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
-import { getLocationTypesList, LocationType } from '../../services/locationTypes';
+import { getLocationTypesList, LocationType } from '../../services/location-types';
 import { getTownsList, Town } from '../../services/towns';
 import { toast } from 'react-toastify';
 import { User } from '../../services/users';

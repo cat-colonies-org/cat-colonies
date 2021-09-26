@@ -1,5 +1,5 @@
 // import { createLocationType } from '../services/location-types';
-import { createLocationType } from '../services/locationTypes';
+import { createLocationType } from '../services/location-types';
 import InputModal, { InputModalResult } from './input-modal';
 
 interface NewLocationTypeModalProps {
