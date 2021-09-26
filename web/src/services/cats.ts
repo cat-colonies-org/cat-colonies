@@ -19,7 +19,7 @@ export const catQueryFields: string = `
   pattern { description }
   eyeColorId
   eyeColor { description }
-  annotations { id annotation }
+  annotations { id date annotation }
 `;
 
 export enum Gender {
@@ -29,6 +29,7 @@ export enum Gender {
 
 export type Annotation = {
   id: number;
+  date: Date;
   annotation: string;
 };
 

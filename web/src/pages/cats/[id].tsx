@@ -9,6 +9,7 @@ const CatDetails = () => {
 
   const annotationsColumns: TableColumn<Annotation>[] = [
     { name: 'Id', selector: (row) => row.id },
+    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString() },
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
