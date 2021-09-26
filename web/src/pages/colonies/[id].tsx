@@ -95,7 +95,7 @@ const ColonyDetails = () => {
     return a.name.localeCompare(b.name);
   };
 
-  const descriptionSorter = (a: { description: name }, b: { description: name }): number => {
+  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
   };
 
