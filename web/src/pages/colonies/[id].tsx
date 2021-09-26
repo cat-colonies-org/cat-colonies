@@ -3,14 +3,14 @@ import { Colony, getColony, updateColony } from '../../services/colonies';
 import { Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
 import { getLocationTypesList, LocationType } from '../../services/location-types';
-import { getTownsList, Town } from '../../services/towns';
+import { createTown, getTownsList, Town } from '../../services/towns';
 import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import NewEnvironmentModal from '../../components/new-environment-modal';
 import NewLocationTypeModal from '../../components/new-location-type-modal';
-import NewTownModal from '../../components/new-town-modal';
+import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 
 const ColonyDetails = () => {
@@ -100,12 +100,6 @@ const ColonyDetails = () => {
   };
 
   // #region Town
-  const onCreateTownClick = (event: FormEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
-
-    setNewTownModalOpen(true);
-  };
-
   const onNewTown = (town: Town): void => {
     toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
     setTowns((prev) => [...prev, { ...town }].sort(nameSorter));
@@ -114,9 +108,6 @@ const ColonyDetails = () => {
     });
   };
 
-  const onTownError = (townName: string): void => {
-    toast.error(`Error creando localidad "${townName}"`);
-  };
   // #endregion Town
 
   // #region LocationType
@@ -239,14 +230,6 @@ const ColonyDetails = () => {
 
   return (
     <>
-      <NewTownModal
-        id="newTownModal"
-        isOpen={newTownModalOpen}
-        onClose={() => setNewTownModalOpen(false)}
-        onNewTown={onNewTown}
-        onTownError={onTownError}
-      />
-
       <NewLocationTypeModal
         id="newLocationTypeModal"
         isOpen={newLocationTypeModalOpen}
@@ -302,21 +285,19 @@ const ColonyDetails = () => {
                       <label htmlFor="town" className="form-label">
                         Localidad
                       </label>
-                      <div className="input-group mb-3">
-                        <select id="townId" className="form-control" value={colony?.townId} onChange={onSelectChange}>
-                          {towns.length &&
-                            towns.map((item, i) => (
-                              <option key={i} value={item.id}>
-                                {item.name}
-                              </option>
-                            ))}
-                        </select>
-                        <div className="input-group-append">
-                          <button className="input-group-text" onClick={onCreateTownClick}>
-                            <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
+                      <PropertySelector
+                        id="townId"
+                        title="Nueva Localidad"
+                        caption="Descripción"
+                        buttonCaption="Crear"
+                        items={towns}
+                        value={colony?.townId}
+                        setter={setColony}
+                        textGetter={(i: Town) => i.name}
+                        factory={createTown}
+                        onCreate={onNewTown}
+                        onError={(i: string) => toast.error(`Error creando localidad "${i}"`)}
+                      />
                     </div>
                   </div>
 
