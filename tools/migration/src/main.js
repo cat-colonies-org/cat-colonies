@@ -14,7 +14,8 @@ const {
   importTowns,
   importUsers,
   importRoles,
-  importColoniesUserRelation,
+  importColonyUserRelation,
+  importAnnotations,
 } = require('./importers');
 
 const {
@@ -28,6 +29,7 @@ const {
   userFormatter,
   roleFormatter,
   colonyUserRelationFormatter,
+  annotationFormatter,
 } = require('./formatters');
 
 const exportFile = async (filename, importer, formatter) => {
@@ -55,8 +57,9 @@ const exportFile = async (filename, importer, formatter) => {
   await exportFile('eye-colors.sql', importEyeColors, eyeColorFormatter);
   await exportFile('cease-causes.sql', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cats.sql', importCats, catFormatter);
+  await exportFile('annotations.sql', importAnnotations, annotationFormatter);
 
   await exportFile('roles.sql', importRoles, roleFormatter);
   await exportFile('users.sql', importUsers, userFormatter);
-  await exportFile('user-colonies.sql', importColoniesUserRelation, colonyUserRelationFormatter);
+  await exportFile('user-colonies.sql', importColonyUserRelation, colonyUserRelationFormatter);
 })();

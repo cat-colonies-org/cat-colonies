@@ -91,6 +91,15 @@ const colonyUserRelationFormatter = (entity) => {
   );`;
 };
 
+const annotationFormatter = (entity) => {
+  return `INSERT INTO "annotation" ("id", "catId", "date", "annotation") VALUES (
+    ${entity.id}, 
+    ${entity.catId},
+    ${entity.createdAt ? dateToIso(entity.createdAt) : null},
+    '${entity.annotation}'
+  );`;
+};
+
 module.exports = {
   catFormatter,
   ceaseCauseFormatter,
@@ -102,4 +111,5 @@ module.exports = {
   userFormatter,
   roleFormatter,
   colonyUserRelationFormatter,
+  annotationFormatter,
 };

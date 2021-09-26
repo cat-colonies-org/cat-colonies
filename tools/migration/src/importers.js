@@ -184,6 +184,19 @@ const importColonyUserRelation = async () => {
   });
 };
 
+const importAnnotations = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" anotaciones_gatos`);
+
+  return (await CSVToJSON().fromString(stdout)).map((mdbEntry) => {
+    return {
+      id: +mdbEntry['ID'],
+      catId: +mdbEntry['Id_Gato'],
+      createdAt: strToDate(mdbEntry['Fecha']),
+      annotation: mdbEntry['Anotación'],
+    };
+  });
+};
+
 module.exports = {
   importCeaseCauses,
   importEyeColors,
@@ -194,5 +207,6 @@ module.exports = {
   importTowns,
   importUsers,
   importRoles,
-  importColoniesUserRelation: importColonyUserRelation,
+  importColonyUserRelation,
+  importAnnotations,
 };
