@@ -1,8 +1,11 @@
-import { useRouter } from 'next/router';
-import { FormEvent, useEffect, useState } from 'react';
-import DataTable, { TableColumn } from 'react-data-table-component';
-import withPrivateRoute from '../../components/with-private-route';
 import { Annotation, Cat, getCat } from '../../services/cats';
+import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
+import { FormEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
+import DataTable, { TableColumn } from 'react-data-table-component';
+import PropertySelector from '../../components/property-selector';
+import withPrivateRoute from '../../components/with-private-route';
 
 const CatDetails = () => {
   const router = useRouter();
@@ -13,15 +16,22 @@ const CatDetails = () => {
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
-  const [cat, setCat] = useState({} as Cat);
-  // const [environments, setEnvironments] = useState([] as Environment[]);
-  // const [locationTypes, setLocationTypes] = useState([] as LocationType[]);
-  // const [towns, setTowns] = useState([] as Town[]);
-  // const [stats, setStats] = useState(zeroStats);
+  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
+    return a.description.localeCompare(b.description);
+  };
+
   const [loading, setLoading] = useState(false);
-  // const [newTownModalOpen, setNewTownModalOpen] = useState(false);
-  // const [newLocationTypeModalOpen, setNewLocationTypeModalOpen] = useState(false);
-  // const [newEnvironmentModalOpen, setNewEnvironmentModalOpen] = useState(false);
+  const [cat, setCat] = useState({} as Cat);
+  const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
+
+  const onNewCeaseCause = (item: CeaseCause) => {
+    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
+
+    setCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
+    setCat((prev) => {
+      return { ...prev, ceaseCauseId: item.id };
+    });
+  };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     setCat((prev) => {
@@ -52,23 +62,10 @@ const CatDetails = () => {
     setLoading(true);
 
     const id = router.query.id;
-    if (id) {
-      const cat = await getCat(+id);
-      if (cat) {
-        setCat(cat);
+    const [cat, ceaseCauses] = await Promise.all([id ? getCat(+id) : null, getCeaseCausesList({})]);
 
-        // const [environments, locationTypes, towns] = await Promise.all([
-        //   getEnvironmentsList({}),
-        //   getLocationTypesList({}),
-        //   getTownsList({}),
-        // ]);
-
-        // if (environments) setEnvironments(environments.items.sort(descriptionSorter));
-        // if (locationTypes) setLocationTypes(locationTypes.items.sort(descriptionSorter));
-        // if (towns) setTowns(towns.items.sort(nameSorter));
-        // if (cat.cats) reduceAndSetStats(cat.cats);
-      }
-    }
+    if (cat) setCat(cat);
+    if (ceaseCauses) setCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
 
     setLoading(false);
   };
@@ -84,7 +81,7 @@ const CatDetails = () => {
           <div className="container-md">
             <div className="shadow p-3 bg-body rounded">
               <p>
-                <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
                 Datos generales
               </p>
               <form onSubmit={onSubmit}>
@@ -131,8 +128,27 @@ const CatDetails = () => {
                   </div>
                 </div>
 
-                {/* <div className="row mt-3">
-                  <div className="col-md-6">
+                <div className="row mt-3">
+                  <div className="col-md-12">
+                    <label htmlFor="location" className="form-label">
+                      Causa de baja
+                    </label>
+                    <PropertySelector
+                      id="ceaseCauseId"
+                      title="Nueva Causa de Baja"
+                      caption="Descripción"
+                      buttonCaption="Crear"
+                      items={ceaseCauses}
+                      value={cat?.ceaseCauseId}
+                      setter={setCat}
+                      textGetter={(i: CeaseCause) => i.description}
+                      factory={createCeaseCause}
+                      onCreate={onNewCeaseCause}
+                      onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                    />
+                  </div>
+
+                  {/*  <div className="col-md-6">
                     <label htmlFor="location" className="form-label">
                       Ubicación
                     </label>
@@ -182,7 +198,8 @@ const CatDetails = () => {
                       </div>
                     </div>
                   </div>
-                </div> */}
+                 */}
+                </div>
 
                 <div className="row mt-3">
                   <div className="col-md-12">
@@ -199,7 +216,7 @@ const CatDetails = () => {
         <div className="col-md-12">
           <div className="shadow p-3 bg-body rounded">
             <p>
-              <i className="fa fa-female mr-2" aria-hidden="true"></i>
+              <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
               Anotaciones
             </p>
 
