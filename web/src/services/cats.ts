@@ -19,12 +19,18 @@ export const catQueryFields: string = `
   pattern { description }
   eyeColorId
   eyeColor { description }
+  annotations { id annotation }
 `;
 
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
 }
+
+export type Annotation = {
+  id: number;
+  annotation: string;
+};
 
 export type Cat = {
   id: number;
@@ -45,6 +51,7 @@ export type Cat = {
   pattern: { description: string };
   eyeColorId: number;
   eyeColor: { description: string };
+  annotations: Annotation[];
 };
 
 export interface CatsList {
@@ -92,5 +99,17 @@ export async function getCatsList({
       : [];
 
     return { items, total };
+  });
+}
+
+export async function getCat(id: number): Promise<Cat> {
+  const query = `query {
+    cat (id:${id}) {
+      ${catQueryFields}
+    }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    return getCatFromGraphQlResult(response?.data?.cat);
   });
 }
