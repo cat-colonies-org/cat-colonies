@@ -217,23 +217,18 @@ const ColonyDetails = () => {
     setLoading(true);
 
     const id = router.query.id;
-    if (id) {
-      const colony = await getColony(+id);
-      if (colony) {
-        setColony(colony);
+    const [colony, environments, locationTypes, towns] = await Promise.all([
+      id ? getColony(+id) : null,
+      getEnvironmentsList({}),
+      getLocationTypesList({}),
+      getTownsList({}),
+    ]);
 
-        const [environments, locationTypes, towns] = await Promise.all([
-          getEnvironmentsList({}),
-          getLocationTypesList({}),
-          getTownsList({}),
-        ]);
-
-        if (environments) setEnvironments(environments.items.sort(descriptionSorter));
-        if (locationTypes) setLocationTypes(locationTypes.items.sort(descriptionSorter));
-        if (towns) setTowns(towns.items.sort(nameSorter));
-        if (colony.cats) reduceAndSetStats(colony.cats);
-      }
-    }
+    if (colony) setColony(colony);
+    if (colony?.cats) reduceAndSetStats(colony.cats);
+    if (environments) setEnvironments(environments.items.sort(descriptionSorter));
+    if (locationTypes) setLocationTypes(locationTypes.items.sort(descriptionSorter));
+    if (towns) setTowns(towns.items.sort(nameSorter));
 
     setLoading(false);
   };
