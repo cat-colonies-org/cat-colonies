@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
+import { Color, createColor, getColorsList } from '../../services/colors';
 
 const CatDetails = () => {
   const router = useRouter();
@@ -16,13 +17,14 @@ const CatDetails = () => {
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
-  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
-    return a.description.localeCompare(b.description);
-  };
-
   const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState({} as Cat);
   const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
+  const [colors, setColors] = useState([] as Color[]);
+
+  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
+    return a.description.localeCompare(b.description);
+  };
 
   const onNewCeaseCause = (item: CeaseCause) => {
     toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
@@ -33,11 +35,26 @@ const CatDetails = () => {
     });
   };
 
-  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
+  const onNewColor = (item: Color) => {
+    toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
+
+    setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
     setCat((prev) => {
+      return { ...prev, colorId: item.id };
+    });
+  };
+
+  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
+    setCat((prev: any) => {
       return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
     });
   };
+
+  // const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
+  //   setCat((prev) => {
+  //     return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
+  //   });
+  // };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -62,10 +79,15 @@ const CatDetails = () => {
     setLoading(true);
 
     const id = router.query.id;
-    const [cat, ceaseCauses] = await Promise.all([id ? getCat(+id) : null, getCeaseCausesList({})]);
+    const [cat, ceaseCauses, colors] = await Promise.all([
+      id ? getCat(+id) : null,
+      getCeaseCausesList({}),
+      getColorsList({}),
+    ]);
 
     if (cat) setCat(cat);
     if (ceaseCauses) setCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
+    if (colors) setColors(colors.items.sort(descriptionSorter));
 
     setLoading(false);
   };
@@ -105,31 +127,48 @@ const CatDetails = () => {
                     </label>
                     <input type="text" className="form-control" readOnly value={cat?.createdAt?.toLocaleDateString()} />
                   </div>
-                  <div className="col-md-7">
+                  <div className="col-md-3">
                     <label htmlFor="town" className="form-label">
                       Nacimiento
                     </label>
-                    <input type="text" className="form-control" readOnly value={cat?.bornAt?.toLocaleDateString()} />
+                    <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
                   </div>
-                </div>
-
-                <div className="row mt-3">
-                  <div className="col-md-12">
+                  <div className="col-md-4">
                     <label htmlFor="address" className="form-label">
                       Sexo
                     </label>
-                    <input
-                      id="address"
-                      type="text"
-                      className="form-control"
-                      value={cat?.gender}
-                      onChange={onInputChange}
-                    />
+                    <select id="gender" className="form-control" value={cat?.gender} onChange={onSelectChange}>
+                      <option value="Male">Macho</option>
+                      <option value="Female">Hembra</option>
+                      <option value="Unknown">Desconocido</option>
+                    </select>
                   </div>
                 </div>
 
                 <div className="row mt-3">
-                  <div className="col-md-12">
+                  <div className="col-md-2">
+                    <label htmlFor="town" className="form-label">
+                      Esterilizado
+                    </label>
+                    <div className="form-check">
+                      <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    <label htmlFor="town" className="form-label">
+                      Fecha esterilización
+                    </label>
+                    <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
+                  </div>
+
+                  <div className="col-md-3">
+                    <label htmlFor="town" className="form-label">
+                      Baja
+                    </label>
+                    <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
+                  </div>
+                  <div className="col-md-4">
                     <label htmlFor="location" className="form-label">
                       Causa de baja
                     </label>
@@ -147,8 +186,66 @@ const CatDetails = () => {
                       onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
                     />
                   </div>
+                </div>
 
-                  {/*  <div className="col-md-6">
+                <div className="row mt-3">
+                  <div className="col-md-4">
+                    <label htmlFor="location" className="form-label">
+                      Color
+                    </label>
+                    <PropertySelector
+                      id="colorId"
+                      title="Nuevo color"
+                      caption="Descripción"
+                      buttonCaption="Crear"
+                      items={colors}
+                      value={cat?.colorId}
+                      setter={setCat}
+                      textGetter={(i: Color) => i.description}
+                      factory={createColor}
+                      onCreate={onNewColor}
+                      onError={(i: string) => toast.error(`Error creando color "${i}"`)}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <label htmlFor="location" className="form-label">
+                      Patrón
+                    </label>
+                    <PropertySelector
+                      id="ceaseCauseId"
+                      title="Nueva Causa de Baja"
+                      caption="Descripción"
+                      buttonCaption="Crear"
+                      items={ceaseCauses}
+                      value={cat?.ceaseCauseId}
+                      setter={setCat}
+                      textGetter={(i: CeaseCause) => i.description}
+                      factory={createCeaseCause}
+                      onCreate={onNewCeaseCause}
+                      onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <label htmlFor="location" className="form-label">
+                      Ojos
+                    </label>
+                    <PropertySelector
+                      id="ceaseCauseId"
+                      title="Nueva Causa de Baja"
+                      caption="Descripción"
+                      buttonCaption="Crear"
+                      items={ceaseCauses}
+                      value={cat?.ceaseCauseId}
+                      setter={setCat}
+                      textGetter={(i: CeaseCause) => i.description}
+                      factory={createCeaseCause}
+                      onCreate={onNewCeaseCause}
+                      onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                    />
+                  </div>
+                </div>
+
+                {/*  <div className="col-md-6">
                     <label htmlFor="location" className="form-label">
                       Ubicación
                     </label>
@@ -199,7 +296,6 @@ const CatDetails = () => {
                     </div>
                   </div>
                  */}
-                </div>
 
                 <div className="row mt-3">
                   <div className="col-md-12">
