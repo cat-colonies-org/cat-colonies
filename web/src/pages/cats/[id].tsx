@@ -7,7 +7,8 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 import { Color, createColor, getColorsList } from '../../services/colors';
-import { createPattern, Pattern } from '../../services/patterns';
+import { createPattern, getPatternsList, Pattern } from '../../services/patterns';
+import { createEyeColor, EyeColor, getEyeColorsList } from '../../services/eyeColors';
 
 const CatDetails = () => {
   const router = useRouter();
@@ -23,6 +24,7 @@ const CatDetails = () => {
   const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
   const [colors, setColors] = useState([] as Color[]);
   const [patterns, setPatterns] = useState([] as Pattern[]);
+  const [eyeColors, setEyeColors] = useState([] as Color[]);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -52,6 +54,15 @@ const CatDetails = () => {
     setPatterns((prev) => [...prev, { ...item }].sort(descriptionSorter));
     setCat((prev) => {
       return { ...prev, patternId: item.id };
+    });
+  };
+
+  const onNewEyeColor = (item: EyeColor) => {
+    toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
+
+    setEyeColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
+    setCat((prev) => {
+      return { ...prev, eyeColorId: item.id };
     });
   };
 
@@ -90,15 +101,19 @@ const CatDetails = () => {
     setLoading(true);
 
     const id = router.query.id;
-    const [cat, ceaseCauses, colors] = await Promise.all([
+    const [cat, ceaseCauses, colors, patterns, eyeColors] = await Promise.all([
       id ? getCat(+id) : null,
       getCeaseCausesList({}),
       getColorsList({}),
+      getPatternsList({}),
+      getEyeColorsList({}),
     ]);
 
     if (cat) setCat(cat);
     if (ceaseCauses) setCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
     if (colors) setColors(colors.items.sort(descriptionSorter));
+    if (patterns) setPatterns(patterns.items.sort(descriptionSorter));
+    if (eyeColors) setEyeColors(eyeColors.items.sort(descriptionSorter));
 
     setLoading(false);
   };
@@ -199,7 +214,7 @@ const CatDetails = () => {
                   </div>
                 </div>
 
-                <div className="row mt-3">
+                <div className="row">
                   <div className="col-md-4">
                     <label htmlFor="location" className="form-label">
                       Color
@@ -230,7 +245,7 @@ const CatDetails = () => {
                       items={patterns}
                       value={cat?.patternId}
                       setter={setCat}
-                      textGetter={(i: CeaseCause) => i.description}
+                      textGetter={(i: Pattern) => i.description}
                       factory={createPattern}
                       onCreate={onNewPattern}
                       onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
@@ -241,16 +256,16 @@ const CatDetails = () => {
                       Ojos
                     </label>
                     <PropertySelector
-                      id="ceaseCauseId"
-                      title="Nueva Causa de Baja"
+                      id="eyeColorId"
+                      title="Nuevo color de ojos"
                       caption="Descripción"
                       buttonCaption="Crear"
-                      items={ceaseCauses}
-                      value={cat?.ceaseCauseId}
+                      items={eyeColors}
+                      value={cat?.eyeColorId}
                       setter={setCat}
-                      textGetter={(i: CeaseCause) => i.description}
-                      factory={createCeaseCause}
-                      onCreate={onNewCeaseCause}
+                      textGetter={(i: EyeColor) => i.description}
+                      factory={createEyeColor}
+                      onCreate={onNewEyeColor}
                       onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
                     />
                   </div>
