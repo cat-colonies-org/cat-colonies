@@ -151,7 +151,7 @@ const CatDetails = () => {
                       Esterilizado
                     </label>
                     <div className="form-check">
-                      <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
+                      <input id="sterilized" className="form-check-input" type="checkbox" checked={cat.sterilized} />
                     </div>
                   </div>
 
