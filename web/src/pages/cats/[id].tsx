@@ -7,6 +7,7 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 import { Color, createColor, getColorsList } from '../../services/colors';
+import { createPattern, Pattern } from '../../services/patterns';
 
 const CatDetails = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const CatDetails = () => {
   const [cat, setCat] = useState({} as Cat);
   const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
   const [colors, setColors] = useState([] as Color[]);
+  const [patterns, setPatterns] = useState([] as Pattern[]);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -41,6 +43,15 @@ const CatDetails = () => {
     setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
     setCat((prev) => {
       return { ...prev, colorId: item.id };
+    });
+  };
+
+  const onNewPattern = (item: Pattern) => {
+    toast.success(`Creada nueva distribución "${item.description}" con id "${item.id}"`);
+
+    setPatterns((prev) => [...prev, { ...item }].sort(descriptionSorter));
+    setCat((prev) => {
+      return { ...prev, patternId: item.id };
     });
   };
 
@@ -209,19 +220,19 @@ const CatDetails = () => {
                   </div>
                   <div className="col-md-4">
                     <label htmlFor="location" className="form-label">
-                      Patrón
+                      Disposición
                     </label>
                     <PropertySelector
-                      id="ceaseCauseId"
-                      title="Nueva Causa de Baja"
+                      id="patternId"
+                      title="Nueva disposición"
                       caption="Descripción"
                       buttonCaption="Crear"
-                      items={ceaseCauses}
-                      value={cat?.ceaseCauseId}
+                      items={patterns}
+                      value={cat?.patternId}
                       setter={setCat}
                       textGetter={(i: CeaseCause) => i.description}
-                      factory={createCeaseCause}
-                      onCreate={onNewCeaseCause}
+                      factory={createPattern}
+                      onCreate={onNewPattern}
                       onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
                     />
                   </div>
