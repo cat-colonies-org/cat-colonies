@@ -1,15 +1,13 @@
 import { Cat, Gender } from '../../services/cats';
 import { Colony, getColony, updateColony } from '../../services/colonies';
-import { Environment, getEnvironmentsList } from '../../services/environments';
+import { createEnvironment, Environment, getEnvironmentsList } from '../../services/environments';
 import { FormEvent, useEffect, useState } from 'react';
-import { getLocationTypesList, LocationType } from '../../services/location-types';
+import { createLocationType, getLocationTypesList, LocationType } from '../../services/location-types';
 import { createTown, getTownsList, Town } from '../../services/towns';
 import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import NewEnvironmentModal from '../../components/new-environment-modal';
-import NewLocationTypeModal from '../../components/new-location-type-modal';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 
@@ -83,9 +81,6 @@ const ColonyDetails = () => {
   const [towns, setTowns] = useState([] as Town[]);
   const [stats, setStats] = useState(zeroStats);
   const [loading, setLoading] = useState(false);
-  const [newTownModalOpen, setNewTownModalOpen] = useState(false);
-  const [newLocationTypeModalOpen, setNewLocationTypeModalOpen] = useState(false);
-  const [newEnvironmentModalOpen, setNewEnvironmentModalOpen] = useState(false);
 
   const valueAndPercent = (value: number, total: number): string => {
     return total ? `${value} (${((value / total) * 100).toFixed(2)}%)` : `${value}`;
@@ -99,22 +94,12 @@ const ColonyDetails = () => {
     return a.description.localeCompare(b.description);
   };
 
-  // #region Town
   const onNewTown = (town: Town): void => {
     toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
     setTowns((prev) => [...prev, { ...town }].sort(nameSorter));
     setColony((prev) => {
       return { ...prev, townId: town.id };
     });
-  };
-
-  // #endregion Town
-
-  // #region LocationType
-  const onCreateLocationTypeClick = (event: FormEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
-
-    setNewLocationTypeModalOpen(true);
   };
 
   const onNewLocationType = (locationType: LocationType): void => {
@@ -125,19 +110,6 @@ const ColonyDetails = () => {
     });
   };
 
-  const onLocationTypeError = (locationTypeName: string): void => {
-    toast.error(`Error creando ubicatón "${locationTypeName}"`);
-  };
-  // #endregion LocationType
-
-  // #region Environment
-
-  const onCreateEnvironmentClick = (event: FormEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
-
-    setNewEnvironmentModalOpen(true);
-  };
-
   const onNewEnvironment = (environment: Environment): void => {
     toast.success(`Creado nuevo entorno "${environment.description}" con id "${environment.id}"`);
     setEnvironments((prev) => [...prev, { ...environment }].sort(descriptionSorter));
@@ -146,19 +118,9 @@ const ColonyDetails = () => {
     });
   };
 
-  const onEnvironmentError = (environment: string): void => {
-    toast.error(`Error creando entorno "${environment}"`);
-  };
-  // #endregion Environment
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     setColony((prev) => {
       return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
-    });
-  };
-
-  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
-    setColony((prev) => {
-      return { ...prev, [event.currentTarget.id]: +event.currentTarget.value };
     });
   };
 
@@ -167,10 +129,10 @@ const ColonyDetails = () => {
 
     if (colony.id) {
       const updatePromise = updateColony(+colony.id, {
-        ...(colony.address && { address: colony.address }),
-        ...(colony.locationTypeId && { locationTypeId: +colony.locationTypeId }),
-        ...(colony.environmentId && { environmentId: +colony.environmentId }),
-        ...(colony.townId && { townId: +colony.townId }),
+        ...{ address: colony.address },
+        ...{ locationTypeId: +colony.locationTypeId },
+        ...{ environmentId: +colony.environmentId },
+        ...{ townId: +colony.townId },
       });
 
       toast.promise(updatePromise, {
@@ -230,22 +192,6 @@ const ColonyDetails = () => {
 
   return (
     <>
-      <NewLocationTypeModal
-        id="newLocationTypeModal"
-        isOpen={newLocationTypeModalOpen}
-        onClose={() => setNewLocationTypeModalOpen(false)}
-        onNewLocationType={onNewLocationType}
-        onLocationTypeError={onLocationTypeError}
-      />
-
-      <NewEnvironmentModal
-        id="newEnvironmentModal"
-        isOpen={newEnvironmentModalOpen}
-        onClose={() => setNewEnvironmentModalOpen(false)}
-        onNewEnvironment={onNewEnvironment}
-        onEnvironmentError={onEnvironmentError}
-      />
-
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -322,51 +268,37 @@ const ColonyDetails = () => {
                       <label htmlFor="location" className="form-label">
                         Ubicación
                       </label>
-                      <div className="input-group mb-3">
-                        <select
-                          id="locationTypeId"
-                          className="form-control"
-                          value={colony?.locationTypeId}
-                          onChange={onSelectChange}
-                        >
-                          {locationTypes.length &&
-                            locationTypes.map((item, i) => (
-                              <option key={i} value={item.id}>
-                                {item.description}
-                              </option>
-                            ))}
-                        </select>
-                        <div className="input-group-append">
-                          <button className="input-group-text" onClick={onCreateLocationTypeClick}>
-                            <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
+                      <PropertySelector
+                        id="locationTypeId"
+                        title="Nueva Ubicación"
+                        caption="Descripción"
+                        buttonCaption="Crear"
+                        items={locationTypes}
+                        value={colony?.locationTypeId}
+                        setter={setColony}
+                        textGetter={(i: LocationType) => i.description}
+                        factory={createLocationType}
+                        onCreate={onNewLocationType}
+                        onError={(i: string) => toast.error(`Error creando ubicación "${i}"`)}
+                      />
                     </div>
                     <div className="col-md-6">
                       <label className="form-label" htmlFor="environment">
                         Entorno
                       </label>
-                      <div className="input-group mb-3">
-                        <select
-                          id="environmentId"
-                          className="form-control"
-                          value={colony?.environmentId}
-                          onChange={onSelectChange}
-                        >
-                          {environments.length &&
-                            environments.map((item, i) => (
-                              <option key={i} value={item.id}>
-                                {item.description}
-                              </option>
-                            ))}
-                        </select>
-                        <div className="input-group-append">
-                          <button className="input-group-text" onClick={onCreateEnvironmentClick}>
-                            <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
+                      <PropertySelector
+                        id="environmentId"
+                        title="Nuevo entorno"
+                        caption="Descripción"
+                        buttonCaption="Crear"
+                        items={environments}
+                        value={colony?.environmentId}
+                        setter={setColony}
+                        textGetter={(i: Environment) => i.description}
+                        factory={createEnvironment}
+                        onCreate={onNewEnvironment}
+                        onError={(i: string) => toast.error(`Error creando entorno "${i}"`)}
+                      />
                     </div>
                   </div>
 
