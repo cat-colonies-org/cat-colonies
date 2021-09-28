@@ -9,11 +9,10 @@ import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import appConfig from 'src/configuration';
 import { RolesGuard } from './guards/roles-guard';
-import { UsersModule } from 'src/domain/users/users.module';
 
 @Module({
   imports: [
-    forwardRef(() => UsersModule),
+    //forwardRef(() => UsersModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: appConfig().jwt.secret,

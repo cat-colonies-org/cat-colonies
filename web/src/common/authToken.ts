@@ -35,6 +35,10 @@ export class AuthToken {
     return !this.isExpired;
   }
 
+  static async getToken() {
+    return Cookie.get(TOKEN_STORAGE_KEY);
+  }
+
   static async storeToken(token: string) {
     Cookie.set(TOKEN_STORAGE_KEY, token);
   }

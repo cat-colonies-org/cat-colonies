@@ -7,10 +7,8 @@ import { UsersService } from 'src/domain/users/users.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    @Inject(forwardRef(() => UsersService)) private userService: UsersService,
-  ) {}
+  constructor(private reflector: Reflector) //@Inject(forwardRef(() => UsersService)) private userService: UsersService,
+  {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<Roles[]>('roles', context.getHandler());

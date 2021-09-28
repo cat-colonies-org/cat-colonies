@@ -236,8 +236,6 @@ type Query {
   annotation(id: Int!): Annotation
   signin(userCredentials: UserCredentials!): AccessToken!
   test: Boolean!
-  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
-  user(id: Int!): User
   cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
   cat(id: Int!): Cat
   ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
@@ -258,6 +256,8 @@ type Query {
   role(id: Int!): Role
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
+  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
+  user(id: Int!): User
 }
 
 input UserCredentials {
@@ -269,9 +269,6 @@ type Mutation {
   createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
   updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
   removeAnnotation(id: Int!): RemoveAnnotationResult!
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): RemoveUserResult!
   createCat(createCatInput: CreateCatInput!): Cat!
   updateCat(updateCatInput: UpdateCatInput!): Cat!
   removeCat(id: Int!): RemoveCatResult!
@@ -302,6 +299,9 @@ type Mutation {
   createTown(createTownInput: CreateTownInput!): Town!
   updateTown(updateTownInput: UpdateTownInput!): Town!
   removeTown(id: Int!): RemoveTownResult!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): RemoveUserResult!
 }
 
 input CreateAnnotationInput {
@@ -312,27 +312,6 @@ input CreateAnnotationInput {
 input UpdateAnnotationInput {
   catId: Int
   annotation: String
-  id: Int!
-}
-
-input CreateUserInput {
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
-  authorizesWhatsApp: Boolean
-  password: String!
-}
-
-input UpdateUserInput {
-  name: String
-  surnames: String
-  idCard: String
-  phoneNumber: Int
-  email: String
-  authorizesWhatsApp: Boolean
-  password: String
   id: Int!
 }
 
@@ -449,13 +428,31 @@ input UpdateTownInput {
   id: Int!
 }
 
+input CreateUserInput {
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  authorizesWhatsApp: Boolean
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  surnames: String
+  idCard: String
+  phoneNumber: Int
+  email: String
+  authorizesWhatsApp: Boolean
+  password: String
+  id: Int!
+}
+
 type Subscription {
   annotationAdded: Annotation!
   annotationUpdated: Annotation!
   annotationRemoved: Annotation!
-  userAdded: User!
-  userUpdated: User!
-  userRemoved: User!
   catAdded: Cat!
   catUpdated: Cat!
   catRemoved: Cat!
@@ -483,4 +480,7 @@ type Subscription {
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!
+  userAdded: User!
+  userUpdated: User!
+  userRemoved: User!
 }

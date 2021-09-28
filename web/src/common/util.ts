@@ -1,3 +1,5 @@
+import { AuthToken } from './authToken';
+
 export const objToListString = (obj: Record<string, any>): string => {
   return Object.keys(obj).reduce((composed, key) => {
     composed += composed ? ', ' : '';
@@ -37,7 +39,7 @@ export const apiCall = async (query: string) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // Authorization: "Bearer " + "## API KEY"
+      Authorization: 'Bearer ' + (await AuthToken.getToken()),
     },
   };
 
