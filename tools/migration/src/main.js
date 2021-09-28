@@ -5,31 +5,35 @@ const OUTPUT_PATH = './output';
 const COMBINED_OUTPUT = path.join(OUTPUT_PATH, 'combined.sql');
 
 const {
-  importCeaseCauses,
-  importEyeColors,
+  importAnnotations,
   importCats,
+  importCeaseCauses,
   importColonies,
-  importLocationTypes,
+  importColonyUserRelation,
+  importColors,
   importEnvironments,
+  importEyeColors,
+  importLocationTypes,
+  importPatterns,
+  importRoles,
   importTowns,
   importUsers,
-  importRoles,
-  importColonyUserRelation,
-  importAnnotations,
 } = require('./importers');
 
 const {
+  annotationFormatter,
   catFormatter,
   ceaseCauseFormatter,
-  eyeColorFormatter,
   colonyFormatter,
-  locationTypeFormatter,
+  colonyUserRelationFormatter,
+  colorFormatter,
   environmentFormatter,
+  eyeColorFormatter,
+  locationTypeFormatter,
+  patternFormatter,
+  roleFormatter,
   townFormatter,
   userFormatter,
-  roleFormatter,
-  colonyUserRelationFormatter,
-  annotationFormatter,
 } = require('./formatters');
 
 const exportFile = async (tableName, importer, formatter) => {
@@ -59,6 +63,8 @@ const exportFile = async (tableName, importer, formatter) => {
   await exportFile('environment', importEnvironments, environmentFormatter);
   await exportFile('colony', importColonies, colonyFormatter);
 
+  await exportFile('color', importColors, colorFormatter);
+  await exportFile('pattern', importPatterns, patternFormatter);
   await exportFile('eye_color', importEyeColors, eyeColorFormatter);
   await exportFile('cease_cause', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cat', importCats, catFormatter);

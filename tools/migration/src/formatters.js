@@ -1,13 +1,15 @@
 const { dateToIso } = require('./mappers');
 
 const catFormatter = (cat) => {
-  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
+  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "colorId", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
     ${cat.id}, 
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
     ${cat.bornAt ? dateToIso(cat.bornAt) : null},
     '${cat.gender}', 
     ${cat.esterilized ? 'True' : 'False'}, 
+    ${cat.colorId},
+    ${cat.patternId},
     ${cat.eyeColorId},
     ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
     ${cat.ceaseCauseId}
@@ -100,16 +102,32 @@ const annotationFormatter = (entity) => {
   );`;
 };
 
+const colorFormatter = (color) => {
+  return `INSERT INTO color ("id", "description") VALUES (
+    ${color.id}, 
+    '${color.description}'
+  );`;
+};
+
+const patternFormatter = (pattern) => {
+  return `INSERT INTO pattern ("id", "description") VALUES (
+    ${pattern.id}, 
+    '${pattern.description}'
+  );`;
+};
+
 module.exports = {
+  annotationFormatter,
   catFormatter,
   ceaseCauseFormatter,
-  eyeColorFormatter,
   colonyFormatter,
-  locationTypeFormatter,
+  colonyUserRelationFormatter,
+  colorFormatter,
   environmentFormatter,
+  eyeColorFormatter,
+  locationTypeFormatter,
+  patternFormatter,
+  roleFormatter,
   townFormatter,
   userFormatter,
-  roleFormatter,
-  colonyUserRelationFormatter,
-  annotationFormatter,
 };

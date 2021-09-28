@@ -18,6 +18,32 @@ const EyeColor = Object.freeze({
   Verde: 7,
 });
 
+const Color = Object.freeze({
+  Desconocido: 0,
+  Atigrado: 1,
+  AtigradoDiluido: 2,
+  Azul: 3,
+  Blanco: 4,
+  Calico: 5,
+  Canela: 6,
+  Carey: 7,
+  CareyDiluido: 8,
+  Chocolate: 9,
+  Crema: 10,
+  Gris: 11,
+  Negro: 12,
+  Rojo: 13,
+});
+
+const Pattern = Object.freeze({
+  Desconocido: 0,
+  Particolor: 1,
+  Point: 2,
+  Solido: 3,
+  Tabby: 4,
+  Tricolor: 5,
+});
+
 const LocationType = Object.freeze({
   Desconocido: 0,
   SolarPrivado: 1,
@@ -91,14 +117,97 @@ const strToEyeColorId = (str) => {
   return EyeColor.Desconocido;
 };
 
+const strToColorId = (str) => {
+  if (str.toLowerCase().includes('azul')) return Color.Azul;
+  if (str.toLowerCase().includes('blanc')) return Color.Blanco;
+  if (str.toLowerCase().includes('canela')) return Color.Canela;
+  if (str.toLowerCase().includes('carey')) return Color.Carey;
+  if (str.toLowerCase().includes('chocolate')) return Color.Chocolate;
+  if (str.toLowerCase().includes('crema')) return Color.Crema;
+  if (str.toLowerCase().includes('negr')) return Color.Negro;
+  if (str.toLowerCase().includes('gris')) return Color.Gris;
+  if (str.toLowerCase().includes('rojo')) return Color.Rojo;
+  if (str.toLowerCase().includes('red')) return Color.Rojo;
+  if (str.toLowerCase() === 'particolor') return Color.Negro;
+  if (str.toLowerCase() === 'particolor tabby') return Color.Gris;
+  if (str.toLowerCase() === 'siamés') return Color.Chocolate;
+  if (str.toLowerCase() === 'siamés atigrado') return Color.Atigrado;
+  if (str.toLowerCase() === 'tricolor atigrada') return Color.Atigrado;
+  if (str.toLowerCase() === 'tricolor') return Color.Calico;
+  if (str.toLowerCase() === 'tricolor atigrada diluida') return Color.AtigradoDiluido;
+  if (str.toLowerCase() === 'tricolor cálico') return Color.Calico;
+  if (str.toLowerCase() === 'tricolor diluido') return Color.CareyDiluido;
+
+  return Color.Desconocido;
+};
+
+const strToPatternId = (str) => {
+  if (
+    ['azul', 'blanca', 'blanco', 'canela', 'crema', 'negra', 'negro', 'sólido negra'].includes(str.trim().toLowerCase())
+  ) {
+    return Pattern.Solido;
+  }
+
+  if (
+    [
+      'carey',
+      'siamés atigrado',
+      'tricolor',
+      'tricolor atigrada',
+      'tricolor atigrada diluida',
+      'tricolor cálico',
+      'tricolor carey',
+      'tricolor carey',
+      'tricolor diluido',
+    ].includes(str.trim().toLowerCase())
+  ) {
+    return Pattern.Tricolor;
+  }
+
+  if (
+    [
+      'particolor',
+      'particolor negro',
+      'particolor  negro',
+      'particolor azul',
+      'particolor crema',
+      'particolor gris',
+      'particolor negra',
+      'particolor negro',
+      'particolor rojo tabby',
+      'particolor tabby',
+    ].includes(str.trim().toLowerCase())
+  ) {
+    return Pattern.Particolor;
+  }
+
+  if (
+    ['chocolate point', 'point azul', 'point azul', 'point chocolate', 'red point', 'red point', 'siamés'].includes(
+      str.trim().toLowerCase(),
+    )
+  ) {
+    return Pattern.Point;
+  }
+
+  if (['rojo tabby', 'tabby', 'tabby azul'].includes(str.trim().toLowerCase())) {
+    return Pattern.Tabby;
+  }
+
+  if (str.trim().toLowerCase().includes('particolor')) return Pattern.Particolor;
+
+  return Pattern.Desconocido;
+};
+
 module.exports = {
-  strToDate,
-  dateToIso,
   birthYearToBornAt,
-  strToGender,
-  strToSterilized,
+  dateToIso,
   strToCeaseCauseId,
-  strToEyeColorId,
-  strToLocationType,
+  strToColorId,
+  strToDate,
   strToEnvironment,
+  strToEyeColorId,
+  strToGender,
+  strToLocationType,
+  strToPatternId,
+  strToSterilized,
 };

@@ -11,6 +11,8 @@ const {
   strToEyeColorId,
   strToLocationType,
   strToEnvironment,
+  strToColorId,
+  strToPatternId,
 } = require('./mappers');
 
 const MDB_PATH = './data/CENSO COLONIAS FELINAS ALBATERA.accdb';
@@ -77,22 +79,53 @@ const importEyeColors = async () => {
   ]);
 };
 
+const importColors = async () => {
+  return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
+    { id: 1, description: 'Atigrado' },
+    { id: 2, description: 'Atigrado diluído' },
+    { id: 3, description: 'Azul' },
+    { id: 4, description: 'Blanco' },
+    { id: 5, description: 'Calico' },
+    { id: 6, description: 'Canela' },
+    { id: 7, description: 'Carey' },
+    { id: 8, description: 'Carey diluído' },
+    { id: 9, description: 'Chocolate' },
+    { id: 10, description: 'Crema' },
+    { id: 11, description: 'Gris' },
+    { id: 12, description: 'Negro' },
+    { id: 13, description: 'Rojo' },
+  ]);
+};
+
+const importPatterns = async () => {
+  return Promise.resolve([
+    { id: 0, description: 'Desconocido' },
+    { id: 1, description: 'Particolor' },
+    { id: 2, description: 'Point' },
+    { id: 3, description: 'Sólido' },
+    { id: 4, description: 'Tabby' },
+    { id: 5, description: 'Tricolor' },
+  ]);
+};
+
 const importCats = async () => {
   const { stdout } = await exec(`mdb-export "${MDB_PATH}" gatos`);
 
   return (await CSVToJSON().fromString(stdout)).map((mdbCat) => {
-    // CAPA: 'EUROPEO Y BLANCO',
     // 'IMÁGEN': '48',
     return {
       id: +mdbCat['Id GATO'],
       colonyId: +mdbCat['Id Colonia'],
       createdAt: strToDate(mdbCat['Fecha Alta']),
       bornAt: birthYearToBornAt(mdbCat['AÑO NACIDO']),
-      esterilized: strToSterilized(mdbCat['ESTERIL']),
-      gender: strToGender(mdbCat['SEXO']),
       ceasedAt: strToDate(mdbCat['BAJA']),
       ceaseCauseId: strToCeaseCauseId(mdbCat['CAUSA']),
+      esterilized: strToSterilized(mdbCat['ESTERIL']),
+      gender: strToGender(mdbCat['SEXO']),
       eyeColorId: strToEyeColorId(mdbCat['OJOS']),
+      colorId: strToColorId(mdbCat['CAPA']),
+      patternId: strToPatternId(mdbCat['CAPA']),
     };
   });
 };
@@ -198,15 +231,17 @@ const importAnnotations = async () => {
 };
 
 module.exports = {
-  importCeaseCauses,
-  importEyeColors,
+  importAnnotations,
   importCats,
+  importCeaseCauses,
   importColonies,
-  importLocationTypes,
+  importColonyUserRelation,
+  importColors,
   importEnvironments,
+  importEyeColors,
+  importLocationTypes,
+  importPatterns,
+  importRoles,
   importTowns,
   importUsers,
-  importRoles,
-  importColonyUserRelation,
-  importAnnotations,
 };
