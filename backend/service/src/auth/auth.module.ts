@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,9 +8,11 @@ import { AuthService } from './auth.service';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import appConfig from 'src/configuration';
+import { RolesGuard } from './guards/roles-guard';
 
 @Module({
   imports: [
+    //forwardRef(() => UsersModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: appConfig().jwt.secret,
@@ -20,7 +22,7 @@ import appConfig from 'src/configuration';
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [AuthResolver, AuthService, JwtStrategy, GqlAuthGuard],
+  providers: [AuthResolver, AuthService, JwtStrategy, GqlAuthGuard, RolesGuard],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
