@@ -1,4 +1,5 @@
 import { apiCall, getCriteriaString } from '../common/util';
+import { Annotation } from './annotations';
 
 export const catQueryFields: string = `
   id
@@ -26,12 +27,6 @@ export enum Gender {
   Male = 'Male',
   Female = 'Female',
 }
-
-export type Annotation = {
-  id: number;
-  date: Date;
-  annotation: string;
-};
 
 export type Cat = {
   id: number;

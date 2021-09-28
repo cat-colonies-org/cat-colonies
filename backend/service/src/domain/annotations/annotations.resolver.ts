@@ -45,7 +45,7 @@ export class AnnotationsResolver extends BaseResolver<Annotation> {
   async createAnnotation(
     @Args('createAnnotationInput') createAnnotationInput: CreateAnnotationInput,
   ): Promise<Annotation> {
-    return this.create(createAnnotationInput);
+    return this.create({ ...createAnnotationInput, date: new Date() });
   }
 
   @Mutation(() => Annotation)
