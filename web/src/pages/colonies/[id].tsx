@@ -124,23 +124,39 @@ const ColonyDetails = () => {
     });
   };
 
+  const onNewCatClicked = async (event: FormEvent<HTMLButtonElement>): Promise<void> => {
+    if (!colony.id) {
+      toast.warn('Debe guardar la nueva colonia antes de añadirle gatos');
+      return;
+    }
+
+    const savedColony = await save();
+    if (savedColony) {
+      router.push(`/cats/new?colonyId=${colony.id}`);
+    }
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
-    if (colony.id) {
-      const updatePromise = updateColony(+colony.id, {
-        ...{ address: colony.address },
-        ...{ locationTypeId: +colony.locationTypeId },
-        ...{ environmentId: +colony.environmentId },
-        ...{ townId: +colony.townId },
-      });
+    const promise = save();
 
-      toast.promise(updatePromise, {
+    if (colony.id) {
+      toast.promise(promise, {
         pending: 'Conectando con el servidor...',
         success: 'Datos actualizados',
         error: 'Error actualizando datos',
       });
     }
+  };
+
+  const save = () => {
+    return updateColony(+colony.id, {
+      ...{ address: colony.address },
+      ...{ locationTypeId: +colony.locationTypeId },
+      ...{ environmentId: +colony.environmentId },
+      ...{ townId: +colony.townId },
+    });
   };
 
   const reduceAndSetStats = (cats: Cat[]): void => {
@@ -376,9 +392,14 @@ const ColonyDetails = () => {
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
-              <p>
-                <i className="fas fa-cat mr-2" aria-hidden="true"></i>
-                Gatos
+              <p className="d-flex justify-content-between">
+                <div>
+                  <i className="fas fa-cat mr-2" aria-hidden="true"></i>
+                  Gatos
+                </div>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onNewCatClicked}>
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
               </p>
 
               <DataTable

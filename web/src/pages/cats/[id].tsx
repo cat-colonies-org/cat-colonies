@@ -1,5 +1,7 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import { Annotation, createAnnotation } from '../../services/annotations';
-import { Cat, getCat } from '../../services/cats';
+import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
 import { createEyeColor, EyeColor, getEyeColorsList } from '../../services/eyeColors';
@@ -8,9 +10,13 @@ import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
+import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
 import PropertySelector from '../../components/property-selector';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import withPrivateRoute from '../../components/with-private-route';
+
+registerLocale('es', es);
 
 const CatDetails = () => {
   const router = useRouter();
@@ -20,6 +26,18 @@ const CatDetails = () => {
     { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString() },
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
+
+  const emptyCat: Partial<Cat> = Object.freeze({
+    createdAt: new Date(),
+    bornAt: new Date(),
+    sterilizedAt: undefined,
+    ceasedAt: undefined,
+    colorId: 0,
+    eyeColorId: 0,
+    patternId: 0,
+    ceaseCauseId: 0,
+    gender: Gender.Unknown,
+  });
 
   const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState({} as Cat);
@@ -43,11 +61,16 @@ const CatDetails = () => {
   };
 
   const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
+    if (!cat.id) {
+      toast.warn('Debe guardar el gato antes de poder hacer anotaciones');
+      return;
+    }
+
     setModalOpen(true);
   };
 
   const onNewAnnotation = async (result: { value: string }) => {
-    if (!result?.value) return;
+    if (!result?.value || !cat.id) return;
 
     const annotation: Annotation = await createAnnotation(cat.id, result.value);
     if (annotation) {
@@ -96,37 +119,49 @@ const CatDetails = () => {
     });
   };
 
-  // const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
-  //   setCat((prev) => {
-  //     return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
-  //   });
-  // };
+  const onDateChange = (date: Date, field: string): void => {
+    setCat((prev: Cat) => {
+      return { ...prev, [field]: date };
+    });
+  };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
-    // if (colony.id) {
-    //   const updatePromise = updateColony(+colony.id, {
-    //     ...(colony.address && { address: colony.address }),
-    //     ...(colony.locationTypeId && { locationTypeId: +colony.locationTypeId }),
-    //     ...(colony.environmentId && { environmentId: +colony.environmentId }),
-    //     ...(colony.townId && { townId: +colony.townId }),
-    //   });
+    let promise: Promise<Cat>;
 
-    //   toast.promise(updatePromise, {
-    //     pending: 'Conectando con el servidor...',
-    //     success: 'Datos actualizados',
-    //     error: 'Error actualizando datos',
-    //   });
-    // }
+    console.log('saving !!!!!!!!');
+    console.log(cat);
+
+    if (cat.id) promise = updateCat(+cat.id, cat);
+    else promise = createCat(cat);
+
+    const saved = await toast.promise(promise, {
+      pending: 'Conectando con el servidor...',
+      success: 'Datos actualizados',
+      error: 'Error actualizando datos',
+    });
+
+    console.log('saved !!!!!!!!');
+    console.log(saved);
+
+    saved && setCat(saved);
   };
 
   const fetchData = async () => {
     setLoading(true);
 
-    const id = router.query.id;
+    const id = router?.query?.id ? +router.query.id : undefined;
+    const colonyId = router?.query?.colonyId ? +router.query.colonyId : undefined;
+
+    if (!id && !colonyId) {
+      toast.error('Error inesperado');
+      router.replace('/');
+      return;
+    }
+
     const [cat, ceaseCauses, colors, patterns, eyeColors] = await Promise.all([
-      id ? getCat(+id) : null,
+      id ? getCat(+id) : Promise.resolve({ ...emptyCat, colonyId } as Cat),
       getCeaseCausesList({}),
       getColorsList({}),
       getPatternsList({}),
@@ -196,9 +231,14 @@ const CatDetails = () => {
                       <label htmlFor="town" className="form-label">
                         Nacimiento
                       </label>
-                      <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
+                      <ReactDatePicker
+                        className="form-control"
+                        locale="el"
+                        value={cat?.bornAt?.toLocaleDateString()}
+                        onChange={(date: Date) => onDateChange(date, 'bornAt')}
+                      />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-2">
                       <label htmlFor="address" className="form-label">
                         Sexo
                       </label>
@@ -207,6 +247,12 @@ const CatDetails = () => {
                         <option value="Female">Hembra</option>
                         <option value="Unknown">Desconocido</option>
                       </select>
+                    </div>
+                    <div className="col-md-2">
+                      <label htmlFor="id" className="form-label">
+                        Colonia
+                      </label>
+                      <input id="colonyId" type="text" className="form-control" value={cat?.colonyId} readOnly />
                     </div>
                   </div>
 
@@ -224,14 +270,24 @@ const CatDetails = () => {
                       <label htmlFor="town" className="form-label">
                         Fecha esterilización
                       </label>
-                      <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
+                      <ReactDatePicker
+                        className="form-control"
+                        locale="el"
+                        value={cat?.sterilizedAt?.toLocaleDateString()}
+                        onChange={(date: Date) => onDateChange(date, 'sterilizedAt')}
+                      />
                     </div>
 
                     <div className="col-md-3">
                       <label htmlFor="town" className="form-label">
                         Baja
                       </label>
-                      <input type="text" className="form-control" value={cat?.bornAt?.toLocaleDateString()} />
+                      <ReactDatePicker
+                        className="form-control"
+                        locale="el"
+                        value={cat?.ceasedAt?.toLocaleDateString()}
+                        onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                      />
                     </div>
                     <div className="col-md-4">
                       <label htmlFor="location" className="form-label">
@@ -309,59 +365,6 @@ const CatDetails = () => {
                       />
                     </div>
                   </div>
-
-                  {/*  <div className="col-md-6">
-                    <label htmlFor="location" className="form-label">
-                      Ubicación
-                    </label>
-                    <div className="input-group mb-3">
-                      <select
-                        id="locationTypeId"
-                        className="form-control"
-                        value={cat?.locationTypeId}
-                        onChange={onSelectChange}
-                      >
-                        {locationTypes.length &&
-                          locationTypes.map((item, i) => (
-                            <option key={i} value={item.id}>
-                              {item.description}
-                            </option>
-                          ))}
-                      </select>
-                      <div className="input-group-append">
-                        <button className="input-group-text" onClick={onCreateLocationTypeClick}>
-                          <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label" htmlFor="environment">
-                      Entorno
-                    </label>
-                    <div className="input-group mb-3">
-                      <select
-                        id="environmentId"
-                        className="form-control"
-                        value={cat?.environmentId}
-                        onChange={onSelectChange}
-                      >
-                        {environments.length &&
-                          environments.map((item, i) => (
-                            <option key={i} value={item.id}>
-                              {item.description}
-                            </option>
-                          ))}
-                      </select>
-                      <div className="input-group-append">
-                        <button className="input-group-text" onClick={onCreateEnvironmentClick}>
-                          <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                 */}
-
                   <div className="row mt-3">
                     <div className="col-md-12">
                       <button className="btn btn-primary">Guardar</button>

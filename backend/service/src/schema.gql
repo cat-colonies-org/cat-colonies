@@ -322,9 +322,12 @@ input CreateCatInput {
   colonyId: Int
   colorId: Int
   patternId: Int
-  eyesId: Int
+  eyeColorId: Int
   gender: Gender
   kitten: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  bornAt: DateTime
 }
 
 input UpdateCatInput {
@@ -334,9 +337,12 @@ input UpdateCatInput {
   colonyId: Int
   colorId: Int
   patternId: Int
-  eyesId: Int
+  eyeColorId: Int
   gender: Gender
   kitten: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  bornAt: DateTime
   id: Int!
 }
 

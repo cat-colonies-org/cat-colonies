@@ -22,11 +22,20 @@ export class CreateCatInput {
   patternId?: number;
 
   @Field(() => Int, { nullable: true })
-  eyesId?: number;
+  eyeColorId?: number;
 
   @Field(() => Gender, { nullable: true })
   gender?: Gender;
 
   @Field(() => Boolean, { nullable: true })
   kitten?: boolean;
+
+  @Field(() => Date, { nullable: true })
+  ceasedAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  ceaseCauseId?: number;
+
+  @Field(() => Date, { nullable: true })
+  bornAt?: Date;
 }

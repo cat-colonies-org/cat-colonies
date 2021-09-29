@@ -1,4 +1,4 @@
-import { apiCall, getCriteriaString } from '../common/util';
+import { apiCall, getCriteriaString, objToListString, omit } from '../common/util';
 import { Annotation } from './annotations';
 
 export const catQueryFields: string = `
@@ -26,6 +26,7 @@ export const catQueryFields: string = `
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
+  Unknown = 'Unknown',
 }
 
 export type Cat = {
@@ -59,8 +60,9 @@ const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
   return {
     ...cat,
     createdAt: new Date(cat.createdAt),
-    ceasedAt: new Date(cat.ceasedAt),
     bornAt: new Date(cat.bornAt),
+    sterilizedAt: new Date(cat.ceasedAt),
+    ceasedAt: new Date(cat.ceasedAt),
   } as Cat;
 };
 
@@ -107,5 +109,54 @@ export async function getCat(id: number): Promise<Cat> {
 
   return await apiCall(query).then((response): Cat => {
     return getCatFromGraphQlResult(response?.data?.cat);
+  });
+}
+
+export async function createCat(cat: Partial<Cat>): Promise<Cat> {
+  const gender = `gender: ${cat.gender}`;
+
+  cat = omit(cat, ['createdAt', 'gender', 'imageURL', 'annotations']);
+
+  const fields = objToListString(cat);
+
+  const query = `mutation {
+    createCat(createCatInput: { ${fields}, ${gender} }) { ${catQueryFields} }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    return getCatFromGraphQlResult(response?.data?.createCat);
+  });
+}
+
+export async function updateCat(id: number, cat: Partial<Cat>): Promise<Cat> {
+  const gender = `gender: ${cat.gender}`;
+
+  cat = omit(cat, [
+    'id',
+    'createdAt',
+    'gender',
+    'ceaseCause',
+    'colony',
+    'color',
+    'pattern',
+    'eyeColor',
+    'imageURL',
+    'annotations',
+  ]);
+
+  const fields = objToListString(cat);
+
+  const query = `mutation {
+    updateCat (updateCatInput: {id: ${id}, ${fields}, ${gender}}) {
+      ${catQueryFields}
+    }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    let cat = response?.data?.updateCat;
+
+    cat = cat ? getCatFromGraphQlResult(cat) : undefined;
+
+    return cat;
   });
 }

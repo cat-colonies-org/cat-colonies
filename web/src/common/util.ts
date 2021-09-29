@@ -1,5 +1,13 @@
 import { AuthToken } from './authToken';
 
+export const omit = (obj: Record<string, any>, props: string[]) => {
+  const result = { ...obj };
+  props.forEach(function (prop) {
+    delete result[prop];
+  });
+  return result;
+};
+
 export const objToListString = (obj: Record<string, any>): string => {
   return Object.keys(obj).reduce((composed, key) => {
     composed += composed ? ', ' : '';
