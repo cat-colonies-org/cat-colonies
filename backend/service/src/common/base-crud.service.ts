@@ -1,16 +1,17 @@
+import { User } from 'src/domain/users/entities/user.entity';
 import { BaseEntity, Repository } from 'typeorm';
 import { omit } from '../util';
 export interface ICrudService<T> {
-  create(createInput: Record<string, any>): Promise<T>;
-  find(opts: Record<string, any>): Promise<[T[], number]>;
-  findOne(id: number): Promise<T>;
-  update(id: number, updateInput: Record<string, any>): Promise<T>;
-  remove(id: number): Promise<boolean>;
+  create(createInput: Record<string, any>, user?: User): Promise<T>;
+  find(opts: Record<string, any>, user?: User): Promise<[T[], number]>;
+  findOne(id: number, user?: User): Promise<T>;
+  update(id: number, updateInput: Record<string, any>, user?: User): Promise<T>;
+  remove(id: number, user?: User): Promise<boolean>;
 }
 export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
   constructor(protected readonly repository: Repository<T>) {}
 
-  async create(createInput: Record<string, any>): Promise<T> {
+  async create(createInput: Record<string, any>, user?: User): Promise<T> {
     const entity: T = this.repository.create();
     if (!entity) return;
     Object.assign(entity, createInput);
@@ -21,7 +22,7 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     return this.repository.count();
   }
 
-  find(opts: Record<string, any>): Promise<[T[], number]> {
+  find(opts: Record<string, any>, user?: User): Promise<[T[], number]> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
@@ -36,18 +37,18 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     });
   }
 
-  findOne(id: number): Promise<T> {
+  findOne(id: number, user?: User): Promise<T> {
     return this.repository.findOne(id);
   }
 
-  async update(id: number, updateInput: Record<string, any>): Promise<T> {
+  async update(id: number, updateInput: Record<string, any>, user?: User): Promise<T> {
     const entity = await this.repository.findOne(id);
     if (!entity) return;
     Object.assign(entity, updateInput);
     return entity.save();
   }
 
-  async remove(id: number): Promise<boolean> {
+  async remove(id: number, user?: User): Promise<boolean> {
     const result = await this.repository.delete(id);
     return result.affected > 0;
   }
