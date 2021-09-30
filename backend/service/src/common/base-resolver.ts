@@ -39,9 +39,6 @@ export class BaseResolver<T extends BaseEntity> {
   }
 
   async remove(id: number): Promise<any> {
-    const entity = await this.service.findOne(id);
-    if (!entity) return { result: false };
-
     const result = await this.service.remove(id);
     result && this.pubSub.publish(this.removedEventId, { [this.removedEventId]: entity });
 
