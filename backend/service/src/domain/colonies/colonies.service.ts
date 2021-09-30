@@ -14,11 +14,15 @@ export class ColoniesService extends BaseCrudService<Colony> {
     super(repository);
   }
 
-  private async addSecurity(qb: SelectQueryBuilder<Colony>): Promise<SelectQueryBuilder<Colony>> {
+  private async GetQueryBuilder(): Promise<SelectQueryBuilder<Colony>> {
     const user: User = this.context.req.user;
+
+    const qb = this.repository.createQueryBuilder('Colony');
+
     if ((await user.roleId) != Roles.Administrator)
-      qb.innerJoin('Colony.managers', 'user')
-        .andWhere('user.id = :userId')
+      return qb
+        .innerJoin('Colony.managers', 'user')
+        .where('user.id = :userId')
         .setParameter('userId', await user.id);
 
     return qb;
@@ -28,18 +32,17 @@ export class ColoniesService extends BaseCrudService<Colony> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
-    const qb = this.repository
-      .createQueryBuilder('Colony')
-      .where(filter)
+    const qb = (await this.GetQueryBuilder())
+      .andWhere(filter)
       .take(take)
       .skip(skip)
       .orderBy(order ? 'Colony.' + order : undefined, descending ? 'DESC' : 'ASC');
 
-    return (await this.addSecurity(qb)).getManyAndCount();
+    return qb.getManyAndCount();
   }
 
   override async findOne(id: number): Promise<Colony> {
-    const qb = this.repository.createQueryBuilder('Colony').where('Colony.id = :colonyId').setParameter('colonyId', id);
-    return (await this.addSecurity(qb)).getOne();
+    const qb = (await this.GetQueryBuilder()).andWhere('Colony.id = :colonyId').setParameter('colonyId', id);
+    return qb.getOne();
   }
 }
