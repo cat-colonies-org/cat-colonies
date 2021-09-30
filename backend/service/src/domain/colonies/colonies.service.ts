@@ -28,21 +28,18 @@ export class ColoniesService extends BaseCrudService<Colony> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
-    let qb = this.repository
+    const qb = this.repository
       .createQueryBuilder('Colony')
       .where(filter)
       .take(take)
       .skip(skip)
       .orderBy(order ? 'Colony.' + order : undefined, descending ? 'DESC' : 'ASC');
 
-    qb = await this.addSecurity(qb);
-    return qb.getManyAndCount();
+    return (await this.addSecurity(qb)).getManyAndCount();
   }
 
   override async findOne(id: number): Promise<Colony> {
-    let qb = this.repository.createQueryBuilder('Colony').where('Colony.id = :colonyId').setParameter('colonyId', id);
-
-    qb = await this.addSecurity(qb);
-    return qb.getOne();
+    const qb = this.repository.createQueryBuilder('Colony').where('Colony.id = :colonyId').setParameter('colonyId', id);
+    return (await this.addSecurity(qb)).getOne();
   }
 }
