@@ -48,8 +48,6 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
   }
 
   async remove(id: number): Promise<boolean> {
-    const entity = await this.findOne(id);
-    if (!entity) return false;
     const result = await this.repository.delete(id);
     return result.affected > 0;
   }
