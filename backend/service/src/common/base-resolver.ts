@@ -26,34 +26,34 @@ export class BaseResolver<T extends BaseEntity> {
     return this.pubSub.asyncIterator(this.removedEventId);
   }
 
-  async create(createInputDto: any, user?: User): Promise<T> {
-    const entity = await this.service.create(createInputDto, user);
+  async create(createInputDto: any): Promise<T> {
+    const entity = await this.service.create(createInputDto);
     entity && this.pubSub.publish(this.addedEventId, { [this.addedEventId]: entity });
     return entity;
   }
 
-  async update(updateInputDto: any, user?: User): Promise<T> {
-    const entity = await this.service.update(updateInputDto.id, updateInputDto, user);
+  async update(updateInputDto: any): Promise<T> {
+    const entity = await this.service.update(updateInputDto.id, updateInputDto);
     entity && this.pubSub.publish(this.updatedEventId, { [this.updatedEventId]: entity });
     return entity;
   }
 
-  async remove(id: number, user?: User): Promise<any> {
-    const entity = await this.service.findOne(id, user);
+  async remove(id: number): Promise<any> {
+    const entity = await this.service.findOne(id);
     if (!entity) return { result: false };
 
-    const result = await this.service.remove(id, user);
+    const result = await this.service.remove(id);
     result && this.pubSub.publish(this.removedEventId, { [this.removedEventId]: entity });
 
     return { result };
   }
 
-  async find(filter: any, user?: User): Promise<any> {
-    const [items, total] = await this.service.find(filter, user);
+  async find(filter: any): Promise<any> {
+    const [items, total] = await this.service.find(filter);
     return { items, total };
   }
 
-  findOne(id: number, user?: User): Promise<any> {
-    return this.service.findOne(id, user);
+  findOne(id: number): Promise<any> {
+    return this.service.findOne(id);
   }
 }

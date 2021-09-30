@@ -14,8 +14,6 @@ import { hasRoles } from 'src/auth/decorators/roles.decorator';
 import { Roles } from '../roles/entities/role.entity';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles-guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { User } from '../users/entities/user.entity';
 
 @Resolver(() => Colony)
 export class ColoniesResolver extends BaseResolver<Colony> {
@@ -67,15 +65,15 @@ export class ColoniesResolver extends BaseResolver<Colony> {
   @Query(() => FindColoniesResult, { name: 'colonies', nullable: true })
   @hasRoles(Roles.Manager)
   @UseGuards(GqlAuthGuard, RolesGuard)
-  async findColonies(@Args() filter: FindColoniesArgs, @CurrentUser() user: User): Promise<FindColoniesResult> {
-    return this.find(filter, user);
+  async findColonies(@Args() filter: FindColoniesArgs): Promise<FindColoniesResult> {
+    return this.find(filter);
   }
 
   @Query(() => Colony, { name: 'colony', nullable: true })
   @hasRoles(Roles.Manager)
   @UseGuards(GqlAuthGuard, RolesGuard)
-  async findOneColony(@Args('id', { type: () => Int }) id: number, @CurrentUser() user: User): Promise<Colony> {
-    return this.findOne(id, user);
+  async findOneColony(@Args('id', { type: () => Int }) id: number): Promise<Colony> {
+    return this.findOne(id);
   }
   // #endregion Queries
 }

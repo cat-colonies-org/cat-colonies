@@ -2,13 +2,12 @@ import { CanActivate, ExecutionContext, forwardRef, Inject, Injectable } from '@
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Role, Roles } from 'src/domain/roles/entities/role.entity';
-import { User } from 'src/domain/users/entities/user.entity';
-import { UsersService } from 'src/domain/users/users.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) //@Inject(forwardRef(() => UsersService)) private userService: UsersService,
-  {}
+  constructor(
+    private reflector: Reflector, //@Inject(forwardRef(() => UsersService)) private userService: UsersService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<Roles[]>('roles', context.getHandler());

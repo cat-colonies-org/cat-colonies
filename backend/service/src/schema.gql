@@ -2,12 +2,51 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Annotation {
+type CeaseCause {
   id: Int!
-  annotation: String!
-  date: DateTime!
-  catId: Int!
-  cat: Cat!
+  description: String!
+  cats: [Cat!]!
+}
+
+type Environment {
+  id: Int!
+  description: String!
+  colonies: [Colony!]!
+}
+
+type LocationType {
+  id: Int!
+  description: String!
+  colonies: [Colony!]
+}
+
+type Town {
+  id: Int!
+  name: String!
+  colonies: [Colony!]!
+}
+
+type Role {
+  id: Int!
+  description: String!
+  users: [User!]!
+}
+
+type User {
+  id: Int!
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+  password: String!
+  salt: String!
+  colonies: [Colony!]!
+  roleId: Int
+  role: Role
 }
 
 """
@@ -15,10 +54,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type CeaseCause {
+type Colony {
   id: Int!
-  description: String!
-  cats: [Cat!]!
+  createdAt: DateTime!
+  address: String!
+  cats: [Cat!]
+  managers: [User!]!
+  locationTypeId: Int
+  locationType: LocationType!
+  environmentId: Int
+  environment: Environment!
+  townId: Int!
+  town: Town!
 }
 
 type Color {
@@ -68,59 +115,12 @@ enum Gender {
   Unknown
 }
 
-type Environment {
+type Annotation {
   id: Int!
-  description: String!
-  colonies: [Colony!]!
-}
-
-type LocationType {
-  id: Int!
-  description: String!
-  colonies: [Colony!]
-}
-
-type Town {
-  id: Int!
-  name: String!
-  colonies: [Colony!]!
-}
-
-type Colony {
-  id: Int!
-  createdAt: DateTime!
-  address: String!
-  cats: [Cat!]
-  managers: [User!]!
-  locationTypeId: Int
-  locationType: LocationType!
-  environmentId: Int
-  environment: Environment!
-  townId: Int!
-  town: Town!
-}
-
-type Role {
-  id: Int!
-  description: String!
-  users: [User!]!
-}
-
-type User {
-  id: Int!
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
-  createdAt: DateTime!
-  ceasedAt: DateTime
-  authorizesWhatsApp: Boolean
-  password: String!
-  salt: String!
-  colonies: [Colony!]!
-  roleId: Int
-  role: Role
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
 }
 
 type RemoveAnnotationResult {
