@@ -1,6 +1,12 @@
-import getConfig from 'next/config';
+import { AuthToken } from './authToken';
 
-const { publicRuntimeConfig } = getConfig();
+export const omit = (obj: Record<string, any>, props: string[]) => {
+  const result = { ...obj };
+  props.forEach(function (prop) {
+    delete result[prop];
+  });
+  return result;
+};
 
 export const objToListString = (obj: Record<string, any>): string => {
   return Object.keys(obj).reduce((composed, key) => {
@@ -35,15 +41,17 @@ export const getCriteriaString = ({
 };
 
 export const apiCall = async (query: string) => {
+  const apiBaseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+
   const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // Authorization: "Bearer " + "## API KEY"
+      Authorization: 'Bearer ' + (await AuthToken.getToken()),
     },
   };
 
-  return await fetch(publicRuntimeConfig.apiBaseUrl, {
+  return await fetch(apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query }),
   }).then((response) => response.json());

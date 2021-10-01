@@ -52,3 +52,13 @@ export async function getEnvironmentsList({
     return { items, total };
   });
 }
+
+export async function createEnvironment(description: string): Promise<Environment> {
+  const query = `mutation {
+    createEnvironment(createEnvironmentInput: {description: "${description}"}) { id description }
+  }`;
+
+  return await apiCall(query).then((response): Environment => {
+    return response?.data?.createEnvironment;
+  });
+}

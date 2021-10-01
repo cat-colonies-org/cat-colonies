@@ -4,6 +4,9 @@ import { UserCredentials } from './dto/user-credentials';
 import { AuthService } from './auth.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
+import { hasRoles } from './decorators/roles.decorator';
+import { RolesGuard } from './guards/roles-guard';
+import { Roles } from 'src/domain/roles/entities/role.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -15,7 +18,8 @@ export class AuthResolver {
   }
 
   @Query(() => Boolean, { name: 'test' })
-  @UseGuards(GqlAuthGuard)
+  @hasRoles(Roles.Administrator)
+  @UseGuards(GqlAuthGuard, RolesGuard)
   test(): boolean {
     return true;
   }

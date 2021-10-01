@@ -1,4 +1,5 @@
-import { apiCall, getCriteriaString } from '../common/util';
+import { apiCall, getCriteriaString, objToListString, omit } from '../common/util';
+import { Annotation } from './annotations';
 
 export const catQueryFields: string = `
   id
@@ -6,12 +7,11 @@ export const catQueryFields: string = `
   ceasedAt
   ceaseCauseId
   ceaseCause { description }
-  birthYear
+  bornAt
   sterilized
   sterilizedAt
   imageURL
   gender
-  kitten
   colonyId
   colony { address }
   colorId
@@ -20,11 +20,13 @@ export const catQueryFields: string = `
   pattern { description }
   eyeColorId
   eyeColor { description }
+  annotations { id date annotation }
 `;
 
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
+  Unknown = 'Unknown',
 }
 
 export type Cat = {
@@ -33,12 +35,11 @@ export type Cat = {
   ceasedAt: Date;
   ceaseCauseId: number;
   ceaseCause: { description: string };
-  birthYear: number;
+  bornAt: Date;
   sterilized: boolean;
   sterilizedAt: Date;
   imageURL: string;
   gender: Gender;
-  kitten: boolean;
   colonyId: number;
   colony: { address: string };
   colorId: number;
@@ -47,6 +48,17 @@ export type Cat = {
   pattern: { description: string };
   eyeColorId: number;
   eyeColor: { description: string };
+  annotations: Annotation[];
+};
+
+export const isKitten = (cat: Cat): boolean => {
+  if (!cat?.bornAt) return false;
+
+  const sixMonths = 6 * 30 * 24 * 60 * 60 * 1000;
+  const today: Date = new Date();
+  const birthDate: Date = new Date(cat.bornAt);
+
+  return today.getTime() - birthDate.getTime() <= sixMonths;
 };
 
 export interface CatsList {
@@ -58,6 +70,9 @@ const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
   return {
     ...cat,
     createdAt: new Date(cat.createdAt),
+    bornAt: new Date(cat.bornAt),
+    sterilizedAt: new Date(cat.ceasedAt),
+    ceasedAt: new Date(cat.ceasedAt),
   } as Cat;
 };
 
@@ -92,5 +107,66 @@ export async function getCatsList({
       : [];
 
     return { items, total };
+  });
+}
+
+export async function getCat(id: number): Promise<Cat> {
+  const query = `query {
+    cat (id:${id}) {
+      ${catQueryFields}
+    }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    return getCatFromGraphQlResult(response?.data?.cat);
+  });
+}
+
+export async function createCat(cat: Partial<Cat>): Promise<Cat> {
+  const gender = `gender: ${cat.gender}`;
+
+  cat = omit(cat, ['createdAt', 'gender', 'imageURL', 'annotations']);
+
+  const fields = objToListString(cat);
+
+  const query = `mutation {
+    createCat(createCatInput: { ${fields}, ${gender} }) { ${catQueryFields} }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    return getCatFromGraphQlResult(response?.data?.createCat);
+  });
+}
+
+export async function updateCat(id: number, cat: Partial<Cat>): Promise<Cat> {
+  const gender = `gender: ${cat.gender}`;
+
+  cat = omit(cat, [
+    'id',
+    'createdAt',
+    'gender',
+    'ceaseCause',
+    'colony',
+    'color',
+    'pattern',
+    'eyeColor',
+    'imageURL',
+    'annotations',
+  ]);
+
+  const fields = objToListString(cat);
+
+  const query = `mutation {
+    updateCat (updateCatInput: {id: ${id}, ${fields}, ${gender}}) {
+      ${catQueryFields}
+    }
+  }`;
+
+  return await apiCall(query).then((response): Cat => {
+    let cat = response?.data?.updateCat;
+
+    cat = cat ? getCatFromGraphQlResult(cat) : undefined;
+
+    return cat;
   });
 }

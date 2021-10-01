@@ -1,5 +1,4 @@
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import Sidebar from './sidebar';
 
 const DefaultLayout = ({ children }: { children: any }) => {
   return (
@@ -10,8 +9,7 @@ const DefaultLayout = ({ children }: { children: any }) => {
             <Sidebar />
           </div>
 
-          <div className="col-md-10">
-            <Navbar />
+          <div className="col-md-10 pt-5">
             <main>{children}</main>
           </div>
         </div>

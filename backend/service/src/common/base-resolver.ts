@@ -38,9 +38,8 @@ export class BaseResolver<T extends BaseEntity> {
   }
 
   async remove(id: number): Promise<any> {
-    const entity = await this.service.findOne(id);
-    if (!entity) return { result: false };
-
+    const entity = await this.findOne(id);
+    if (!entity) return false;
     const result = await this.service.remove(id);
     result && this.pubSub.publish(this.removedEventId, { [this.removedEventId]: entity });
 
@@ -53,6 +52,8 @@ export class BaseResolver<T extends BaseEntity> {
   }
 
   findOne(id: number): Promise<any> {
+    // do not use this.repository.findOne because some services
+    // override find and findOne methods to add user based security
     return this.service.findOne(id);
   }
 }

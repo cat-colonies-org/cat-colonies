@@ -1,14 +1,15 @@
 const { dateToIso } = require('./mappers');
 
 const catFormatter = (cat) => {
-  return `INSERT INTO cat ("id", "colonyId", "createdAt", "birthYear", "gender", "sterilized", "kitten", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
+  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "colorId", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
     ${cat.id}, 
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
-    ${cat.birthYear}, 
+    ${cat.bornAt ? dateToIso(cat.bornAt) : null},
     '${cat.gender}', 
     ${cat.esterilized ? 'True' : 'False'}, 
-    ${cat.kitten ? 'True' : 'False'}, 
+    ${cat.colorId},
+    ${cat.patternId},
     ${cat.eyeColorId},
     ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
     ${cat.ceaseCauseId}
@@ -16,9 +17,16 @@ const catFormatter = (cat) => {
 };
 
 const locationTypeFormatter = (locationType) => {
-  return `INSERT INTO locationType ("id", "description") VALUES (
+  return `INSERT INTO location_type ("id", "description") VALUES (
     ${locationType.id}, 
     '${locationType.description}'
+  );`;
+};
+
+const roleFormatter = (role) => {
+  return `INSERT INTO role ("id", "description") VALUES (
+    ${role.id}, 
+    '${role.description}'
   );`;
 };
 
@@ -37,35 +45,89 @@ const environmentFormatter = (environment) => {
 };
 
 const colonyFormatter = (colony) => {
-  return `INSERT INTO colony ("id", "createdAt", "locationTypeId", "environmentId", "townId") VALUES (
+  return `INSERT INTO colony ("id", "createdAt", "address", "locationTypeId", "environmentId", "townId") VALUES (
     ${colony.id}, 
     ${dateToIso(colony.createdAt)},
+    '${colony.address}', 
     ${colony.locationTypeId}, 
     ${colony.environmentId}, 
-    ${colony.townId}, 
+    ${colony.townId}
   );`;
 };
 
 const ceaseCauseFormatter = (cause) => {
-  return `INSERT INTO cease_cause (id, description) VALUES (
+  return `INSERT INTO cease_cause ("id", "description") VALUES (
       ${cause.id}, 
       '${cause.description}'
     );`;
 };
 
 const eyeColorFormatter = (eyeColor) => {
-  return `INSERT INTO eye_color (id, description) VALUES (
+  return `INSERT INTO eye_color ("id", "description") VALUES (
     ${eyeColor.id}, 
     '${eyeColor.description}'
   );`;
 };
 
+const userFormatter = (user) => {
+  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "salt", "roleId") VALUES (
+    ${user.id}, 
+    ${dateToIso(user.createdAt)},
+    '${user.name}',
+    '${user.surnames}',
+    '${user.idCard}',
+    ${user.phoneNumber || 0},
+    '${user.email}',
+    ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
+    ${user.authorizesWhatsApp ? 'True' : 'False'},
+    '${user.password}',
+    '${user.salt}',
+    ${user.roleId}
+  );`;
+};
+
+const colonyUserRelationFormatter = (entity) => {
+  return `INSERT INTO "user_colonies_colony" ("userId", "colonyId") VALUES (
+    ${entity.userId}, 
+    ${entity.colonyId}
+  );`;
+};
+
+const annotationFormatter = (entity) => {
+  return `INSERT INTO "annotation" ("id", "catId", "date", "annotation") VALUES (
+    ${entity.id}, 
+    ${entity.catId},
+    ${entity.createdAt ? dateToIso(entity.createdAt) : null},
+    '${entity.annotation}'
+  );`;
+};
+
+const colorFormatter = (color) => {
+  return `INSERT INTO color ("id", "description") VALUES (
+    ${color.id}, 
+    '${color.description}'
+  );`;
+};
+
+const patternFormatter = (pattern) => {
+  return `INSERT INTO pattern ("id", "description") VALUES (
+    ${pattern.id}, 
+    '${pattern.description}'
+  );`;
+};
+
 module.exports = {
+  annotationFormatter,
   catFormatter,
   ceaseCauseFormatter,
-  eyeColorFormatter,
   colonyFormatter,
-  locationTypeFormatter,
+  colonyUserRelationFormatter,
+  colorFormatter,
   environmentFormatter,
+  eyeColorFormatter,
+  locationTypeFormatter,
+  patternFormatter,
+  roleFormatter,
   townFormatter,
+  userFormatter,
 };

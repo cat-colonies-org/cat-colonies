@@ -9,6 +9,11 @@ interface Configuration {
     host: string;
     port: number;
   };
+
+  jwt: {
+    secret: string;
+    expiresIn: number; // seconds
+  };
 }
 
 const getString = (key: string, defaultValue: string): string => {
@@ -40,5 +45,10 @@ export default (): Configuration => ({
   redis: {
     host: getString('REDIS_HOST', 'redis'),
     port: getNumber('REDIS_PORT', 6379),
+  },
+
+  jwt: {
+    secret: getString('JWT_SECRET', 'jwt-secret!'),
+    expiresIn: getNumber('JWT_EXPIRES_IN', 3600), //seconds
   },
 });

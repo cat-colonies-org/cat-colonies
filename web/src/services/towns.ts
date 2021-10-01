@@ -52,3 +52,13 @@ export async function getTownsList({
     return { items, total };
   });
 }
+
+export async function createTown(name: string): Promise<Town> {
+  const query = `mutation {
+    createTown(createTownInput: {name: "${name}"}) { id name }
+  }`;
+
+  return await apiCall(query).then((response): Town => {
+    return response?.data?.createTown;
+  });
+}

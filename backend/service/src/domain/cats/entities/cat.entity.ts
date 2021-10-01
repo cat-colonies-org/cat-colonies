@@ -10,6 +10,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, Pri
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
+  Unknown = 'Unknown',
 }
 registerEnumType(Gender, { name: 'Gender', description: '' });
 
@@ -37,8 +38,8 @@ export class Cat extends BaseEntity {
   ceaseCause?: Promise<CeaseCause>;
 
   @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  birthYear?: number;
+  @Field(() => Date, { nullable: true })
+  bornAt?: Date;
 
   @Column({ nullable: true })
   @Field(() => Boolean, { nullable: true })
@@ -75,10 +76,6 @@ export class Cat extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Gender, { nullable: true })
   gender?: Gender;
-
-  @Column({ nullable: true })
-  @Field(() => Boolean, { nullable: true })
-  kitten?: boolean;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })

@@ -2,43 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type CeaseCause {
+type Annotation {
   id: Int!
-  description: String!
-  cats: [Cat!]!
-}
-
-type Environment {
-  id: Int!
-  description: String!
-  colonies: [Colony!]!
-}
-
-type LocationType {
-  id: Int!
-  description: String!
-  colonies: [Colony!]
-}
-
-type Town {
-  id: Int!
-  name: String!
-  colonies: [Colony!]!
-}
-
-type User {
-  id: Int!
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: Int!
-  email: String!
-  createdAt: DateTime!
-  ceasedAt: DateTime
-  authorizesWhatsApp: Boolean
-  password: String!
-  salt: String!
-  colonies: [Colony!]!
+  annotation: String!
+  date: DateTime!
+  catId: Int!
+  cat: Cat!
 }
 
 """
@@ -46,18 +15,10 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Colony {
+type CeaseCause {
   id: Int!
-  createdAt: DateTime!
-  address: String!
-  cats: [Cat!]
-  managers: [User!]!
-  locationTypeId: Int
-  locationType: LocationType!
-  environmentId: Int
-  environment: Environment!
-  townId: Int!
-  town: Town!
+  description: String!
+  cats: [Cat!]!
 }
 
 type Color {
@@ -84,7 +45,7 @@ type Cat {
   ceasedAt: DateTime
   ceaseCauseId: Int
   ceaseCause: CeaseCause
-  birthYear: Int
+  bornAt: DateTime
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
@@ -94,7 +55,6 @@ type Cat {
   patternId: Int
   pattern: Pattern
   gender: Gender
-  kitten: Boolean
   eyeColorId: Int
   eyeColor: EyeColor
   imageURL: String
@@ -105,14 +65,62 @@ type Cat {
 enum Gender {
   Male
   Female
+  Unknown
 }
 
-type Annotation {
+type Environment {
   id: Int!
-  annotation: String!
-  date: DateTime!
-  catId: Int!
-  cat: Cat!
+  description: String!
+  colonies: [Colony!]!
+}
+
+type LocationType {
+  id: Int!
+  description: String!
+  colonies: [Colony!]
+}
+
+type Town {
+  id: Int!
+  name: String!
+  colonies: [Colony!]!
+}
+
+type Colony {
+  id: Int!
+  createdAt: DateTime!
+  address: String!
+  cats: [Cat!]
+  managers: [User!]!
+  locationTypeId: Int
+  locationType: LocationType!
+  environmentId: Int
+  environment: Environment!
+  townId: Int!
+  town: Town!
+}
+
+type User {
+  id: Int!
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: Int!
+  email: String!
+  createdAt: DateTime!
+  ceasedAt: DateTime
+  authorizesWhatsApp: Boolean
+  password: String!
+  salt: String!
+  colonies: [Colony!]!
+  roleId: Int
+  role: Role
+}
+
+type Role {
+  id: Int!
+  description: String!
+  users: [User!]!
 }
 
 type RemoveAnnotationResult {
@@ -214,6 +222,15 @@ type AccessToken {
   result: String!
 }
 
+type FindRolesResult {
+  total: Int!
+  items: [Role!]!
+}
+
+type RemoveRoleResult {
+  result: Boolean!
+}
+
 type Query {
   annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
@@ -235,6 +252,8 @@ type Query {
   locationType(id: Int!): LocationType
   patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
+  roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
+  role(id: Int!): Role
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
@@ -250,9 +269,9 @@ type Mutation {
   createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
   updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
   removeAnnotation(id: Int!): RemoveAnnotationResult!
-  createCat(createCatInput: CreateLocationTypeInput!): LocationType!
-  updateCat(updateCatInput: UpdateLocationTypeInput!): LocationType!
-  removeCat(id: Int!): RemoveLocationTypeResult!
+  createCat(createCatInput: CreateCatInput!): Cat!
+  updateCat(updateCatInput: UpdateCatInput!): Cat!
+  removeCat(id: Int!): RemoveCatResult!
   createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
   updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
   removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
@@ -268,9 +287,15 @@ type Mutation {
   createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
   updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
   removeEyeColor(id: Int!): EyeColor!
+  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
+  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
+  removeLocationType(id: Int!): RemoveLocationTypeResult!
   createPattern(createPatternInput: CreatePatternInput!): Pattern!
   updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
   removePattern(id: Int!): RemovePatternResult!
+  createRole(createRoleInput: CreateRoleInput!): Role!
+  updateRole(updateRoleInput: UpdateRoleInput!): Role!
+  removeRole(id: Int!): RemoveRoleResult!
   createTown(createTownInput: CreateTownInput!): Town!
   updateTown(updateTownInput: UpdateTownInput!): Town!
   removeTown(id: Int!): RemoveTownResult!
@@ -290,12 +315,34 @@ input UpdateAnnotationInput {
   id: Int!
 }
 
-input CreateLocationTypeInput {
-  description: String!
+input CreateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  sterilizedAt: DateTime
+  colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyeColorId: Int
+  gender: Gender
+  kitten: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  bornAt: DateTime
 }
 
-input UpdateLocationTypeInput {
-  description: String
+input UpdateCatInput {
+  birthYear: Int
+  sterilized: Boolean
+  sterilizedAt: DateTime
+  colonyId: Int
+  colorId: Int
+  patternId: Int
+  eyeColorId: Int
+  gender: Gender
+  kitten: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  bornAt: DateTime
   id: Int!
 }
 
@@ -351,11 +398,29 @@ input UpdateEyeColorInput {
   description: String
 }
 
+input CreateLocationTypeInput {
+  description: String!
+}
+
+input UpdateLocationTypeInput {
+  description: String
+  id: Int!
+}
+
 input CreatePatternInput {
   description: String!
 }
 
 input UpdatePatternInput {
+  description: String
+  id: Int!
+}
+
+input CreateRoleInput {
+  description: String!
+}
+
+input UpdateRoleInput {
   description: String
   id: Int!
 }
@@ -415,9 +480,9 @@ type Subscription {
   locationTypeAdded: LocationType!
   locationTypeUpdated: LocationType!
   locationTypeRemoved: LocationType!
-  patternAdded: Pattern!
-  patternUpdated: Pattern!
-  patternRemoved: Pattern!
+  patternAdded: Role!
+  patternUpdated: Role!
+  patternRemoved: Role!
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import withPrivateRoute from '../components/withPrivateRoute';
+import withPrivateRoute from '../components/with-private-route';
 
 const Home: NextPage = () => {
   return (

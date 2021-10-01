@@ -2,7 +2,7 @@ import { Colony, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import withPrivateRoute from '../../components/withPrivateRoute';
+import withPrivateRoute from '../../components/with-private-route';
 
 const Colonies = () => {
   const [data, setData] = useState([] as Colony[]);
@@ -35,6 +35,12 @@ const Colonies = () => {
     fetchData(1, perPage);
   }, []);
 
+  const getActiveCats = (colony: Colony): number => {
+    return colony.cats?.reduce((active, curr) => {
+      return curr.ceasedAt || curr.ceaseCauseId ? active : active + 1;
+    }, 0);
+  };
+
   const columns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Registro', selector: (row) => row.createdAt.toLocaleDateString() },
@@ -42,6 +48,7 @@ const Colonies = () => {
     { name: 'Tipo ubicación', selector: (row) => row.locationType.description },
     { name: 'Entorno', selector: (row) => row.environment.description },
     { name: 'Localidad', selector: (row) => row.town.name },
+    { name: 'Activos', selector: (row) => getActiveCats(row) },
   ];
 
   return (

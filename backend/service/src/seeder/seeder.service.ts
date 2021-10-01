@@ -10,6 +10,7 @@ import { LocationType } from 'src/domain/location-types/entities/location-type.e
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Cat, Gender } from 'src/domain/cats/entities/cat.entity';
 import { UsersService } from 'src/domain/users/users.service';
+import { Role, Roles } from 'src/domain/roles/entities/role.entity';
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -18,7 +19,10 @@ export class SeederService implements OnModuleInit {
     // Do nothing if database isn't empty
     if ((await this.usersService.count()) > 0) return;
 
+    return;
+
     await this.seedTowns();
+    await this.seedRoles();
     await this.seedLocationTypes();
     await this.seedEnvironments();
     await this.seedColonies();
@@ -40,6 +44,13 @@ export class SeederService implements OnModuleInit {
       Town.create({ id: 2, name: 'Albatera' }).save(),
       Town.create({ id: 3, name: 'Alhama de Granada' }).save(),
       Town.create({ id: 4, name: 'Almoradí' }).save(),
+    ]);
+  }
+
+  private async seedRoles(): Promise<any> {
+    return Promise.all([
+      Role.create({ id: Roles.Administrator, description: 'Administrador' }).save(),
+      Role.create({ id: Roles.Manager, description: 'Gestor' }).save(),
     ]);
   }
 
@@ -145,7 +156,7 @@ export class SeederService implements OnModuleInit {
         createdAt: new Date(),
         sterilized: true,
         sterilizedAt: new Date(),
-        birthYear: 2015,
+        bornAt: new Date('2015-03-03'),
         colonyId: 1,
         colorId: 1,
         patternId: 1,
@@ -158,7 +169,7 @@ export class SeederService implements OnModuleInit {
         id: 2,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2016,
+        bornAt: new Date('2020-03-02'),
         colonyId: 1,
         colorId: 1,
         patternId: 1,
@@ -171,7 +182,7 @@ export class SeederService implements OnModuleInit {
         id: 3,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2017,
+        bornAt: new Date('2016-01-03'),
         colonyId: 2,
         colorId: 2,
         patternId: 2,
@@ -185,12 +196,11 @@ export class SeederService implements OnModuleInit {
         id: 4,
         createdAt: new Date(),
         sterilized: true,
-        birthYear: 2017,
+        bornAt: new Date('2021-07-09'),
         colonyId: 3,
         colorId: 1,
         patternId: 1,
         gender: Gender.Female,
-        kitten: true,
         imageURL:
           'https://external-content.duckduckgo.com' +
           '/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.hevumcN2wlrp8oR0FunK7wAAAA%26pid%3DApi&f=1',
@@ -199,7 +209,7 @@ export class SeederService implements OnModuleInit {
         id: 5,
         createdAt: new Date(),
         sterilized: true,
-        birthYear: 2017,
+        bornAt: new Date('2017-06-22'),
         colonyId: 4,
         colorId: 1,
         patternId: 1,
@@ -213,7 +223,7 @@ export class SeederService implements OnModuleInit {
         id: 6,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2021,
+        bornAt: new Date('2021-09-03'),
         colonyId: 2,
         colorId: 2,
         patternId: 2,
@@ -229,7 +239,7 @@ export class SeederService implements OnModuleInit {
         id: 7,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2022,
+        bornAt: new Date('2018-05-15'),
         colonyId: 2,
         colorId: 3,
         patternId: 3,
@@ -245,7 +255,7 @@ export class SeederService implements OnModuleInit {
         id: 8,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2022,
+        bornAt: new Date('2019-05-01'),
         colonyId: 2,
         colorId: 3,
         patternId: 1,
@@ -261,7 +271,7 @@ export class SeederService implements OnModuleInit {
         id: 9,
         createdAt: new Date(),
         sterilized: true,
-        birthYear: 2024,
+        bornAt: new Date('2021-08-01'),
         colonyId: 4,
         colorId: 1,
         patternId: 2,
@@ -276,7 +286,7 @@ export class SeederService implements OnModuleInit {
         id: 10,
         createdAt: new Date(),
         sterilized: false,
-        birthYear: 2025,
+        bornAt: new Date('2020-05-15'),
         colonyId: 2,
         colorId: 3,
         patternId: 1,
@@ -293,7 +303,7 @@ export class SeederService implements OnModuleInit {
         id: 11,
         createdAt: new Date(),
         sterilized: true,
-        birthYear: 1999,
+        bornAt: new Date('2021-05-15'),
         colonyId: 4,
         colorId: 4,
         patternId: 4,
@@ -330,6 +340,7 @@ export class SeederService implements OnModuleInit {
         email: 'agapito@cats.org',
         password: '123456',
         colonies: Promise.resolve([colonies[0]]),
+        roleId: Roles.Administrator,
       }),
       this.usersService.create({
         name: 'Matilde',
@@ -339,6 +350,7 @@ export class SeederService implements OnModuleInit {
         email: 'matilde@cats.org',
         password: '654321',
         colonies: Promise.resolve([colonies[1]]),
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Juan',
@@ -348,6 +360,7 @@ export class SeederService implements OnModuleInit {
         email: 'juan@cats.org',
         password: 'password',
         colonies: Promise.resolve([colonies[2], colonies[1]]),
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Maria',
@@ -356,6 +369,7 @@ export class SeederService implements OnModuleInit {
         phoneNumber: 135135135,
         email: 'maria@cats.org',
         password: 'drowssap',
+        roleId: Roles.Manager,
       }),
       this.usersService.create({
         name: 'Apolonio',
@@ -365,6 +379,7 @@ export class SeederService implements OnModuleInit {
         email: 'apolonio@cats.org',
         password: '03/06/1978',
         colonies: Promise.resolve([colonies[3]]),
+        roleId: Roles.Manager,
       }),
     ]);
   }
