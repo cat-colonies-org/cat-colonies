@@ -1,4 +1,4 @@
-import { User, getUsersList, userQueryFields, getRoleName} from '../../services/users';
+import { User, getUsersList} from '../../services/users';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -41,8 +41,8 @@ const UsersList = () => {
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString(), width: '100px' },
     {
       name: 'Rol',
-      width: '100px',
-      selector: (user) => getRoleName(user.roleId),
+      width: '150px',
+      selector: (user) => user.role.description,
     },
     { name: 'Nombre', selector: (user) => user.name, width: '150px' },
     { name: 'Apellidos', selector: (user) => user.surnames, width: '250px' },
