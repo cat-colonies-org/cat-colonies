@@ -39,12 +39,12 @@ const Sidebar = () => {
                 <a>Gatos</a>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <a>Localidades</a>
-            </li>
+            </li> */}
           </ul>
         </li>
-        <li className="active">
+        {/* <li className="active">
           <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
             Informes
           </a>
@@ -59,7 +59,7 @@ const Sidebar = () => {
               <a>Anual</a>
             </li>
           </ul>
-        </li>
+        </li> */}
 
         <button onClick={onLogoutClick}>Salir</button>
 
