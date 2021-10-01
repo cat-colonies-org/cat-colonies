@@ -19,6 +19,8 @@ export class SeederService implements OnModuleInit {
     // Do nothing if database isn't empty
     if ((await this.usersService.count()) > 0) return;
 
+    return;
+
     await this.seedTowns();
     await this.seedRoles();
     await this.seedLocationTypes();
