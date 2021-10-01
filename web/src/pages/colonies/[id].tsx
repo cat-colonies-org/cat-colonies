@@ -45,24 +45,40 @@ const ColonyDetails = () => {
   });
 
   const catsColumns: TableColumn<Cat>[] = [
-    { name: 'Id', selector: (cat) => cat.id },
-    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString() },
-    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString() },
+    { name: 'Id', selector: (cat) => cat.id, width: '60px' },
+    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
+    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString(), width: '100px' },
     {
-      name: 'Genero',
+      name: 'Sexo',
+      width: '100px',
       selector: (cat) => (cat.gender === Gender.Male ? 'Macho' : cat.gender === Gender.Female ? 'Hembra' : ''),
     },
     {
       name: 'Esterilizado',
-      selector: (cat) => cat.sterilized,
-      format: (cat) => (cat.sterilized ? 'Esterilizado' : ''),
+      width: '110px',
+      selector: (cat) =>
+        cat.sterilized
+          ? `Esterilizado ${cat.sterilizedAt ? '(' + new Date(cat.sterilizedAt).toLocaleDateString() + ')' : ''}`
+          : '',
     },
     {
       name: 'Cachorro',
+      width: '95px',
       selector: (cat) => (isKitten(cat) ? 'Cachorro' : ''),
     },
-    { name: 'Capa', selector: (cat) => `${cat.pattern?.description || '' + ' '}${cat.color?.description || ''}` },
-    { name: 'Baja', selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : '') },
+    {
+      name: 'Capa',
+      width: '200px',
+      selector: (cat) =>
+        `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
+          cat.colorId !== 0 ? cat.color?.description : ''
+        }`,
+    },
+    {
+      name: 'Baja',
+      selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
   ];
 
