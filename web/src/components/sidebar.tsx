@@ -39,6 +39,11 @@ const Sidebar = () => {
                 <a>Gatos</a>
               </Link>
             </li>
+            <li>
+              <Link href="/users">
+                <a>Usuarios</a>
+              </Link>
+            </li>
             {/* <li>
               <a>Localidades</a>
             </li> */}

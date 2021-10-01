@@ -7,7 +7,24 @@ export const userQueryFields: string = `
   surnames
   phoneNumber
   email
+  roleId
 `;
+
+export enum RoleId {
+  Admin = 1,
+  Manager = 2,
+}
+
+export const getRoleName = (id: number): string => {
+  switch (id) {
+    case RoleId.Admin:
+      return 'Admin';
+    case RoleId.Manager:
+      return 'Gestora';
+    default:
+      return '';
+  }
+};
 
 export type User = {
   id: number;
@@ -16,6 +33,7 @@ export type User = {
   surnames: string;
   phoneNumber: number;
   email: string;
+  roleId: number;
 };
 
 export interface UsersList {
