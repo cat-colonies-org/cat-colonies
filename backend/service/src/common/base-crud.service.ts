@@ -41,7 +41,7 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
   }
 
   async update(id: number, updateInput: Record<string, any>): Promise<T> {
-    const entity = await this.repository.findOne(id);
+    const entity = await this.findOne(id);
     if (!entity) return;
     Object.assign(entity, updateInput);
     return entity.save();
