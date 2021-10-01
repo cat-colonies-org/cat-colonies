@@ -1,11 +1,15 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { FormEvent } from 'react';
 import { AuthToken } from '../common/authToken';
+import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Sidebar = () => {
   const router = useRouter();
+
+  const tokenCookie = Cookies.get('authToken');
+  const authToken = new AuthToken(tokenCookie);
 
   const onLogoutClick = (event: FormEvent<HTMLButtonElement>) => {
     AuthToken.logout();
@@ -65,13 +69,18 @@ const Sidebar = () => {
             </li>
           </ul>
         </li> */}
-
-        <button onClick={onLogoutClick}>Salir</button>
-
         {/* <li>
           <a>Contact</a>
         </li> */}
       </ul>
+      <div className="card mr-3 p-1">
+        <div className="card-body">
+          <p className="card-text">{authToken.email}</p>
+          <button onClick={onLogoutClick} className="btn btn-secondary">
+            Salir
+          </button>
+        </div>
+      </div>
     </nav>
   );
 };
