@@ -1,4 +1,4 @@
-import { User, getUsersList, userQueryFields, Role, getRoleName} from '../../services/users';
+import { User, getUsersList, userQueryFields, getRoleName} from '../../services/users';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
