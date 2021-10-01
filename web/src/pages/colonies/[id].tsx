@@ -1,9 +1,9 @@
-import { Cat, Gender } from '../../services/cats';
+import { Cat, Gender, isKitten } from '../../services/cats';
 import { Colony, getColony, updateColony } from '../../services/colonies';
 import { createEnvironment, Environment, getEnvironmentsList } from '../../services/environments';
-import { FormEvent, useEffect, useState } from 'react';
 import { createLocationType, getLocationTypesList, LocationType } from '../../services/location-types';
 import { createTown, getTownsList, Town } from '../../services/towns';
+import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
@@ -13,16 +13,6 @@ import withPrivateRoute from '../../components/with-private-route';
 
 const ColonyDetails = () => {
   const router = useRouter();
-
-  const isKitten = (cat: Cat): boolean => {
-    if (!cat?.bornAt) return false;
-
-    const sixMonths = 6 * 30 * 24 * 60 * 60 * 1000;
-    const today: Date = new Date();
-    const birthDate: Date = new Date(cat.bornAt);
-
-    return today.getTime() - birthDate.getTime() <= sixMonths;
-  };
 
   interface Stats {
     active: number;
@@ -230,7 +220,7 @@ const ColonyDetails = () => {
             <div className="container-md">
               <div className="shadow p-3 bg-body rounded">
                 <p>
-                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
                   Datos generales
                 </p>
                 <form onSubmit={onSubmit}>
@@ -280,7 +270,7 @@ const ColonyDetails = () => {
                   </div>
 
                   <div className="row mt-3">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                       <label htmlFor="address" className="form-label">
                         Calle
                       </label>
@@ -293,10 +283,7 @@ const ColonyDetails = () => {
                         onChange={onInputChange}
                       />
                     </div>
-                  </div>
-
-                  <div className="row mt-3">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                       <label htmlFor="location" className="form-label">
                         Ubicación
                       </label>
@@ -314,7 +301,7 @@ const ColonyDetails = () => {
                         onError={(i: string) => toast.error(`Error creando ubicación "${i}"`)}
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                       <label className="form-label" htmlFor="environment">
                         Entorno
                       </label>

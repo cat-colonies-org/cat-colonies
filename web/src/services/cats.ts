@@ -51,6 +51,16 @@ export type Cat = {
   annotations: Annotation[];
 };
 
+export const isKitten = (cat: Cat): boolean => {
+  if (!cat?.bornAt) return false;
+
+  const sixMonths = 6 * 30 * 24 * 60 * 60 * 1000;
+  const today: Date = new Date();
+  const birthDate: Date = new Date(cat.bornAt);
+
+  return today.getTime() - birthDate.getTime() <= sixMonths;
+};
+
 export interface CatsList {
   total: number;
   items: Cat[];

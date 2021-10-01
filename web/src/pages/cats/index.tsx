@@ -1,4 +1,4 @@
-import { Cat, getCatsList } from '../../services/cats';
+import { Cat, Gender, getCatsList, isKitten } from '../../services/cats';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -35,31 +35,60 @@ const CatsList = () => {
     fetchData(1, perPage);
   }, []);
 
-  const styles = {
-    avatar: {
-      borderRadius: '50%',
-      width: '56px',
-      height: '56px',
-      margin: '2px',
-    },
-  };
-
   const columns: TableColumn<Cat>[] = [
-    { name: 'Id', selector: (cat) => cat.id },
+    { name: 'Id', selector: (cat) => cat.id, width: '60px' },
+    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
+    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString(), width: '100px' },
     {
-      name: 'Foto',
-      cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
+      name: 'Sexo',
+      width: '100px',
+      selector: (cat) => (cat.gender === Gender.Male ? 'Macho' : cat.gender === Gender.Female ? 'Hembra' : ''),
     },
-    { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
-    { name: 'Nacimiento', selector: (cat) => cat.bornAt?.toLocaleDateString() },
     {
       name: 'Esterilizado',
-      selector: (cat) => cat.sterilized,
-      format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
+      width: '110px',
+      selector: (cat) =>
+        cat.sterilized
+          ? `Esterilizado ${cat.sterilizedAt ? '(' + new Date(cat.sterilizedAt).toLocaleDateString() + ')' : ''}`
+          : '',
     },
-    { name: 'Color', selector: (cat) => cat.color?.description },
-    { name: 'Patrón', selector: (cat) => cat.pattern?.description },
+    {
+      name: 'Cachorro',
+      width: '95px',
+      selector: (cat) => (isKitten(cat) ? 'Cachorro' : ''),
+    },
+    {
+      name: 'Capa',
+      width: '200px',
+      selector: (cat) =>
+        `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
+          cat.colorId !== 0 ? cat.color?.description : ''
+        }`,
+    },
+    {
+      name: 'Baja',
+      selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
+    { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
   ];
+
+  // const columns: TableColumn<Cat>[] = [
+  //   { name: 'Id', selector: (cat) => cat.id },
+  //   {
+  //     name: 'Foto',
+  //     cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
+  //   },
+  //   { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
+  //   { name: 'Nacimiento', selector: (cat) => cat.bornAt?.toLocaleDateString() },
+  //   {
+  //     name: 'Esterilizado',
+  //     selector: (cat) => cat.sterilized,
+  //     format: (cat) => (cat.sterilized ? 'Sí' : 'No'),
+  //   },
+  //   { name: 'Color', selector: (cat) => cat.color?.description },
+  //   { name: 'Patrón', selector: (cat) => cat.pattern?.description },
+  // ];
 
   return (
     <>

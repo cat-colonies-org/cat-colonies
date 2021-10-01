@@ -35,6 +35,12 @@ const Colonies = () => {
     fetchData(1, perPage);
   }, []);
 
+  const getActiveCats = (colony: Colony): number => {
+    return colony.cats?.reduce((active, curr) => {
+      return curr.ceasedAt || curr.ceaseCauseId ? active : active + 1;
+    }, 0);
+  };
+
   const columns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Registro', selector: (row) => row.createdAt.toLocaleDateString() },
@@ -42,6 +48,7 @@ const Colonies = () => {
     { name: 'Tipo ubicación', selector: (row) => row.locationType.description },
     { name: 'Entorno', selector: (row) => row.environment.description },
     { name: 'Localidad', selector: (row) => row.town.name },
+    { name: 'Activos', selector: (row) => getActiveCats(row) },
   ];
 
   return (

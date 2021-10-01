@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
+import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import withPrivateRoute from '../../components/with-private-route';
@@ -29,7 +30,7 @@ const CatDetails = () => {
 
   const emptyCat: Partial<Cat> = Object.freeze({
     createdAt: new Date(),
-    bornAt: new Date(),
+    bornAt: undefined,
     sterilizedAt: undefined,
     ceasedAt: undefined,
     colorId: 0,
@@ -252,7 +253,11 @@ const CatDetails = () => {
                       <label htmlFor="id" className="form-label">
                         Colonia
                       </label>
-                      <input id="colonyId" type="text" className="form-control" value={cat?.colonyId} readOnly />
+                      <div>
+                        <Link href={`/colonies/${cat?.colonyId}`}>
+                          <a className="btn btn-secondary">{cat?.colonyId}</a>
+                        </Link>
+                      </div>
                     </div>
                   </div>
 
