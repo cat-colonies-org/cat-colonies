@@ -30,7 +30,7 @@ export interface UsersList {
 const getUserFromGraphQlResult = (user: Record<string, any>): User => {
   return {
     ...user,
-    createdAt: new Date(user.createdAt),
+    createdAt: new Date(),
   } as User;
 };
 
@@ -65,5 +65,17 @@ export async function getUsersList({
       : [];
 
     return { items, total };
+  });
+}
+
+export async function getUser(id: number): Promise<User> {
+  const query = `query {
+      user (id:${id}) {
+        ${userQueryFields}
+      }
+    }`;
+
+  return await apiCall(query).then((response): User => {
+    return getUserFromGraphQlResult(response?.data?.user);
   });
 }
