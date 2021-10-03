@@ -131,9 +131,6 @@ const CatDetails = () => {
 
     let promise: Promise<Cat>;
 
-    console.log('saving !!!!!!!!');
-    console.log(cat);
-
     if (cat.id) promise = updateCat(+cat.id, cat);
     else promise = createCat(cat);
 
@@ -142,9 +139,6 @@ const CatDetails = () => {
       success: 'Datos actualizados',
       error: 'Error actualizando datos',
     });
-
-    console.log('saved !!!!!!!!');
-    console.log(saved);
 
     saved && setCat(saved);
   };
@@ -384,7 +378,7 @@ const CatDetails = () => {
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
-              <p className="d-flex justify-content-between">
+              <div className="d-flex justify-content-between">
                 <div>
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Anotaciones
@@ -392,7 +386,7 @@ const CatDetails = () => {
                 <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
-              </p>
+              </div>
 
               <DataTable
                 columns={annotationsColumns}
