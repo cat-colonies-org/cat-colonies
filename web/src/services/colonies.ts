@@ -42,9 +42,9 @@ const idSorter = (a: { id: number }, b: { id: number }): number => {
 const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   return {
     ...colony,
-    createdAt: new Date(colony.createdAt),
-    managers: colony.managers.sort(idSorter),
-    cats: colony.cats.sort(idSorter),
+    createdAt: colony.createdAt ? new Date(colony.createdAt) : undefined,
+    managers: colony.managers?.sort(idSorter),
+    cats: colony.cats?.sort(idSorter),
   } as Colony;
 };
 

@@ -69,10 +69,10 @@ export interface CatsList {
 const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
   return {
     ...cat,
-    createdAt: new Date(cat.createdAt),
-    bornAt: new Date(cat.bornAt),
-    sterilizedAt: new Date(cat.ceasedAt),
-    ceasedAt: new Date(cat.ceasedAt),
+    createdAt: cat.createdAt ? new Date(cat.createdAt) : undefined,
+    bornAt: cat.bornAt ? new Date(cat.bornAt) : undefined,
+    sterilizedAt: cat.sterilizedAt ? new Date(cat.sterilizedAt) : undefined,
+    ceasedAt: cat.ceasedAt ? new Date(cat.ceasedAt) : undefined,
   } as Cat;
 };
 
