@@ -73,7 +73,7 @@ const Sidebar = () => {
           <a>Contact</a>
         </li> */}
       </ul>
-      <div className="card mr-3 p-1">
+      <div suppressHydrationWarning className="card mr-3 p-1">
         <div className="card-body">
           <p className="card-text">{authToken.email}</p>
           <button onClick={onLogoutClick} className="btn btn-secondary">
