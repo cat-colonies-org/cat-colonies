@@ -1,5 +1,6 @@
 import { apiCall, getCriteriaString, objToListString, omit } from '../common/util';
 import { Annotation } from './annotations';
+import { Color } from './colors';
 
 export const catQueryFields: string = `
   id
@@ -14,12 +15,11 @@ export const catQueryFields: string = `
   gender
   colonyId
   colony { address }
-  colorId
-  color { description }
-  patternId
-  pattern { description }
   eyeColorId
   eyeColor { description }
+  patternId
+  pattern { description }
+  colors { id description }
   annotations { id date annotation }
 `;
 
@@ -42,12 +42,11 @@ export type Cat = {
   gender: Gender;
   colonyId: number;
   colony: { address: string };
-  colorId: number;
-  color: { description: string };
-  patternId: number;
-  pattern: { description: string };
   eyeColorId: number;
   eyeColor: { description: string };
+  patternId: number;
+  pattern: { description: string };
+  colors: Color[];
   annotations: Annotation[];
 };
 

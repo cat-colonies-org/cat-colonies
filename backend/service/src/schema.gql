@@ -50,8 +50,6 @@ type Cat {
   sterilizedAt: DateTime
   colonyId: Int
   colony: Colony
-  colorId: Int
-  color: Color
   patternId: Int
   pattern: Pattern
   gender: Gender
@@ -59,6 +57,7 @@ type Cat {
   eyeColor: EyeColor
   imageURL: String
   annotations: [Annotation!]
+  colors: [Color!]
 }
 
 """"""
@@ -320,7 +319,6 @@ input CreateCatInput {
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
-  colorId: Int
   patternId: Int
   eyeColorId: Int
   gender: Gender
@@ -335,7 +333,6 @@ input UpdateCatInput {
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
-  colorId: Int
   patternId: Int
   eyeColorId: Int
   gender: Gender

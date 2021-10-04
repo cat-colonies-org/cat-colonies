@@ -1,6 +1,7 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { Annotation, createAnnotation } from '../../services/annotations';
+import { AuthToken } from '../../common/authToken';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
@@ -9,6 +10,7 @@ import { createPattern, getPatternsList, Pattern } from '../../services/patterns
 import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
@@ -22,6 +24,9 @@ registerLocale('es', es);
 const CatDetails = () => {
   const router = useRouter();
 
+  const tokenCookie = Cookies.get('authToken');
+  const authToken = new AuthToken(tokenCookie);
+
   const annotationsColumns: TableColumn<Annotation>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString() },
@@ -33,7 +38,6 @@ const CatDetails = () => {
     bornAt: undefined,
     sterilizedAt: undefined,
     ceasedAt: undefined,
-    colorId: 0,
     eyeColorId: 0,
     patternId: 0,
     ceaseCauseId: 0,
@@ -52,15 +56,6 @@ const CatDetails = () => {
     return a.description.localeCompare(b.description);
   };
 
-  const onNewCeaseCause = (item: CeaseCause) => {
-    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
-
-    setCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, ceaseCauseId: item.id };
-    });
-  };
-
   const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
     if (!cat.id) {
       toast.warn('Debe guardar el gato antes de poder hacer anotaciones');
@@ -77,9 +72,7 @@ const CatDetails = () => {
     if (annotation) {
       cat.annotations.push(annotation);
 
-      setCat((prev) => {
-        return { ...prev, annotations: prev.annotations };
-      });
+      setCat((prev) => ({ ...prev, annotations: prev.annotations }));
 
       toast.success(`Creada nueva anotación "${annotation.annotation}"`);
     } else {
@@ -87,43 +80,81 @@ const CatDetails = () => {
     }
   };
 
-  const onNewColor = (item: Color) => {
-    toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
+  const onCreateCeaseCause = async (description: string) => {
+    const item: CeaseCause = await createCeaseCause(description);
+
+    if (!item) {
+      toast.error(`Error creando causa de baja "${description}"`);
+      return;
+    }
+
+    setCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
+
+    setCat((prev) => ({ ...prev, ceaseCauseId: item.id }));
+
+    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
+  };
+
+  const onCreateColor = async (description: string) => {
+    const item: Color = await createColor(description);
+
+    if (!item) {
+      toast.error(`Error creando color "${description}"`);
+      return;
+    }
 
     setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, colorId: item.id };
-    });
+    setCat((prev) => ({ ...prev, colorId: item.id }));
+
+    toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
   };
 
-  const onNewPattern = (item: Pattern) => {
-    toast.success(`Creada nueva distribución "${item.description}" con id "${item.id}"`);
+  const onCreatePattern = async (description: string) => {
+    const item: Pattern = await createPattern(description);
+
+    if (!item) {
+      toast.error(`Error creando distribución "${description}"`);
+      return;
+    }
 
     setPatterns((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, patternId: item.id };
-    });
+
+    setCat((prev) => ({ ...prev, patternId: item.id }));
+
+    toast.success(`Creada nueva distribución "${item.description}" con id "${item.id}"`);
   };
 
-  const onNewEyeColor = (item: EyeColor) => {
-    toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
+  const onCreateEyeColor = async (description: string) => {
+    const item: EyeColor = await createEyeColor(description);
+
+    if (!item) {
+      toast.error(`Error creando color de ojos "${description}"`);
+      return;
+    }
 
     setEyeColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, eyeColorId: item.id };
-    });
+
+    setCat((prev) => ({ ...prev, eyeColorId: item.id }));
+
+    toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
   };
 
-  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
-    setCat((prev: any) => {
-      return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
-    });
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
+    if (meta.name === 'colorId') return onColorSelectChange(data);
+
+    setCat((prev: any) => ({ ...prev, [meta.name]: data.value }));
+  };
+
+  const onColorSelectChange = (data: { value: number; label: string }[]): void => {
+    setCat((prev) => ({ ...prev, colors: data.map((c) => ({ id: c.value, description: c.label })) }));
+  };
+
+  const onGenderChange = (event: FormEvent<HTMLSelectElement>): void => {
+    setCat((prev: any) => ({ ...prev, [event.currentTarget.id]: event.currentTarget.value }));
   };
 
   const onDateChange = (date: Date, field: string): void => {
-    setCat((prev: Cat) => {
-      return { ...prev, [field]: date };
-    });
+    setCat((prev: Cat) => ({ ...prev, [field]: date }));
   };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
@@ -223,10 +254,11 @@ const CatDetails = () => {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="bornAt" className="form-label">
                         Nacimiento
                       </label>
                       <ReactDatePicker
+                        id="bornAt"
                         className="form-control"
                         locale="el"
                         value={cat?.bornAt?.toLocaleDateString()}
@@ -234,19 +266,17 @@ const CatDetails = () => {
                       />
                     </div>
                     <div className="col-md-2">
-                      <label htmlFor="address" className="form-label">
+                      <label htmlFor="gender" className="form-label">
                         Sexo
                       </label>
-                      <select id="gender" className="form-control" value={cat?.gender} onChange={onSelectChange}>
+                      <select id="gender" className="form-control" value={cat?.gender} onChange={onGenderChange}>
                         <option value="Male">Macho</option>
                         <option value="Female">Hembra</option>
                         <option value="Unknown">Desconocido</option>
                       </select>
                     </div>
                     <div className="col-md-2">
-                      <label htmlFor="id" className="form-label">
-                        Colonia
-                      </label>
+                      <label className="form-label">Colonia</label>
                       <div>
                         <Link href={`/colonies/${cat?.colonyId}`}>
                           <a className="btn btn-secondary">{cat?.colonyId}</a>
@@ -257,7 +287,7 @@ const CatDetails = () => {
 
                   <div className="row mt-3">
                     <div className="col-md-2">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="sterilized" className="form-label">
                         Esterilizado
                       </label>
                       <div className="form-check">
@@ -266,10 +296,11 @@ const CatDetails = () => {
                     </div>
 
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="sterilizedAt" className="form-label">
                         Fecha esterilización
                       </label>
                       <ReactDatePicker
+                        id="sterilizedAt"
                         className="form-control"
                         locale="el"
                         value={cat?.sterilizedAt?.toLocaleDateString()}
@@ -278,10 +309,11 @@ const CatDetails = () => {
                     </div>
 
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="ceasedAt" className="form-label">
                         Baja
                       </label>
                       <ReactDatePicker
+                        id="ceasedAt"
                         className="form-control"
                         locale="el"
                         value={cat?.ceasedAt?.toLocaleDateString()}
@@ -289,78 +321,70 @@ const CatDetails = () => {
                       />
                     </div>
                     <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
+                      <label htmlFor="ceaseCauseId" className="form-label">
                         Causa de baja
                       </label>
                       <PropertySelector
                         id="ceaseCauseId"
                         title="Nueva Causa de Baja"
                         caption="Descripción"
-                        buttonCaption="Crear"
-                        items={ceaseCauses}
+                        allowAdd={authToken.isAdmin}
+                        items={ceaseCauses.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.ceaseCauseId}
-                        setter={setCat}
-                        textGetter={(i: CeaseCause) => i.description}
-                        factory={createCeaseCause}
-                        onCreate={onNewCeaseCause}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                        onChange={onSelectChange}
+                        onCreate={onCreateCeaseCause}
                       />
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
-                        Color
-                      </label>
-                      <PropertySelector
-                        id="colorId"
-                        title="Nuevo color"
-                        caption="Descripción"
-                        buttonCaption="Crear"
-                        items={colors}
-                        value={cat?.colorId}
-                        setter={setCat}
-                        textGetter={(i: Color) => i.description}
-                        factory={createColor}
-                        onCreate={onNewColor}
-                        onError={(i: string) => toast.error(`Error creando color "${i}"`)}
-                      />
-                    </div>
-                    <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
+                      <label htmlFor="patternId" className="form-label">
                         Disposición
                       </label>
                       <PropertySelector
                         id="patternId"
                         title="Nueva disposición"
                         caption="Descripción"
-                        buttonCaption="Crear"
-                        items={patterns}
+                        allowAdd={authToken.isAdmin}
+                        multiple={false}
+                        items={patterns.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.patternId}
-                        setter={setCat}
-                        textGetter={(i: Pattern) => i.description}
-                        factory={createPattern}
-                        onCreate={onNewPattern}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                        onChange={onSelectChange}
+                        onCreate={onCreatePattern}
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label htmlFor="colorId" className="form-label">
+                        Color
+                      </label>
+                      <PropertySelector
+                        id="colorId"
+                        title="Nuevo color"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        multiple={true}
+                        items={colors.map((i) => ({ value: i.id, label: i.description }))}
+                        value={cat?.colors}
+                        onChange={onSelectChange}
+                        onCreate={onCreateColor}
                       />
                     </div>
                     <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
+                      <label htmlFor="eyeColorId" className="form-label">
                         Ojos
                       </label>
                       <PropertySelector
                         id="eyeColorId"
                         title="Nuevo color de ojos"
                         caption="Descripción"
-                        buttonCaption="Crear"
-                        items={eyeColors}
+                        allowAdd={authToken.isAdmin}
+                        multiple={false}
+                        items={eyeColors.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.eyeColorId}
-                        setter={setCat}
-                        textGetter={(i: EyeColor) => i.description}
-                        factory={createEyeColor}
-                        onCreate={onNewEyeColor}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                        onChange={onSelectChange}
+                        onCreate={onCreateEyeColor}
                       />
                     </div>
                   </div>

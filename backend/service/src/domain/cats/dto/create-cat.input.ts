@@ -16,9 +16,6 @@ export class CreateCatInput {
   colonyId?: number;
 
   @Field(() => Int, { nullable: true })
-  colorId?: number;
-
-  @Field(() => Int, { nullable: true })
   patternId?: number;
 
   @Field(() => Int, { nullable: true })

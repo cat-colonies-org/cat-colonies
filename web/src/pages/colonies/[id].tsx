@@ -59,10 +59,11 @@ const ColonyDetails = () => {
     {
       name: 'Capa',
       width: '200px',
-      selector: (cat) =>
-        `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
-          cat.colorId !== 0 ? cat.color?.description : ''
-        }`,
+      selector: (cat) => 'N/A',
+      // selector: (cat) =>
+      //   `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
+      //     cat.colorId !== 0 ? cat.color?.description : ''
+      //   }`,
     },
     {
       name: 'Baja',

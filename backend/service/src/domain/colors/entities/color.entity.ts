@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Cat } from 'src/domain/cats/entities/cat.entity';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -13,7 +13,7 @@ export class Color extends BaseEntity {
   @Field(() => String)
   description: string;
 
-  @OneToMany(() => Cat, (cat) => cat.color)
+  @ManyToMany(() => Cat, (cat) => cat.colors)
   @Field(() => [Cat])
   cats: Promise<Cat[]>;
 }

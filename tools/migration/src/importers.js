@@ -124,7 +124,7 @@ const importCats = async () => {
       esterilized: strToSterilized(mdbCat['ESTERIL']),
       gender: strToGender(mdbCat['SEXO']),
       eyeColorId: strToEyeColorId(mdbCat['OJOS']),
-      colorId: strToColorId(mdbCat['CAPA']),
+      // colorId: strToColorId(mdbCat['CAPA']),
       patternId: strToPatternId(mdbCat['CAPA']),
     };
   });
