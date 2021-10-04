@@ -8,6 +8,8 @@ export const userQueryFields: string = `
   phoneNumber
   email
   roleId
+  idCard
+  authorizesWhatsApp
   role { id description }
 `;
 
@@ -19,6 +21,8 @@ export type User = {
   phoneNumber: number;
   email: string;
   roleId: number;
+  idCard: string;
+  authorizesWhatsApp: boolean;
   role: { description: string };
 };
 
