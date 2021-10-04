@@ -259,7 +259,7 @@ const ColonyDetails = () => {
                         title="Nueva Localidad"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        items={towns}
+                        options={towns}
                         value={colony?.townId}
                         setter={setColony}
                         textGetter={(i: Town) => i.name}
@@ -293,7 +293,7 @@ const ColonyDetails = () => {
                         title="Nueva Ubicación"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        items={locationTypes}
+                        options={locationTypes}
                         value={colony?.locationTypeId}
                         setter={setColony}
                         textGetter={(i: LocationType) => i.description}
@@ -311,7 +311,7 @@ const ColonyDetails = () => {
                         title="Nuevo entorno"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        items={environments}
+                        options={environments}
                         value={colony?.environmentId}
                         setter={setColony}
                         textGetter={(i: Environment) => i.description}

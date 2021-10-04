@@ -9,7 +9,7 @@ interface Item {
 
 interface PropertySelectorProps {
   id: string;
-  items: OptionsOrGroups<any, GroupBase<Item>>;
+  options: OptionsOrGroups<any, GroupBase<Item>>;
   value: any;
   title: string;
   caption: string;
@@ -22,7 +22,7 @@ interface PropertySelectorProps {
 
 const PropertySelector = ({
   id,
-  items,
+  options,
   value,
   title,
   caption,
@@ -59,12 +59,17 @@ const PropertySelector = ({
         <Select
           id={id}
           name={id}
-          value={items.find((e) => e.value === value)}
+          value={
+            value?.find
+              ? options.filter((option: any) => value.find((value: any) => value.id === option.value))
+              : options.find((option) => option.value === value)
+          }
           onChange={onChange}
           isMulti={multiple}
-          options={items}
+          options={options}
           isSearchable={false}
           isClearable={true}
+          placeholder={<div>Seleccione...</div>}
           styles={{
             container: (prev: any) => ({ ...prev, width: '100%' }),
           }}

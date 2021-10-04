@@ -104,7 +104,8 @@ const CatDetails = () => {
     }
 
     setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => ({ ...prev, colorId: item.id }));
+
+    setCat((cat) => ({ ...cat, colors: [...cat.colors, item] }));
 
     toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
   };
@@ -140,7 +141,7 @@ const CatDetails = () => {
   };
 
   const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
-    if (meta.name === 'colorId') return onColorSelectChange(data);
+    if (meta.name === 'colors') return onColorSelectChange(data);
 
     setCat((prev: any) => ({ ...prev, [meta.name]: data.value }));
   };
@@ -329,7 +330,7 @@ const CatDetails = () => {
                         title="Nueva Causa de Baja"
                         caption="Descripción"
                         allowAdd={authToken.isAdmin}
-                        items={ceaseCauses.map((i) => ({ value: i.id, label: i.description }))}
+                        options={ceaseCauses.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.ceaseCauseId}
                         onChange={onSelectChange}
                         onCreate={onCreateCeaseCause}
@@ -338,40 +339,7 @@ const CatDetails = () => {
                   </div>
 
                   <div className="row">
-                    <div className="col-md-4">
-                      <label htmlFor="patternId" className="form-label">
-                        Disposición
-                      </label>
-                      <PropertySelector
-                        id="patternId"
-                        title="Nueva disposición"
-                        caption="Descripción"
-                        allowAdd={authToken.isAdmin}
-                        multiple={false}
-                        items={patterns.map((i) => ({ value: i.id, label: i.description }))}
-                        value={cat?.patternId}
-                        onChange={onSelectChange}
-                        onCreate={onCreatePattern}
-                      />
-                    </div>
-
-                    <div className="col-md-4">
-                      <label htmlFor="colorId" className="form-label">
-                        Color
-                      </label>
-                      <PropertySelector
-                        id="colorId"
-                        title="Nuevo color"
-                        caption="Descripción"
-                        allowAdd={authToken.isAdmin}
-                        multiple={true}
-                        items={colors.map((i) => ({ value: i.id, label: i.description }))}
-                        value={cat?.colors}
-                        onChange={onSelectChange}
-                        onCreate={onCreateColor}
-                      />
-                    </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <label htmlFor="eyeColorId" className="form-label">
                         Ojos
                       </label>
@@ -381,10 +349,44 @@ const CatDetails = () => {
                         caption="Descripción"
                         allowAdd={authToken.isAdmin}
                         multiple={false}
-                        items={eyeColors.map((i) => ({ value: i.id, label: i.description }))}
+                        options={eyeColors.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.eyeColorId}
                         onChange={onSelectChange}
                         onCreate={onCreateEyeColor}
+                      />
+                    </div>
+
+                    <div className="col-md-3">
+                      <label htmlFor="patternId" className="form-label">
+                        Disposición
+                      </label>
+                      <PropertySelector
+                        id="patternId"
+                        title="Nueva disposición"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        multiple={false}
+                        options={patterns.map((i) => ({ value: i.id, label: i.description }))}
+                        value={cat?.patternId}
+                        onChange={onSelectChange}
+                        onCreate={onCreatePattern}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label htmlFor="colors" className="form-label">
+                        Colores
+                      </label>
+                      <PropertySelector
+                        id="colors"
+                        title="Nuevo color"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        multiple={true}
+                        value={cat?.colors}
+                        options={colors.map((i) => ({ value: i.id, label: i.description }))}
+                        onChange={onSelectChange}
+                        onCreate={onCreateColor}
                       />
                     </div>
                   </div>
