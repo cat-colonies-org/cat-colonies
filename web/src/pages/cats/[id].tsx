@@ -1,7 +1,6 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { Annotation, createAnnotation } from '../../services/annotations';
-import { AuthToken } from '../../common/authToken';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
@@ -10,7 +9,6 @@ import { createPattern, getPatternsList, Pattern } from '../../services/patterns
 import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
@@ -21,11 +19,8 @@ import withPrivateRoute from '../../components/with-private-route';
 
 registerLocale('es', es);
 
-const CatDetails = () => {
+const CatDetails = ({ authToken }: any) => {
   const router = useRouter();
-
-  const tokenCookie = Cookies.get('authToken');
-  const authToken = new AuthToken(tokenCookie);
 
   const annotationsColumns: TableColumn<Annotation>[] = [
     { name: 'Id', selector: (row) => row.id },

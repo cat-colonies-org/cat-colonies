@@ -3,12 +3,17 @@
 
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthToken } from '../common/authToken';
 import { ToastContainer } from 'react-toastify';
-import Head from 'next/head';
+import Cookies from 'js-cookie';
 import DefaultLayout from '../components/default-layout';
+import Head from 'next/head';
 import type { AppProps } from 'next/app';
 
 function App({ Component, pageProps }: AppProps) {
+  const tokenCookie = Cookies.get('authToken');
+  const authToken = new AuthToken(tokenCookie);
+
   const Layout = (Component as any).Layout || DefaultLayout;
 
   return (
@@ -44,7 +49,7 @@ function App({ Component, pageProps }: AppProps) {
         ></script>
       </Head>
 
-      <Layout>
+      <Layout authToken={authToken}>
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -54,7 +59,7 @@ function App({ Component, pageProps }: AppProps) {
           rtl={false}
           pauseOnHover
         />
-        <Component {...pageProps} />
+        <Component {...pageProps} authToken={authToken} />
       </Layout>
     </>
   );

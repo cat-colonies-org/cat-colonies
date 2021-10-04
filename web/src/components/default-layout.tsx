@@ -1,12 +1,12 @@
 import Sidebar from './sidebar';
 
-const DefaultLayout = ({ children }: { children: any }) => {
+const DefaultLayout = ({ children, authToken }: any) => {
   return (
     <>
       <div className="container-fluid">
         <div className="row">
           <div id="sidebar" className="col-md-2">
-            <Sidebar />
+            <Sidebar authToken={authToken} />
           </div>
 
           <div className="col-md-10 pt-5">

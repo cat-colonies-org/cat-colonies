@@ -11,7 +11,7 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 
-const ColonyDetails = () => {
+const ColonyDetails = ({ authToken }: any) => {
   const router = useRouter();
 
   interface Stats {
@@ -101,28 +101,59 @@ const ColonyDetails = () => {
     return a.description.localeCompare(b.description);
   };
 
-  const onNewTown = (town: Town): void => {
-    toast.success(`Creada nueva localidad "${town.name}" con id "${town.id}"`);
-    setTowns((prev) => [...prev, { ...town }].sort(nameSorter));
+  const onNewTown = async (name: string): Promise<void> => {
+    const item: Town = await createTown(name);
+
+    if (!item) {
+      toast.error(`Error creando localidad "${name}"`);
+      return;
+    }
+
+    setTowns((prev) => [...prev, { ...item }].sort(nameSorter));
+
     setColony((prev) => {
-      return { ...prev, townId: town.id };
+      return { ...prev, townId: item.id };
     });
+
+    toast.success(`Creada nueva localidad "${item.name}" con id "${item.id}"`);
   };
 
-  const onNewLocationType = (locationType: LocationType): void => {
-    toast.success(`Creada nueva localidad "${locationType.description}" con id "${locationType.id}"`);
-    setLocationTypes((prev) => [...prev, { ...locationType }].sort(descriptionSorter));
+  const onNewLocationType = async (description: string): Promise<void> => {
+    const item: LocationType = await createLocationType(description);
+
+    if (!item) {
+      toast.error(`Error creando ubicación "${description}"`);
+      return;
+    }
+
+    setLocationTypes((prev) => [...prev, { ...item }].sort(descriptionSorter));
+
     setColony((prev) => {
-      return { ...prev, locationTypeId: locationType.id };
+      return { ...prev, locationTypeId: item.id };
     });
+
+    toast.success(`Creada nueva ubicación "${item.description}" con id "${item.id}"`);
   };
 
-  const onNewEnvironment = (environment: Environment): void => {
-    toast.success(`Creado nuevo entorno "${environment.description}" con id "${environment.id}"`);
-    setEnvironments((prev) => [...prev, { ...environment }].sort(descriptionSorter));
+  const onNewEnvironment = async (description: string): Promise<void> => {
+    const item: Environment = await createEnvironment(description);
+
+    if (!item) {
+      toast.error(`Error creando entorno "${description}"`);
+      return;
+    }
+
+    setEnvironments((prev) => [...prev, { ...item }].sort(descriptionSorter));
+
     setColony((prev) => {
-      return { ...prev, environmentId: environment.id };
+      return { ...prev, environmentId: item.id };
     });
+
+    toast.success(`Creado nuevo entorno "${item.description}" con id "${item.id}"`);
+  };
+
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
+    setColony((prev: any) => ({ ...prev, [meta.name]: data.value }));
   };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
@@ -131,7 +162,7 @@ const ColonyDetails = () => {
     });
   };
 
-  const onNewCatClicked = async (event: FormEvent<HTMLButtonElement>): Promise<void> => {
+  const onAddCat = async (event: FormEvent<HTMLButtonElement>): Promise<void> => {
     if (!colony.id) {
       toast.warn('Debe guardar la nueva colonia antes de añadirle gatos');
       return;
@@ -259,13 +290,11 @@ const ColonyDetails = () => {
                         title="Nueva Localidad"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        options={towns}
+                        allowAdd={authToken.isAdmin}
+                        options={towns.map((i) => ({ value: i.id, label: i.name }))}
                         value={colony?.townId}
-                        setter={setColony}
-                        textGetter={(i: Town) => i.name}
-                        factory={createTown}
+                        onChange={onSelectChange}
                         onCreate={onNewTown}
-                        onError={(i: string) => toast.error(`Error creando localidad "${i}"`)}
                       />
                     </div>
                   </div>
@@ -293,13 +322,11 @@ const ColonyDetails = () => {
                         title="Nueva Ubicación"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        options={locationTypes}
+                        allowAdd={authToken.isAdmin}
+                        options={locationTypes.map((i) => ({ value: i.id, label: i.description }))}
                         value={colony?.locationTypeId}
-                        setter={setColony}
-                        textGetter={(i: LocationType) => i.description}
-                        factory={createLocationType}
+                        onChange={onSelectChange}
                         onCreate={onNewLocationType}
-                        onError={(i: string) => toast.error(`Error creando ubicación "${i}"`)}
                       />
                     </div>
                     <div className="col-md-3">
@@ -311,13 +338,11 @@ const ColonyDetails = () => {
                         title="Nuevo entorno"
                         caption="Descripción"
                         buttonCaption="Crear"
-                        options={environments}
+                        allowAdd={authToken.isAdmin}
+                        options={environments.map((i) => ({ value: i.id, label: i.description }))}
                         value={colony?.environmentId}
-                        setter={setColony}
-                        textGetter={(i: Environment) => i.description}
-                        factory={createEnvironment}
+                        onChange={onSelectChange}
                         onCreate={onNewEnvironment}
-                        onError={(i: string) => toast.error(`Error creando entorno "${i}"`)}
                       />
                     </div>
                   </div>
@@ -401,7 +426,7 @@ const ColonyDetails = () => {
                   <i className="fas fa-cat mr-2" aria-hidden="true"></i>
                   Gatos
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" onClick={onNewCatClicked}>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddCat}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
               </p>
