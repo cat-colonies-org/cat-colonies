@@ -235,7 +235,7 @@ type Query {
   annotation(id: Int!): Annotation
   signin(userCredentials: UserCredentials!): AccessToken!
   test: Boolean!
-  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, birthYear: Int, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender, kitten: Boolean): FindCatsResult
+  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, bornAt: DateTime, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender): FindCatsResult
   cat(id: Int!): Cat
   ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
   ceaseCause(id: Int!): CeaseCause
@@ -315,31 +315,43 @@ input UpdateAnnotationInput {
 }
 
 input CreateCatInput {
-  birthYear: Int
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
   patternId: Int
+  colors: [InputColor!]
   eyeColorId: Int
   gender: Gender
-  kitten: Boolean
   ceasedAt: DateTime
   ceaseCauseId: Int
   bornAt: DateTime
+  annotations: [InputAnnotation!]
+}
+
+input InputColor {
+  id: Int!
+  description: String!
+}
+
+input InputAnnotation {
+  id: Int!
+  catId: Int!
+  annotation: String!
+  date: DateTime!
 }
 
 input UpdateCatInput {
-  birthYear: Int
   sterilized: Boolean
   sterilizedAt: DateTime
   colonyId: Int
   patternId: Int
+  colors: [InputColor!]
   eyeColorId: Int
   gender: Gender
-  kitten: Boolean
   ceasedAt: DateTime
   ceaseCauseId: Int
   bornAt: DateTime
+  annotations: [InputAnnotation!]
   id: Int!
 }
 

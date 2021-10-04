@@ -163,7 +163,7 @@ const CatDetails = () => {
 
     let promise: Promise<Cat>;
 
-    if (cat.id) promise = updateCat(+cat.id, cat);
+    if (cat.id) promise = updateCat(cat);
     else promise = createCat(cat);
 
     const saved = await toast.promise(promise, {

@@ -40,7 +40,7 @@ export const getCriteriaString = ({
   return criteria;
 };
 
-export const apiCall = async (query: string) => {
+export const apiCall = async (query: string, variables?: any) => {
   const apiBaseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
   const options = {
@@ -53,7 +53,7 @@ export const apiCall = async (query: string) => {
 
   return await fetch(apiBaseUrl, {
     ...options,
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, variables }),
   }).then((response) => response.json());
   // TODO: catch
 };
