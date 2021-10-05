@@ -1,12 +1,13 @@
 {
   "name": "cat-colonies-database",
-  "version": "0.0.1",
+  "version": "0.2.0-dev-build",
   "description": "",
   "author": "cat-colonies-org",
   "private": true,
   "license": "BSD 3-Clause License",
   "scripts": {
-    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-database .",
-    "docker:push": "docker push daviddq/cat-colonies-database"
+    "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
+    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-database:$npm_package_version .",
+    "docker:push": "docker push daviddq/cat-colonies-database:$npm_package_version"
   }
 }
