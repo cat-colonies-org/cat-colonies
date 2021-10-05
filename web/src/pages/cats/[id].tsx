@@ -1,4 +1,5 @@
 import 'react-datepicker/dist/react-datepicker.css';
+import 'react-image-gallery/styles/css/image-gallery.css';
 
 import { Annotation, createAnnotation } from '../../services/annotations';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
@@ -11,6 +12,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
+import ImageGallery from 'react-image-gallery';
 import InputModal from '../../components/input-modal';
 import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
@@ -46,6 +48,27 @@ const CatDetails = ({ authToken }: any) => {
   const [patterns, setPatterns] = useState([] as Pattern[]);
   const [eyeColors, setEyeColors] = useState([] as Color[]);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  const images = [
+    {
+      original:
+        'https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      thumbnail:
+        'https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    },
+    {
+      original:
+        'https://images.pexels.com/photos/2870353/pexels-photo-2870353.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      thumbnail:
+        'https://images.pexels.com/photos/2870353/pexels-photo-2870353.jpeg?auto=compress&cs=tinysrgb&w=250&h=150&dpr=1',
+    },
+    {
+      original:
+        'https://images.pexels.com/photos/1787414/pexels-photo-1787414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      thumbnail:
+        'https://images.pexels.com/photos/1787414/pexels-photo-1787414.jpeg?auto=compress&cs=tinysrgb&w=250&h=150&dpr=1',
+    },
+  ];
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -416,6 +439,29 @@ const CatDetails = ({ authToken }: any) => {
                 highlightOnHover={true}
                 progressPending={loading}
                 striped={true}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  Fotos
+                </div>
+                <button className="btn btn-primary btn-sm mb-3" disabled={!cat.id}>
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <ImageGallery
+                thumbnailPosition="right"
+                showFullscreenButton={true}
+                showPlayButton={false}
+                items={images}
               />
             </div>
           </div>
