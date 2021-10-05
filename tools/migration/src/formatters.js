@@ -22,6 +22,16 @@ const locationTypeFormatter = (locationType) => {
   );`;
 };
 
+const pictureFormatter = (picture) => {
+  return `INSERT INTO picture ("id", "catId", "createdAt", "imageURL", "thumbnailURL") VALUES (
+    ${picture.id}, 
+    ${picture.catId}, 
+    ${dateToIso(picture.createdAt)},
+    '${picture.imageURL}', 
+    '${picture.thumbnailURL}'
+  );`;
+};
+
 const roleFormatter = (role) => {
   return `INSERT INTO role ("id", "description") VALUES (
     ${role.id}, 
@@ -126,6 +136,7 @@ module.exports = {
   eyeColorFormatter,
   locationTypeFormatter,
   patternFormatter,
+  pictureFormatter,
   roleFormatter,
   townFormatter,
   userFormatter,

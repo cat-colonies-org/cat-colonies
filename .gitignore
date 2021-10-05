@@ -2,6 +2,10 @@
 **/dist
 **/node_modules
 
+# migration input
+*.accdb
+**/pictures/*.jpg
+
 # migration output
 **/output/*.sql
 
@@ -13,9 +17,6 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
-# access database
-*.accdb
 
 # misc
 .DS_Store

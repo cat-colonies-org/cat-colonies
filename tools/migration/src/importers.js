@@ -1,6 +1,7 @@
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
 const CSVToJSON = require('csvtojson');
+const exec = util.promisify(require('child_process').exec);
+const fs = require('fs');
 
 const {
   strToDate,
@@ -107,6 +108,20 @@ const importPatterns = async () => {
     { id: 4, description: 'Tabby' },
     { id: 5, description: 'Tricolor' },
   ]);
+};
+
+const importPictures = async (path) => {
+  const files = fs.readdirSync(path);
+
+  let counter = 1;
+
+  return files.map((file) => ({
+    id: counter++,
+    catId: file.split('_')[0],
+    createdAt: new Date(),
+    imageURL: file,
+    thumbnailURL: file,
+  }));
 };
 
 const importCats = async () => {
@@ -241,6 +256,7 @@ module.exports = {
   importEyeColors,
   importLocationTypes,
   importPatterns,
+  importPictures,
   importRoles,
   importTowns,
   importUsers,

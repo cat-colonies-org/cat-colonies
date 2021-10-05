@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const OUTPUT_PATH = './output';
+const PICTURES_PATH = './pictures';
 const COMBINED_OUTPUT = path.join(OUTPUT_PATH, 'combined.sql');
 
 const {
@@ -15,6 +16,7 @@ const {
   importEyeColors,
   importLocationTypes,
   importPatterns,
+  importPictures,
   importRoles,
   importTowns,
   importUsers,
@@ -31,6 +33,7 @@ const {
   eyeColorFormatter,
   locationTypeFormatter,
   patternFormatter,
+  pictureFormatter,
   roleFormatter,
   townFormatter,
   userFormatter,
@@ -69,6 +72,7 @@ const exportFile = async (tableName, importer, formatter) => {
   await exportFile('cease_cause', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cat', importCats, catFormatter);
   await exportFile('annotation', importAnnotations, annotationFormatter);
+  await exportFile('picture', () => importPictures(PICTURES_PATH), pictureFormatter);
 
   await exportFile('role', importRoles, roleFormatter);
   await exportFile('user', importUsers, userFormatter);

@@ -39,6 +39,15 @@ type Pattern {
   cats: [Cat!]!
 }
 
+type Picture {
+  id: Int!
+  catId: Int!
+  createdAt: DateTime!
+  imageURL: String!
+  thumbnailURL: String!
+  cat: Cat!
+}
+
 type Cat {
   id: Int!
   createdAt: DateTime!
@@ -55,9 +64,9 @@ type Cat {
   gender: Gender
   eyeColorId: Int
   eyeColor: EyeColor
-  imageURL: String
-  annotations: [Annotation!]
   colors: [Color!]
+  annotations: [Annotation!]
+  pictures: [Picture!]
 }
 
 """"""
