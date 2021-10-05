@@ -1,14 +1,15 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "0.2.0-dev-build",
   "private": true,
   "scripts": {
     "dev": "next dev -p 80",
     "build": "next build",
     "start": "next start -p 80",
     "lint": "next lint",
-    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-web .",
-    "docker:push": "docker push daviddq/cat-colonies-web"
+    "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
+    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-web:$npm_package_version .",
+    "docker:push": "docker push daviddq/cat-colonies-web:$npm_package_version"
   },
   "dependencies": {
     "js-cookie": "^3.0.1",
