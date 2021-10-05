@@ -29,6 +29,7 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
+          prefix: web
 
       - name: Set build number in version
         run: |
