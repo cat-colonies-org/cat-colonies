@@ -115,13 +115,15 @@ const importPictures = async (path) => {
 
   let counter = 1;
 
-  return files.map((file) => ({
-    id: counter++,
-    catId: file.split('_')[0],
-    createdAt: new Date(),
-    imageURL: file,
-    thumbnailURL: file,
-  }));
+  return files
+    .filter((file) => file.includes('.jpg'))
+    .map((file) => ({
+      id: counter++,
+      catId: file.split('_')[0],
+      createdAt: new Date(),
+      imageURL: file,
+      thumbnailURL: file,
+    }));
 };
 
 const importCats = async () => {
