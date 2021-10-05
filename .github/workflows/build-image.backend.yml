@@ -1,9 +1,9 @@
-name: Build service image
+name: Build backend image
 
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/workflows/**.service.yml', 'backend/service/**']
+    paths: ['.github/workflows/**.backend.yml', 'backend/service/**']
 
 defaults:
   run:
@@ -35,7 +35,7 @@ jobs:
         run: |
           npm run version:setBuild
 
-      - name: Build service image
+      - name: Build backend image
         run: |
           npm run docker:build
 

@@ -1,4 +1,4 @@
-name: Build backend image
+name: Build database image
 
 on:
   push:
@@ -45,6 +45,6 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push backend image
+      - name: Push database image
         run: |
           npm run docker:push
