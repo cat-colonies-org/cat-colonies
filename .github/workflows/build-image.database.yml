@@ -1,13 +1,13 @@
-name: Build service image
+name: Build backend image
 
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/workflows/build-service-image.yml', 'backend/service/**']
+    paths: ['.github/workflows/**.database.yml', 'backend/database/**']
 
 defaults:
   run:
-    working-directory: ./backend/service
+    working-directory: ./backend/database
 
 jobs:
   build:
@@ -29,13 +29,13 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
-          prefix: backend
+          prefix: database
 
       - name: Set build number in version
         run: |
           npm run version:setBuild
 
-      - name: Build service image
+      - name: Build database image
         run: |
           npm run docker:build
 

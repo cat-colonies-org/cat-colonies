@@ -1,13 +1,13 @@
-name: Build web image
+name: Build service image
 
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/workflows/build-web-image.yml', 'web/**']
+    paths: ['.github/workflows/**.service.yml', 'backend/service/**']
 
 defaults:
   run:
-    working-directory: ./web
+    working-directory: ./backend/service
 
 jobs:
   build:
@@ -29,13 +29,13 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
-          prefix: web
+          prefix: backend
 
       - name: Set build number in version
         run: |
           npm run version:setBuild
 
-      - name: Build web image
+      - name: Build service image
         run: |
           npm run docker:build
 
@@ -45,6 +45,6 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push web image
+      - name: Push backend image
         run: |
           npm run docker:push
