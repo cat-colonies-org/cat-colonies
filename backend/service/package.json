@@ -1,6 +1,6 @@
 {
   "name": "cat-colonies-service",
-  "version": "0.2.dev-build",
+  "version": "0.2.0-dev-build",
   "description": "",
   "author": "cat-colonies-org",
   "private": true,
@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "version:setBuild": "sed -i \"0,/.dev-build/s/.dev-build/.${BUILD_NUMBER:-dev-build}/\" package.json",
+    "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
     "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service:$npm_package_version .",
     "docker:push": "docker push daviddq/cat-colonies-service"
   },
