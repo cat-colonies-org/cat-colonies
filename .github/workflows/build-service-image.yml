@@ -3,7 +3,7 @@ name: Build service image
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/**', 'backend/service/**']
+    paths: ['.github/workflows/build-service-image.yml', 'backend/service/**']
 
 defaults:
   run:

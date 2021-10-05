@@ -3,7 +3,7 @@ name: Build web image
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/**', 'web/**']
+    paths: ['.github/workflows/build-web-image.yml', 'web/**']
 
 defaults:
   run:

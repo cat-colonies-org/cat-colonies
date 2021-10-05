@@ -3,7 +3,7 @@ name: Build backend image
 on:
   push:
     branches: ['main', 'develop']
-    paths: ['.github/**', 'backend/database/**']
+    paths: ['.github/workflows/build-database-image.yml', 'backend/database/**']
 
 defaults:
   run:
