@@ -18,7 +18,6 @@ export const catDataFragment: string = `
     bornAt
     sterilized
     sterilizedAt
-    imageURL
     gender
     colonyId
     colony { address }
@@ -40,7 +39,6 @@ export type Cat = {
   bornAt: Date;
   sterilized: boolean;
   sterilizedAt: Date;
-  imageURL: string;
   gender: Gender;
   colonyId: number;
   colony: { address: string };
