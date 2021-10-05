@@ -2,7 +2,7 @@ name: Build backend image
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches: ['main']
     paths: ['.github/workflows/**.backend.yml', 'backend/service/**']
 
 defaults:

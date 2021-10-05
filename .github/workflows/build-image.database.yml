@@ -2,7 +2,7 @@ name: Build database image
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches: ['main']
     paths: ['.github/workflows/**.database.yml', 'backend/database/**']
 
 defaults:

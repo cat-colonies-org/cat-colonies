@@ -2,7 +2,7 @@ name: Build web image
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches: ['main']
     paths: ['.github/workflows/**.web.yml', 'web/**']
 
 defaults:
