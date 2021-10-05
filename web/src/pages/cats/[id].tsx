@@ -23,8 +23,8 @@ const CatDetails = ({ authToken }: any) => {
   const router = useRouter();
 
   const annotationsColumns: TableColumn<Annotation>[] = [
-    { name: 'Id', selector: (row) => row.id },
-    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString() },
+    { name: 'Id', selector: (row) => row.id, width: '100px' },
+    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString(), width: '100px' },
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
@@ -138,7 +138,7 @@ const CatDetails = ({ authToken }: any) => {
   const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
     if (meta.name === 'colors') return onColorSelectChange(data);
 
-    setCat((prev: any) => ({ ...prev, [meta.name]: data.value }));
+    setCat((prev: any) => ({ ...prev, [meta.name]: data?.value }));
   };
 
   const onColorSelectChange = (data: { value: number; label: string }[]): void => {
@@ -256,7 +256,7 @@ const CatDetails = ({ authToken }: any) => {
                       <ReactDatePicker
                         id="bornAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.bornAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'bornAt')}
                       />
@@ -298,7 +298,7 @@ const CatDetails = ({ authToken }: any) => {
                       <ReactDatePicker
                         id="sterilizedAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.sterilizedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'sterilizedAt')}
                       />
@@ -311,7 +311,7 @@ const CatDetails = ({ authToken }: any) => {
                       <ReactDatePicker
                         id="ceasedAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.ceasedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
                       />
@@ -404,7 +404,7 @@ const CatDetails = ({ authToken }: any) => {
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Anotaciones
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation}>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!cat.id}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
               </div>

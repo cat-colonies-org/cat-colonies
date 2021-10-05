@@ -153,7 +153,7 @@ const ColonyDetails = ({ authToken }: any) => {
   };
 
   const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
-    setColony((prev: any) => ({ ...prev, [meta.name]: data.value }));
+    setColony((prev: any) => ({ ...prev, [meta.name]: data?.value }));
   };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
@@ -300,7 +300,7 @@ const ColonyDetails = ({ authToken }: any) => {
                   </div>
 
                   <div className="row mt-3">
-                    <div className="col-md-6">
+                    <div className="col-md-5">
                       <label htmlFor="address" className="form-label">
                         Calle
                       </label>
@@ -313,7 +313,7 @@ const ColonyDetails = ({ authToken }: any) => {
                         onChange={onInputChange}
                       />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                       <label htmlFor="location" className="form-label">
                         Ubicación
                       </label>

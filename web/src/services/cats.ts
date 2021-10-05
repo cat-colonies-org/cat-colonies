@@ -1,4 +1,4 @@
-import { apiCall, getCriteriaString, objToListString, omit } from '../common/util';
+import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
 import { Color } from './colors';
 
@@ -68,6 +68,8 @@ export const isKitten = (cat: Cat): boolean => {
 };
 
 const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
+  if (!cat) return {} as Cat;
+
   return {
     ...cat,
     createdAt: cat.createdAt ? new Date(cat.createdAt) : undefined,
@@ -131,21 +133,41 @@ export async function getCat(id: number): Promise<Cat> {
 }
 
 export async function createCat(cat: Partial<Cat>): Promise<Cat> {
-  const gender = `gender: ${cat.gender}`;
-
-  cat = omit(cat, ['createdAt', 'gender', 'imageURL', 'annotations']);
-
-  const fields = objToListString(cat);
-
   const query = `
     ${catDataFragment}
     
-    mutation {
-      createCat(createCatInput: { ${fields}, ${gender} }) { ...catData }
+    mutation (
+      $bornAt: DateTime, 
+      $sterilized: Boolean,
+      $sterilizedAt: DateTime,
+      $colors: [InputColor!]
+      $colonyId: Int,
+      $patternId: Int,
+      $eyeColorId: Int,
+      $gender: Gender,
+      $ceasedAt: DateTime,
+      $ceaseCauseId: Int,
+      $annotations: [InputAnnotation!]
+    ) {
+      createCat(createCatInput: { 
+        bornAt: $bornAt,
+        colors: $colors,
+        sterilized: $sterilized,
+        sterilizedAt: $sterilizedAt,
+        colonyId: $colonyId,
+        patternId: $patternId,
+        eyeColorId: $eyeColorId,
+        gender: $gender,
+        ceasedAt: $ceasedAt,
+        ceaseCauseId: $ceaseCauseId,
+        annotations: $annotations
+      }) { 
+        ...catData 
+      }
     }
   `;
 
-  return await apiCall(query).then((response): Cat => {
+  return await apiCall(query, cat).then((response): Cat => {
     return getCatFromGraphQlResult(response?.data?.createCat);
   });
 }

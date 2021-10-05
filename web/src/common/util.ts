@@ -51,6 +51,7 @@ export const apiCall = async (query: string, variables?: any) => {
     },
   };
 
+  // TODO: handle 401 - Unauthorized
   return await fetch(apiBaseUrl, {
     ...options,
     body: JSON.stringify({ query, variables }),
