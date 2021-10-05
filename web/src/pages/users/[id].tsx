@@ -1,14 +1,8 @@
-import es from 'date-fns/locale/es';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import withPrivateRoute from '../../components/with-private-route';
 import { User, getUser } from '../../services/users';
-
-
-registerLocale('es', es);
-
 
 const UserDetails = () => {
   const router = useRouter();
@@ -22,16 +16,16 @@ const UserDetails = () => {
     roleId: 0,
   });
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
-  //const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
-  
-  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
-    return a.description.localeCompare(b.description);
-  };
+  // const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
+
+  // const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
+  //   return a.description.localeCompare(b.description);
+  // };
 
   const fetchData = async () => {
-    setLoading(true);
+    // setLoading(true);
 
     const id = router?.query?.id ? +router.query.id : undefined;
     if (!id) {
@@ -40,37 +34,34 @@ const UserDetails = () => {
       return;
     }
 
-    const [user] = await Promise.all([
-      id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)
-    ]);
-  
+    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
+
     if (user) setUser(user);
-    
-    setLoading(false);
+
+    // setLoading(false);
   };
 
   useEffect((): void => {
     fetchData();
   }, []);
 
-  const onDateChange = (date: Date, field: string): void => {
-    setUser((prev: User) => {
-      return { ...prev, [field]: date };
-    });
-  };
-
+  // const onDateChange = (date: Date, field: string): void => {
+  //   setUser((prev: User) => {
+  //     return { ...prev, [field]: date };
+  //   });
+  // };
 
   return (
     <>
       <div className="container">
-       <div className="row mb-4">
-         <div className="col-lg-12">
-           <div className="container-md">
-             <div className="shadow p-3 bg-body rounded">
-              <p>
-                <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
-                 Datos generales
-               </p>
+        <div className="row mb-4">
+          <div className="col-lg-12">
+            <div className="container-md">
+              <div className="shadow p-3 bg-body rounded">
+                <p>
+                  <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
+                  Datos generales
+                </p>
                 <form>
                   <div className="row mt-3">
                     <div className="col-md-1">
@@ -95,7 +86,7 @@ const UserDetails = () => {
                         type="text"
                         placeholder="Nombre del usuario"
                         className="form-control"
-                        value={user?.name}            
+                        value={user?.name}
                       />
                     </div>
                     <div className="col-md-5">
@@ -107,12 +98,11 @@ const UserDetails = () => {
                         type="text"
                         placeholder="Apellidos del usuario"
                         className="form-control"
-                        value={user?.surnames}            
+                        value={user?.surnames}
                       />
                     </div>
                   </div>
                   <div className="row mt-3">
-                    
                     <div className="col-md-2">
                       <label htmlFor="idCard" className="form-label">
                         DNI
@@ -122,20 +112,14 @@ const UserDetails = () => {
                         type="text"
                         className="form-control"
                         value={user?.idCard}
-                        placeholder="idCard"                        
+                        placeholder="idCard"
                       />
                     </div>
                     <div className="col-md-4">
                       <label htmlFor="email" className="form-label">
                         Email
                       </label>
-                      <input
-                        id="email"
-                        type="text"
-                        className="form-control"
-                        value={user?.email}
-                        placeholder="Email"                        
-                      />
+                      <input id="email" type="text" className="form-control" value={user?.email} placeholder="Email" />
                     </div>
                     <div className="col-md-3">
                       <label htmlFor="phoneNumber" className="form-label">
@@ -146,7 +130,7 @@ const UserDetails = () => {
                         type="text"
                         className="form-control"
                         value={user?.phoneNumber}
-                        placeholder="phoneNumber"                        
+                        placeholder="phoneNumber"
                       />
                     </div>
                     <div className="col-md-2">
@@ -154,7 +138,12 @@ const UserDetails = () => {
                         Autoriza WhatsApp
                       </label>
                       <div className="form-check">
-                        <input id="authorizesWhatsApp" className="form-check-input" type="checkbox" checked={user.authorizesWhatsApp} />
+                        <input
+                          id="authorizesWhatsApp"
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={user.authorizesWhatsApp}
+                        />
                       </div>
                     </div>
                   </div>
