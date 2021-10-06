@@ -1,7 +1,9 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
+import { Colony } from '../../services/colonies';
 import { User, getUser } from '../../services/users';
 
 const UserDetails = () => {
@@ -16,8 +18,19 @@ const UserDetails = () => {
     roleId: 0,
   });
 
-  // const [loading, setLoading] = useState(false);
+  const coloniesColumns: TableColumn<Colony>[] = [
+    { name: 'Id', selector: (colony) => colony.id },
+    { name: 'Alta', selector: (colony) => new Date(colony.createdAt).toLocaleDateString() },
+    { name: 'Ciudad', selector: (colony) => colony.town.name },
+    { name: 'Calle', selector: (colony) => colony.address },
+    { name: 'Ubicación', selector: (colony) => colony.locationType.description },
+    { name: 'Entorno', selector: (colony) => colony.environment.description },
+  ];
+
+
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
+ 
   // const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
 
   // const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
@@ -25,7 +38,7 @@ const UserDetails = () => {
   // };
 
   const fetchData = async () => {
-    // setLoading(true);
+    setLoading(true);
 
     const id = router?.query?.id ? +router.query.id : undefined;
     if (!id) {
@@ -34,22 +47,49 @@ const UserDetails = () => {
       return;
     }
 
-    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
+    const [user] = await Promise.all([
+      id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User),      
+    ]);
 
-    if (user) setUser(user);
-
-    // setLoading(false);
+    if (user) setUser(user); 
+    
+    setLoading(false);
   };
 
   useEffect((): void => {
     fetchData();
   }, []);
 
-  // const onDateChange = (date: Date, field: string): void => {
-  //   setUser((prev: User) => {
-  //     return { ...prev, [field]: date };
-  //   });
-  // };
+  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {   
+    const target = (event.target || event.currentTarget) as any;
+    
+    setUser((user) => {
+     return { ...user, [target.id]: target.value };
+    });
+  };
+
+  const onCheckboxChange = (event: FormEvent<HTMLInputElement>): void => {   
+    const target = (event.target || event.currentTarget) as any;   
+    
+    setUser((user) => {
+     return { ...user, [target.id]: target.checked };
+    });
+  };
+
+const onDateChange = (date: Date, field: string): void => {
+  setUser((prev: User) => {
+    return { ...prev, [field]: date };
+  });
+};
+
+const onSubmit = async (event: FormEvent): Promise<void> => {
+  event.preventDefault();
+}
+
+
+useEffect((): void => {
+  fetchData();
+}, []);
 
   return (
     <>
@@ -62,7 +102,7 @@ const UserDetails = () => {
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
                   Datos generales
                 </p>
-                <form>
+                <form onSubmit={onSubmit}>
                   <div className="row mt-3">
                     <div className="col-md-1">
                       <label htmlFor="id" className="form-label">
@@ -87,6 +127,7 @@ const UserDetails = () => {
                         placeholder="Nombre del usuario"
                         className="form-control"
                         value={user?.name}
+                        onChange={onInputChange}
                       />
                     </div>
                     <div className="col-md-5">
@@ -99,6 +140,7 @@ const UserDetails = () => {
                         placeholder="Apellidos del usuario"
                         className="form-control"
                         value={user?.surnames}
+                        onChange={onInputChange}
                       />
                     </div>
                   </div>
@@ -113,13 +155,21 @@ const UserDetails = () => {
                         className="form-control"
                         value={user?.idCard}
                         placeholder="idCard"
+                        onChange={onInputChange}
                       />
                     </div>
                     <div className="col-md-4">
                       <label htmlFor="email" className="form-label">
                         Email
                       </label>
-                      <input id="email" type="text" className="form-control" value={user?.email} placeholder="Email" />
+                      <input 
+                        id="email" 
+                        type="text" 
+                        className="form-control" 
+                        value={user?.email} 
+                        placeholder="Email" 
+                        onChange={onInputChange}
+                      />
                     </div>
                     <div className="col-md-3">
                       <label htmlFor="phoneNumber" className="form-label">
@@ -131,6 +181,7 @@ const UserDetails = () => {
                         className="form-control"
                         value={user?.phoneNumber}
                         placeholder="phoneNumber"
+                        onChange={onInputChange}
                       />
                     </div>
                     <div className="col-md-2">
@@ -143,6 +194,7 @@ const UserDetails = () => {
                           className="form-check-input"
                           type="checkbox"
                           checked={user.authorizesWhatsApp}
+                          onChange={onCheckboxChange}
                         />
                       </div>
                     </div>
@@ -161,11 +213,38 @@ const UserDetails = () => {
                     </div>
                   </div>
                 </form>
+                </div>
+                  </div>
+            </div>
+          </div>
+                              
+
+          <div className="row mb-4">
+            <div className="col-md-12">
+              <div className="shadow p-3 bg-body rounded">
+              <p className="d-flex justify-content-between">
+                <div>
+                  <i className="fas fa-home mr-2" aria-hidden="true"></i>
+                  Colonias
+                </div>
+                <button className="btn btn-primary btn-sm mb-3" >
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </p>
+
+              <DataTable
+                columns={coloniesColumns}
+                data={user.colonies}
+                dense
+                highlightOnHover={true}
+                striped={true}
+                progressPending={loading}
+                onRowClicked={(row) => router.push(`/colonies/${row.id}`)}
+              />
+            </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { apiCall, getCriteriaString } from '../common/util';
+import { Colony } from './colonies';
 
 export const userQueryFields: string = `
   id
@@ -11,6 +12,11 @@ export const userQueryFields: string = `
   idCard
   authorizesWhatsApp
   role { id description }
+  colonies { id address createdAt 
+      town {name} 
+      locationType {description} 
+      environment {description} 
+    }
 `;
 
 export type User = {
@@ -24,6 +30,7 @@ export type User = {
   idCard: string;
   authorizesWhatsApp: boolean;
   role: { description: string };
+  colonies: Colony[];
 };
 
 export interface UsersList {
