@@ -140,31 +140,8 @@ type FindAnnotationsResult {
   items: [Annotation!]!
 }
 
-type RemoveEnvironmentResult {
-  result: Boolean!
-}
-
-type FindEnvironmentsResult {
-  total: Int!
-  items: [Environment!]!
-}
-
-type RemoveTownResult {
-  result: Boolean!
-}
-
-type FindTownsResult {
-  total: Int!
-  items: [Town!]!
-}
-
-type RemoveUserResult {
-  result: Boolean!
-}
-
-type FindUsersResult {
-  total: Int!
-  items: [User!]!
+type AccessToken {
+  result: String!
 }
 
 type RemoveCatResult {
@@ -203,6 +180,15 @@ type FindColorsResult {
   items: [Color!]!
 }
 
+type RemoveEnvironmentResult {
+  result: Boolean!
+}
+
+type FindEnvironmentsResult {
+  total: Int!
+  items: [Environment!]!
+}
+
 type FindEyeColorsResult {
   total: Int!
   items: [EyeColor!]!
@@ -226,10 +212,6 @@ type FindPatternsResult {
   items: [Pattern!]!
 }
 
-type AccessToken {
-  result: String!
-}
-
 type FindRolesResult {
   total: Int!
   items: [Role!]!
@@ -237,6 +219,24 @@ type FindRolesResult {
 
 type RemoveRoleResult {
   result: Boolean!
+}
+
+type RemoveUserResult {
+  result: Boolean!
+}
+
+type FindUsersResult {
+  total: Int!
+  items: [User!]!
+}
+
+type RemoveTownResult {
+  result: Boolean!
+}
+
+type FindTownsResult {
+  total: Int!
+  items: [Town!]!
 }
 
 type Query {
@@ -262,10 +262,10 @@ type Query {
   pattern(id: Int!): Pattern
   roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
   role(id: Int!): Role
-  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
-  town(id: Int!): Town
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
+  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
+  town(id: Int!): Town
 }
 
 input UserCredentials {
@@ -304,12 +304,12 @@ type Mutation {
   createRole(createRoleInput: CreateRoleInput!): Role!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): RemoveRoleResult!
-  createTown(createTownInput: CreateTownInput!): Town!
-  updateTown(updateTownInput: UpdateTownInput!): Town!
-  removeTown(id: Int!): RemoveTownResult!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): RemoveUserResult!
+  createTown(createTownInput: CreateTownInput!): Town!
+  updateTown(updateTownInput: UpdateTownInput!): Town!
+  removeTown(id: Int!): RemoveTownResult!
 }
 
 input CreateAnnotationInput {
@@ -443,15 +443,6 @@ input UpdateRoleInput {
   id: Int!
 }
 
-input CreateTownInput {
-  name: String!
-}
-
-input UpdateTownInput {
-  name: String
-  id: Int!
-}
-
 input CreateUserInput {
   name: String!
   surnames: String!
@@ -470,6 +461,15 @@ input UpdateUserInput {
   email: String
   authorizesWhatsApp: Boolean
   password: String
+  id: Int!
+}
+
+input CreateTownInput {
+  name: String!
+}
+
+input UpdateTownInput {
+  name: String
   id: Int!
 }
 
@@ -501,10 +501,10 @@ type Subscription {
   patternAdded: Role!
   patternUpdated: Role!
   patternRemoved: Role!
-  townAdded: Town!
-  townUpdated: Town!
-  townRemoved: Town!
   userAdded: User!
   userUpdated: User!
   userRemoved: User!
+  townAdded: Town!
+  townUpdated: Town!
+  townRemoved: Town!
 }

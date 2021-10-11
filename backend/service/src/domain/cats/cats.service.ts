@@ -15,14 +15,14 @@ export class CatsService extends BaseCrudService<Cat> {
   }
 
   private async GetSecuredQueryBuilder(): Promise<SelectQueryBuilder<Cat>> {
-    const user: User = this.context.req.user;
+    // const user: User = this.context.req.user;
     const qb = this.repository.createQueryBuilder('Cat');
 
-    if ((await user.roleId) != Roles.Administrator)
-      qb.innerJoin('Cat.colony', 'colony')
-        .innerJoin('colony.managers', 'user')
-        .where('user.id = :userId')
-        .setParameter('userId', await user.id);
+    // if ((await user.roleId) != Roles.Administrator)
+    //   qb.innerJoin('Cat.colony', 'colony')
+    //     .innerJoin('colony.managers', 'user')
+    //     .where('user.id = :userId')
+    //     .setParameter('userId', await user.id);
 
     return qb;
   }

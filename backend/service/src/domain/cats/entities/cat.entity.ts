@@ -5,7 +5,7 @@ import { Color } from 'src/domain/colors/entities/color.entity';
 import { EyeColor } from 'src/domain/eye-colors/entities/eye-color.entity';
 import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 import { Pattern } from 'src/domain/patterns/entities/pattern.entity';
-import { Picture } from 'src/domain/picture/entities/picture.entity';
+import { Picture } from 'src/domain/pictures/entities/picture.entity';
 import {
   BaseEntity,
   Column,

@@ -1,6 +1,14 @@
 version: '3.2'
 
 services:
+  storage:
+    container_name: storage
+    image: scireum/s3-ninja
+    ports:
+      - '9444:9000'
+    volumes:
+      - storage-data:/home/sirius/data
+
   database:
     container_name: database
     image: postgres:13-alpine
@@ -33,6 +41,8 @@ services:
     volumes:
       - ./backend/service/src:/usr/local/app/src
     depends_on:
+      storage:
+        condition: service_started
       redis:
         condition: service_started
       database:
@@ -58,5 +68,7 @@ services:
       - ${FRONTEND_PORT:-80}:${FRONTEND_PORT:-80}
 
 volumes:
+  storage-data:
+    external: false
   postgres-data:
     external: false

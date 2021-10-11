@@ -242,6 +242,20 @@ const CatDetails = ({ authToken }: any) => {
           <div className="col-lg-12">
             <div className="container-md">
               <div className="shadow p-3 bg-body rounded">
+                <h1>Upload</h1>
+                <form
+                  action={`http://localhost:8080/file-upload/${cat.id}`}
+                  method="POST"
+                  encType="multipart/form-data"
+                >
+                  <input type="file" name="pictures" />
+                  <br />
+                  <input type="file" name="pictures" />
+                  <br />
+                  <button type="submit">Añadir</button>
+                </form>
+              </div>
+              <div className="shadow p-3 bg-body rounded">
                 <p>
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
                   Datos generales

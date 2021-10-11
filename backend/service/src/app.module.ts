@@ -1,24 +1,25 @@
 import { AnnotationsModule } from './domain/annotations/annotations.module';
-import { ConfigModule } from '@nestjs/config';
-import { EnvironmentsModule } from './domain/environments/environments.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
-import { Module } from '@nestjs/common';
-import { PubSubModule } from './pubsub.module';
-import { SeederModule } from './seeder/seeder.module';
-import { TownsModule } from './domain/towns/towns.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './domain/users/users.module';
-import appConfig from './configuration';
+import { AuthModule } from './auth/auth.module';
 import { CatsModule } from './domain/cats/cats.module';
 import { CeaseCausesModule } from './domain/cease-causes/cease-causes.module';
 import { ColoniesModule } from './domain/colonies/colonies.module';
 import { ColorsModule } from './domain/colors/colors.module';
+import { EnvironmentsModule } from './domain/environments/environments.module';
 import { EyeColorsModule } from './domain/eye-colors/eye-colors.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 import { LocationTypesModule } from './domain/location-types/location-types.module';
+import { Module } from '@nestjs/common';
 import { PatternsModule } from './domain/patterns/patterns.module';
-import { AuthModule } from './auth/auth.module';
+import { PubSubModule } from './pubsub.module';
 import { RolesModule } from './domain/roles/roles.module';
+import { SeederModule } from './seeder/seeder.module';
+import { SettingsModule } from './settings/settings.module';
+import { TownsModule } from './domain/towns/towns.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './domain/users/users.module';
+import SettingsService from './settings/settings.service';
 
 @Module({
   imports: [
@@ -30,15 +31,20 @@ import { RolesModule } from './domain/roles/roles.module';
     ColorsModule,
     EnvironmentsModule,
     EyeColorsModule,
+    FileUploadModule,
     LocationTypesModule,
     PatternsModule,
     PubSubModule,
     RolesModule,
     SeederModule,
+    SettingsModule,
     TownsModule,
     UsersModule,
-    TypeOrmModule.forRoot(appConfig().orm),
-    ConfigModule.forRoot({ ignoreEnvFile: true, isGlobal: true, load: [appConfig] }),
+    TypeOrmModule.forRootAsync({
+      imports: [SettingsModule],
+      inject: [SettingsService],
+      useFactory: async (settings: SettingsService) => settings.orm,
+    }),
     GraphQLModule.forRoot({
       include: [
         AnnotationsModule,
