@@ -49,27 +49,6 @@ const CatDetails = ({ authToken }: any) => {
   const [eyeColors, setEyeColors] = useState([] as Color[]);
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const images = [
-    {
-      original:
-        'https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      thumbnail:
-        'https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      original:
-        'https://images.pexels.com/photos/2870353/pexels-photo-2870353.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      thumbnail:
-        'https://images.pexels.com/photos/2870353/pexels-photo-2870353.jpeg?auto=compress&cs=tinysrgb&w=250&h=150&dpr=1',
-    },
-    {
-      original:
-        'https://images.pexels.com/photos/1787414/pexels-photo-1787414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      thumbnail:
-        'https://images.pexels.com/photos/1787414/pexels-photo-1787414.jpeg?auto=compress&cs=tinysrgb&w=250&h=150&dpr=1',
-    },
-  ];
-
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
   };
@@ -460,7 +439,7 @@ const CatDetails = ({ authToken }: any) => {
 
         <div className="row mb-4">
           <div className="col-md-12">
-            <div className="shadow p-3 bg-body rounded">
+            <div className="shadow p-3 bg-body rounded" style={{ minHeight: '500px' }}>
               <div className="d-flex justify-content-between">
                 <div>
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
@@ -471,12 +450,21 @@ const CatDetails = ({ authToken }: any) => {
                 </button>
               </div>
 
-              <ImageGallery
-                thumbnailPosition="right"
-                showFullscreenButton={true}
-                showPlayButton={false}
-                items={images}
-              />
+              {cat?.pictures?.length > 0 && (
+                <ImageGallery
+                  thumbnailPosition="right"
+                  showFullscreenButton={true}
+                  showPlayButton={false}
+                  items={
+                    cat.pictures
+                      ? cat.pictures.map((i) => ({
+                          original: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.imageURL}`,
+                          thumbnail: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.thumbnailURL}`,
+                        }))
+                      : []
+                  }
+                />
+              )}
             </div>
           </div>
         </div>

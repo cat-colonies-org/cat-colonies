@@ -2,6 +2,14 @@ import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
 import { Color } from './colors';
 
+interface Picture {
+  id: number;
+  catId: number;
+  createdAt: Date;
+  imageURL: string;
+  thumbnailURL: string;
+}
+
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
@@ -27,6 +35,7 @@ export const catDataFragment: string = `
     pattern { description }
     colors { id description }
     annotations { id catId date annotation }
+    pictures { id catId createdAt imageURL thumbnailURL }
   }
 `;
 
@@ -48,6 +57,7 @@ export type Cat = {
   pattern: { description: string };
   colors: Color[];
   annotations: Annotation[];
+  pictures: Picture[];
 };
 
 export interface CatsList {
