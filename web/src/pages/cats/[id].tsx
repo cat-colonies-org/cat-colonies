@@ -1,13 +1,12 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
-
 import { Annotation, createAnnotation } from '../../services/annotations';
+import { AuthToken } from '../../common/authToken';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
 import { createEyeColor, EyeColor, getEyeColorsList } from '../../services/eyeColors';
 import { createPattern, getPatternsList, Pattern } from '../../services/patterns';
-import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -16,9 +15,10 @@ import ImageGallery from 'react-image-gallery';
 import InputModal from '../../components/input-modal';
 import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
+import React, { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import UploadModal from '../../components/upload-modal';
 import withPrivateRoute from '../../components/with-private-route';
-import { AuthToken } from '../../common/authToken';
 
 registerLocale('es', es);
 
@@ -48,7 +48,8 @@ const CatDetails = ({ authToken }: any) => {
   const [colors, setColors] = useState([] as Color[]);
   const [patterns, setPatterns] = useState([] as Pattern[]);
   const [eyeColors, setEyeColors] = useState([] as Color[]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -60,7 +61,7 @@ const CatDetails = ({ authToken }: any) => {
       return;
     }
 
-    setModalOpen(true);
+    setAnnotationModalOpen(true);
   };
 
   const onNewAnnotation = async (result: { value: string }) => {
@@ -176,6 +177,8 @@ const CatDetails = ({ authToken }: any) => {
   const onPicturesSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
+    setUploadModalOpen(false);
+
     const data = new FormData(event.target as HTMLFormElement);
 
     // TODO: mover URL a configuración (http://localhost:8080/rest + /file-upload)
@@ -236,24 +239,22 @@ const CatDetails = ({ authToken }: any) => {
         title="Nueva Anotación"
         caption="Texto"
         buttonCaption="Añadir"
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={isAnnotationModalOpen}
+        onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
       />
+
+      <UploadModal
+        id="UploadModal"
+        isOpen={isUploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onReturn={onPicturesSubmit}
+      ></UploadModal>
+
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
             <div className="container-md">
-              <div className="shadow p-3 bg-body rounded">
-                <h1>Upload</h1>
-                <form onSubmit={onPicturesSubmit}>
-                  <input type="file" name="pictures" />
-                  <br />
-                  <input type="file" name="pictures" />
-                  <br />
-                  <button type="submit">Añadir</button>
-                </form>
-              </div>
               <div className="shadow p-3 bg-body rounded">
                 <p>
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
@@ -465,7 +466,11 @@ const CatDetails = ({ authToken }: any) => {
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Fotos
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" disabled={!cat.id}>
+                <button
+                  className="btn btn-primary btn-sm mb-3"
+                  disabled={!cat.id}
+                  onClick={() => setUploadModalOpen(true)}
+                >
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
               </div>
