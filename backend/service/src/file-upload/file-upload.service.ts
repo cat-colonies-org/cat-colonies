@@ -34,7 +34,11 @@ export class FileUploadService {
     const image = file.buffer;
     const thumbnail = sharp(image)
       .rotate()
-      .resize({ width: this.settings.pictures.thumbnail.width, fit: sharp.fit.contain })
+      .resize({
+        width: this.settings.pictures.thumbnail.width,
+        height: this.settings.pictures.thumbnail.height,
+        fit: sharp.fit.contain,
+      })
       .png();
 
     const metadata: CreatePictureInput = {
