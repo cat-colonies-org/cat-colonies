@@ -51,6 +51,7 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
       ariaHideApp={false}
       shouldFocusAfterRender={true}
       shouldReturnFocusAfterClose={true}
+      closeTimeoutMS={400}
       style={{
         overlay: {
           backgroundColor: 'rgba(0,0,0, 0.5)',
@@ -59,9 +60,10 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
           justifyContent: 'center',
         },
         content: {
+          width: '40%',
           position: 'relative',
           WebkitOverflowScrolling: 'touch',
-          borderRadius: '4px',
+          borderRadius: '20px',
           padding: '40px',
         },
       }}
@@ -69,7 +71,7 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
       <form onSubmit={onSubmit}>
         <div className="row">
           <div className="col">
-            <h5>{title}</h5>
+            <h4>{title}</h4>
             <hr />
             <label htmlFor="id" className="form-label">
               {caption}
@@ -83,11 +85,16 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
               placeholder="Nombre de la localidad"
               ref={input}
             />
-            <button className="btn btn-primary mt-3" onClick={onValueAccepted}>
-              {buttonCaption}
-            </button>
-            <button className="btn btn-danger mt-3" onClick={onClose}>
+            <hr />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col-12" style={{ textAlign: 'end' }}>
+            <button className="btn btn-secondary" onClick={onClose}>
               Cancelar
+            </button>
+            <button className="btn btn-primary ml-2" onClick={onValueAccepted}>
+              {buttonCaption}
             </button>
           </div>
         </div>

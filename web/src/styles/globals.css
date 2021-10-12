@@ -134,6 +134,40 @@ a.article:hover {
 }
 
 /* ---------------------------------------------------
+    MODAL
+----------------------------------------------------- */
+.ReactModal__Content {
+  opacity: 0;
+  transform: translateY(-1000px);
+  transition: all 400ms ease-in-out;
+}
+
+.ReactModal__Content--after-open {
+  opacity: 1;
+  transform: translateY(-200px);
+  transition: all 400ms ease-in-out;
+}
+
+.ReactModal__Content--before-close {
+  opacity: 0;
+  transform: translateY(-1000px);
+  transition: all 400ms ease-in-out;
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: all 400ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
 
