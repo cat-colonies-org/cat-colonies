@@ -19,20 +19,12 @@ export class FileUploadController {
   @Post('/file-upload/:catId')
   @UseInterceptors(FilesInterceptor('pictures'))
   async uploadPicture(@Param('catId') catId: number, @UploadedFiles() files: FileMetadata[]) {
-    let cat = await this.cats.findOne(catId);
+    const cat = await this.cats.findOne(catId);
+    if (!cat) return { uploaded: 0 };
 
-    let uploaded = 0;
-    if (cat) {
-      files
-        .filter((file: FileMetadata) => hasValidExtension(file))
-        .forEach(async (file) => {
-          ++uploaded;
-          this.uploader.uploadPicture(catId, file);
-        });
+    const validFiles = files.filter((file: FileMetadata) => hasValidExtension(file));
+    for (const file of validFiles) await this.uploader.uploadPicture(catId, file);
 
-      cat = await this.cats.findOne(catId);
-    }
-
-    return { uploaded };
+    return { uploaded: validFiles.length };
   }
 }

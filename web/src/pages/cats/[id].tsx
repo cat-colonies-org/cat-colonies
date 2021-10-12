@@ -179,19 +179,19 @@ const CatDetails = ({ authToken }: any) => {
     const data = new FormData(event.target as HTMLFormElement);
 
     // TODO: mover URL a configuración (http://localhost:8080/rest + /file-upload)
-    return await fetch(`http://localhost:8080/file-upload/${cat.id}`, {
+    const response = await fetch(`http://localhost:8080/file-upload/${cat.id}`, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + (await AuthToken.getToken()),
       },
       body: data,
-    }).then(async (response) => {
-      const { uploaded } = await response.json();
-      if (uploaded) {
-        const newCat = await getCat(cat.id);
-        setCat((cat) => ({ ...cat, pictures: [...newCat.pictures] }));
-      }
     });
+
+    const { uploaded } = await response.json();
+    if (uploaded) {
+      const updatedCat = await getCat(cat.id);
+      setCat((cat) => ({ ...cat, pictures: [...updatedCat.pictures] }));
+    }
   };
 
   const fetchData = async () => {
