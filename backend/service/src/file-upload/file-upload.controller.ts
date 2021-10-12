@@ -4,7 +4,6 @@ import { FileMetadata } from './dto/file-upload.input';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
 import * as Path from 'path';
-import { Cat } from 'src/domain/cats/entities/cat.entity';
 
 const hasValidExtension = (file: FileMetadata): boolean => {
   const ext = Path.extname(file.originalname).toLowerCase();
