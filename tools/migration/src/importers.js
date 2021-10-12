@@ -2,6 +2,7 @@ const util = require('util');
 const CSVToJSON = require('csvtojson');
 const exec = util.promisify(require('child_process').exec);
 const fs = require('fs');
+const { v4: uuid } = require('uuid');
 
 const {
   strToDate,
@@ -117,13 +118,21 @@ const importPictures = async (path) => {
 
   return files
     .filter((file) => file.includes('.jpg'))
-    .map((file) => ({
-      id: counter++,
-      catId: file.split('_')[0],
-      createdAt: new Date(),
-      imageURL: file,
-      thumbnailURL: file,
-    }));
+    .map((file) => {
+      const id = uuid();
+      const catId = file.split('_')[0];
+      const image = `${catId}-${id}.jpg`;
+      const thumbnail = `${catId}-${id}-thumb.png`;
+
+      return {
+        id: counter++,
+        catId,
+        createdAt: new Date(),
+        originalFilename: file,
+        image,
+        thumbnail,
+      };
+    });
 };
 
 const importCats = async () => {

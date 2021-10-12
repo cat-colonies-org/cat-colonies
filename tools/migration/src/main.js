@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const OUTPUT_PATH = './output';
-const PICTURES_PATH = './pictures';
-const COMBINED_OUTPUT = path.join(OUTPUT_PATH, 'combined.sql');
+const PICTURES_INPUT_PATH = './pictures';
+const SQL_OUTPUT_PATH = './output/sql';
+const PICTURES_OUTPUT_PATH = './output/pictures';
+const COMBINED_OUTPUT = path.join(SQL_OUTPUT_PATH, 'combined.sql');
 
 const {
   importAnnotations,
@@ -50,7 +51,7 @@ const exportFile = async (tableName, importer, formatter) => {
   if (maxId) sql += `\nALTER SEQUENCE ${tableName}_id_seq RESTART WITH ${maxId + 1};\n`;
 
   // Split output
-  fs.writeFileSync(path.join(OUTPUT_PATH, `${tableName}.sql`), sql);
+  fs.writeFileSync(path.join(SQL_OUTPUT_PATH, `${tableName}.sql`), sql);
 
   // Combined output
   fs.appendFileSync(COMBINED_OUTPUT, `-- ${tableName} --------------------------------------------\n`);
@@ -72,7 +73,11 @@ const exportFile = async (tableName, importer, formatter) => {
   await exportFile('cease_cause', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cat', importCats, catFormatter);
   await exportFile('annotation', importAnnotations, annotationFormatter);
-  await exportFile('picture', () => importPictures(PICTURES_PATH), pictureFormatter);
+  await exportFile(
+    'picture',
+    () => importPictures(PICTURES_INPUT_PATH),
+    (picture) => pictureFormatter(PICTURES_INPUT_PATH, PICTURES_OUTPUT_PATH, picture),
+  );
 
   await exportFile('role', importRoles, roleFormatter);
   await exportFile('user', importUsers, userFormatter);

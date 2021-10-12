@@ -1,4 +1,7 @@
 const { dateToIso } = require('./mappers');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
 
 const catFormatter = (cat) => {
   return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
@@ -22,13 +25,30 @@ const locationTypeFormatter = (locationType) => {
   );`;
 };
 
-const pictureFormatter = (picture) => {
-  return `INSERT INTO picture ("id", "catId", "createdAt", "imageURL", "thumbnailURL") VALUES (
+const pictureFormatter = (inputPath, outputPath, picture) => {
+  const src = path.join(inputPath, picture.originalFilename);
+  const imageDst = path.join(outputPath, picture.image);
+  const thumbDst = path.join(outputPath, picture.thumbnail);
+
+  fs.copyFileSync(src, imageDst);
+
+  sharp(src)
+    .rotate()
+    .resize({
+      width: 160,
+      height: 108,
+      fit: sharp.fit.contain,
+    })
+    .png()
+    .toFile(thumbDst);
+
+  return `INSERT INTO picture ("id", "catId", "createdAt", "originalFilename", "image", "thumbnail") VALUES (
     ${picture.id}, 
     ${picture.catId}, 
     ${dateToIso(picture.createdAt)},
-    '${picture.imageURL}', 
-    '${picture.thumbnailURL}'
+    '${picture.originalFilename}', 
+    '${picture.image}', 
+    '${picture.thumbnail}'
   );`;
 };
 
