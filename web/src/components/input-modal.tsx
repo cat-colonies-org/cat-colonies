@@ -90,11 +90,11 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
         </div>
         <div className="row mt-3">
           <div className="col-12" style={{ textAlign: 'end' }}>
-            <button className="btn btn-secondary" onClick={onClose}>
-              Cancelar
-            </button>
             <button className="btn btn-primary ml-2" onClick={onValueAccepted}>
               {buttonCaption}
+            </button>
+            <button className="btn btn-secondary" onClick={onClose}>
+              Cancelar
             </button>
           </div>
         </div>
