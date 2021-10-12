@@ -19,11 +19,15 @@ export class Picture extends BaseEntity {
 
   @Column()
   @Field(() => String)
-  imageURL: string;
+  originalFilename: string;
 
   @Column()
   @Field(() => String)
-  thumbnailURL: string;
+  image: string;
+
+  @Column()
+  @Field(() => String)
+  thumbnail: string;
 
   @ManyToOne(() => Cat, (cat) => cat.annotations)
   @Field(() => Cat)

@@ -9,8 +9,11 @@ export class CreatePictureInput {
   createdAt: Date;
 
   @Field(() => String)
-  imageURL: string;
+  originalFilename: string;
 
   @Field(() => String)
-  thumbnailURL: string;
+  image: string;
+
+  @Field(() => String)
+  thumbnail: string;
 }

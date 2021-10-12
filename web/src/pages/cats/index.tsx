@@ -82,7 +82,7 @@ const CatsList = () => {
   //   { name: 'Id', selector: (cat) => cat.id },
   //   {
   //     name: 'Foto',
-  //     cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.imageURL} />,
+  //     cell: (row) => <img height="56px" width="56px" style={styles.avatar} alt="" src={row.image} />,
   //   },
   //   { name: 'Alta', selector: (cat) => cat.createdAt?.toLocaleDateString() },
   //   { name: 'Nacimiento', selector: (cat) => cat.bornAt?.toLocaleDateString() },

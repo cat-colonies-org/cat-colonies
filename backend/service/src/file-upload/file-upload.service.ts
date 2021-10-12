@@ -44,8 +44,9 @@ export class FileUploadService {
     const metadata: CreatePictureInput = {
       catId,
       createdAt: new Date(),
-      imageURL: imageFilename,
-      thumbnailURL: thumbnailFilename,
+      originalFilename: file.originalname,
+      image: imageFilename,
+      thumbnail: thumbnailFilename,
     };
 
     const bucket = this.settings.pictures.bucket;

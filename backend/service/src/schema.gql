@@ -43,8 +43,9 @@ type Picture {
   id: Int!
   catId: Int!
   createdAt: DateTime!
-  imageURL: String!
-  thumbnailURL: String!
+  originalFilename: String!
+  image: String!
+  thumbnail: String!
   cat: Cat!
 }
 

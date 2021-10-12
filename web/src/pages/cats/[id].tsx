@@ -483,8 +483,8 @@ const CatDetails = ({ authToken }: any) => {
                   items={
                     cat.pictures
                       ? cat.pictures.map((i) => ({
-                          original: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.imageURL}`,
-                          thumbnail: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.thumbnailURL}`,
+                          original: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.image}`,
+                          thumbnail: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.thumbnail}`,
                         }))
                       : []
                   }

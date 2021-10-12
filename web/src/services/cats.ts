@@ -6,8 +6,9 @@ interface Picture {
   id: number;
   catId: number;
   createdAt: Date;
-  imageURL: string;
-  thumbnailURL: string;
+  originalFilename: string;
+  image: string;
+  thumbnail: string;
 }
 
 export enum Gender {
@@ -35,7 +36,7 @@ export const catDataFragment: string = `
     pattern { description }
     colors { id description }
     annotations { id catId date annotation }
-    pictures { id catId createdAt imageURL thumbnailURL }
+    pictures { id catId createdAt originalFilename image thumbnail }
   }
 `;
 
