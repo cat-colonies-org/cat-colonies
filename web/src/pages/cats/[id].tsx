@@ -191,6 +191,8 @@ const CatDetails = ({ authToken }: any) => {
     if (uploaded) {
       const updatedCat = await getCat(cat.id);
       setCat((cat) => ({ ...cat, pictures: [...updatedCat.pictures] }));
+
+      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imagenes` : 'Añadida 1 nueva imagen');
     }
   };
 
