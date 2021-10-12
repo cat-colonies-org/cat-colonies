@@ -18,6 +18,7 @@ import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import withPrivateRoute from '../../components/with-private-route';
+import { AuthToken } from '../../common/authToken';
 
 registerLocale('es', es);
 
@@ -172,6 +173,27 @@ const CatDetails = ({ authToken }: any) => {
     saved && setCat(saved);
   };
 
+  const onPicturesSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const data = new FormData(event.target as HTMLFormElement);
+
+    // TODO: mover URL a configuración (http://localhost:8080/rest + /file-upload)
+    return await fetch(`http://localhost:8080/file-upload/${cat.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AuthToken.getToken()),
+      },
+      body: data,
+    }).then(async (response) => {
+      const { uploaded } = await response.json();
+      if (uploaded) {
+        const newCat = await getCat(cat.id);
+        setCat((cat) => ({ ...cat, pictures: [...newCat.pictures] }));
+      }
+    });
+  };
+
   const fetchData = async () => {
     setLoading(true);
 
@@ -222,11 +244,7 @@ const CatDetails = ({ authToken }: any) => {
             <div className="container-md">
               <div className="shadow p-3 bg-body rounded">
                 <h1>Upload</h1>
-                <form
-                  action={`http://localhost:8080/file-upload/${cat.id}`}
-                  method="POST"
-                  encType="multipart/form-data"
-                >
+                <form onSubmit={onPicturesSubmit}>
                   <input type="file" name="pictures" />
                   <br />
                   <input type="file" name="pictures" />
