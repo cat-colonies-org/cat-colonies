@@ -67,6 +67,10 @@ const CatsList = () => {
       //   }`,
     },
     {
+      name: 'Fotos',
+      selector: (cat) => cat.pictures?.length || '',
+    },
+    {
       name: 'Baja',
       selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : ''),
       width: '100px',
