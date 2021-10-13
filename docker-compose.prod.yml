@@ -55,6 +55,16 @@ services:
       - DB_SYNCHRONIZE
       - DB_USER
       - DB_PASS
+      - JWT_SECRET
+      - JWT_EXPIRES_IN
+      - PICTURES_BUCKET
+      - THUMBNAIL_WIDTH
+      - THUMBNAIL_HEIGHT
+      - STORAGE_ENDPOINT
+      - STORAGE_PORT
+      - STORAGE_SSL
+      - STORAGE_ACCESS_KEY
+      - STORAGE_SECRET_KEY
     networks:
       - network
     ports:
