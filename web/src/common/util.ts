@@ -55,7 +55,7 @@ export const getCriteriaString = ({
 };
 
 export const apiCall = async (query: string, variables?: any) => {
-  const apiBaseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+  const apiBaseUrl: string = process.env.NEXT_PUBLIC_GRAPHQL_BASE_URL as string;
 
   const options = {
     method: 'POST',
