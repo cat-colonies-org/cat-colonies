@@ -77,8 +77,8 @@ export class SettingsService extends Settings {
     this.pictures = {
       bucket: getString('PICTURES_BUCKET', 'pictures'),
       thumbnail: {
-        width: getNumber('PICTURES_WIDTH', 160),
-        height: getNumber('PICTURES_HEIGHT', 108),
+        width: getNumber('THUMBNAIL_WIDTH', 160),
+        height: getNumber('THUMBNAIL_HEIGHT', 108),
       },
     };
 
