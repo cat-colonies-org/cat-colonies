@@ -32,6 +32,8 @@ services:
       - network
     ports:
       - ${PGADMIN_LISTEN_PORT}:${PGADMIN_LISTEN_PORT}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
     restart: unless-stopped
 
   redis:
@@ -71,6 +73,9 @@ services:
 
 volumes:
   postgres-data:
+    external: false
+  pgadmin-data:
+    external: false
 
 networks:
   network:
