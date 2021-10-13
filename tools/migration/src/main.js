@@ -9,6 +9,7 @@ const COMBINED_OUTPUT = path.join(SQL_OUTPUT_PATH, 'combined.sql');
 const {
   importAnnotations,
   importCats,
+  importCatColors,
   importCeaseCauses,
   importColonies,
   importColonyUserRelation,
@@ -26,6 +27,7 @@ const {
 const {
   annotationFormatter,
   catFormatter,
+  catColorRelationFormatter,
   ceaseCauseFormatter,
   colonyFormatter,
   colonyUserRelationFormatter,
@@ -72,6 +74,7 @@ const exportFile = async (tableName, importer, formatter) => {
   await exportFile('eye_color', importEyeColors, eyeColorFormatter);
   await exportFile('cease_cause', importCeaseCauses, ceaseCauseFormatter);
   await exportFile('cat', importCats, catFormatter);
+  await exportFile('cat_colors_color', importCatColors, catColorRelationFormatter);
   await exportFile('annotation', importAnnotations, annotationFormatter);
   await exportFile(
     'picture',

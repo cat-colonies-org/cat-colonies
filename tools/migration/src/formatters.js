@@ -122,6 +122,13 @@ const colonyUserRelationFormatter = (entity) => {
   );`;
 };
 
+const catColorRelationFormatter = (entity) => {
+  return `INSERT INTO "cat_colors_color" ("catId", "colorId") VALUES (
+    ${entity.catId}, 
+    ${entity.colorId}
+  );`;
+};
+
 const annotationFormatter = (entity) => {
   return `INSERT INTO "annotation" ("id", "catId", "date", "annotation") VALUES (
     ${entity.id}, 
@@ -147,6 +154,7 @@ const patternFormatter = (pattern) => {
 
 module.exports = {
   annotationFormatter,
+  catColorRelationFormatter,
   catFormatter,
   ceaseCauseFormatter,
   colonyFormatter,

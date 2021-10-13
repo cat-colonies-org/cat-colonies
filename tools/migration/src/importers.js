@@ -5,6 +5,7 @@ const fs = require('fs');
 const { v4: uuid } = require('uuid');
 
 const {
+  Color,
   strToDate,
   strToGender,
   strToSterilized,
@@ -13,7 +14,7 @@ const {
   strToEyeColorId,
   strToLocationType,
   strToEnvironment,
-  strToColorId,
+  strToColorIds,
   strToPatternId,
 } = require('./mappers');
 
@@ -83,20 +84,19 @@ const importEyeColors = async () => {
 
 const importColors = async () => {
   return Promise.resolve([
-    { id: 0, description: 'Desconocido' },
-    { id: 1, description: 'Atigrado' },
-    { id: 2, description: 'Atigrado diluído' },
-    { id: 3, description: 'Azul' },
-    { id: 4, description: 'Blanco' },
-    { id: 5, description: 'Calico' },
-    { id: 6, description: 'Canela' },
-    { id: 7, description: 'Carey' },
-    { id: 8, description: 'Carey diluído' },
-    { id: 9, description: 'Chocolate' },
-    { id: 10, description: 'Crema' },
-    { id: 11, description: 'Gris' },
-    { id: 12, description: 'Negro' },
-    { id: 13, description: 'Rojo' },
+    { id: Color.Desconocido, description: 'Desconocido' },
+    { id: Color.Atigrado, description: 'Atigrado' },
+    { id: Color.Azul, description: 'Azul' },
+    { id: Color.Blanco, description: 'Blanco' },
+    { id: Color.Calico, description: 'Calico' },
+    { id: Color.Canela, description: 'Canela' },
+    { id: Color.Carey, description: 'Carey' },
+    { id: Color.Chocolate, description: 'Chocolate' },
+    { id: Color.Crema, description: 'Crema' },
+    { id: Color.Gris, description: 'Gris' },
+    { id: Color.Negro, description: 'Negro' },
+    { id: Color.Rojo, description: 'Rojo' },
+    { id: Color.Diluido, description: 'Diluído' },
   ]);
 };
 
@@ -139,7 +139,6 @@ const importCats = async () => {
   const { stdout } = await exec(`mdb-export "${MDB_PATH}" gatos`);
 
   return (await CSVToJSON().fromString(stdout)).map((mdbCat) => {
-    // 'IMÁGEN': '48',
     return {
       id: +mdbCat['Id GATO'],
       colonyId: +mdbCat['Id Colonia'],
@@ -150,10 +149,26 @@ const importCats = async () => {
       esterilized: strToSterilized(mdbCat['ESTERIL']),
       gender: strToGender(mdbCat['SEXO']),
       eyeColorId: strToEyeColorId(mdbCat['OJOS']),
-      // colorId: strToColorId(mdbCat['CAPA']),
       patternId: strToPatternId(mdbCat['CAPA']),
     };
   });
+};
+
+const importCatColors = async () => {
+  const { stdout } = await exec(`mdb-export "${MDB_PATH}" gatos`);
+
+  const colors = [];
+  (await CSVToJSON().fromString(stdout)).map((mdbCat) => {
+    const colorIds = strToColorIds(mdbCat['CAPA']);
+    colorIds.forEach((colorId) =>
+      colors.push({
+        catId: +mdbCat['Id GATO'],
+        colorId: colorId,
+      }),
+    );
+  });
+
+  return colors;
 };
 
 const importAddresses = async () => {
@@ -258,6 +273,7 @@ const importAnnotations = async () => {
 
 module.exports = {
   importAnnotations,
+  importCatColors,
   importCats,
   importCeaseCauses,
   importColonies,
