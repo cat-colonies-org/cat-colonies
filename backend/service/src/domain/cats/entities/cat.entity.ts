@@ -1,11 +1,22 @@
-import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 import { Annotation } from 'src/domain/annotations/entities/annotation.entity';
 import { CeaseCause } from 'src/domain/cease-causes/entities/cease-cause.entity';
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Color } from 'src/domain/colors/entities/color.entity';
 import { EyeColor } from 'src/domain/eye-colors/entities/eye-color.entity';
+import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 import { Pattern } from 'src/domain/patterns/entities/pattern.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Picture } from 'src/domain/pictures/entities/picture.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum Gender {
   Male = 'Male',
@@ -59,14 +70,6 @@ export class Cat extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  colorId?: number;
-
-  @ManyToOne(() => Color, (color) => color.cats)
-  @Field(() => Color, { nullable: true })
-  color?: Promise<Color>;
-
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
   patternId?: number;
 
   @ManyToOne(() => Pattern, (pattern) => pattern.cats)
@@ -85,11 +88,16 @@ export class Cat extends BaseEntity {
   @Field(() => EyeColor, { nullable: true })
   eyeColor?: Promise<EyeColor>;
 
-  @Column({ nullable: true })
-  @Field(() => String, { nullable: true })
-  imageURL?: string;
+  @ManyToMany(() => Color, (color) => color.cats)
+  @JoinTable()
+  @Field(() => [Color], { nullable: true })
+  colors?: Promise<Color[]>;
 
   @OneToMany(() => Annotation, (annotation) => annotation.cat)
   @Field(() => [Annotation], { nullable: true })
   annotations?: Promise<Annotation[]>;
+
+  @OneToMany(() => Picture, (picture) => picture.cat)
+  @Field(() => [Picture], { nullable: true })
+  pictures?: Promise<Picture[]>;
 }

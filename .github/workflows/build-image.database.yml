@@ -1,13 +1,9 @@
-name: Build backend image
+name: Build database image
 
 on:
   push:
     branches: ['main']
-    paths: ['.github/**', 'backend/database/**']
-
-  # pull_request:
-  #   branches: ['main']
-  #   paths: ['.github/**', 'backend/database/**']
+    paths: ['.github/workflows/**.database.yml', 'backend/database/**']
 
 defaults:
   run:
@@ -22,14 +18,24 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build backend image
+      - uses: actions/checkout@v2
+
+      - name: Generate build number
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
+          prefix: database
+
+      - name: Set build number in version
+        run: |
+          npm run version:setBuild
+
+      - name: Build database image
         run: |
           npm run docker:build
 
@@ -39,6 +45,6 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push backend image
+      - name: Push database image
         run: |
           npm run docker:push

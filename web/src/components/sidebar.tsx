@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { FormEvent } from 'react';
 import { AuthToken } from '../common/authToken';
+import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const Sidebar = () => {
+const Sidebar = ({ authToken }: any) => {
   const router = useRouter();
 
   const onLogoutClick = (event: FormEvent<HTMLButtonElement>) => {
@@ -39,6 +39,11 @@ const Sidebar = () => {
                 <a>Gatos</a>
               </Link>
             </li>
+            <li>
+              <Link href="/users">
+                <a>Usuarios</a>
+              </Link>
+            </li>
             {/* <li>
               <a>Localidades</a>
             </li> */}
@@ -60,13 +65,18 @@ const Sidebar = () => {
             </li>
           </ul>
         </li> */}
-
-        <button onClick={onLogoutClick}>Salir</button>
-
         {/* <li>
           <a>Contact</a>
         </li> */}
       </ul>
+      <div suppressHydrationWarning className="card mr-3 p-1">
+        <div className="card-body">
+          <p className="card-text">{authToken?.email}</p>
+          <button onClick={onLogoutClick} className="btn btn-secondary">
+            Salir
+          </button>
+        </div>
+      </div>
     </nav>
   );
 };

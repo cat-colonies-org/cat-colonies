@@ -1,14 +1,16 @@
 const { dateToIso } = require('./mappers');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
 
 const catFormatter = (cat) => {
-  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "colorId", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
+  return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
     ${cat.id}, 
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
     ${cat.bornAt ? dateToIso(cat.bornAt) : null},
     '${cat.gender}', 
     ${cat.esterilized ? 'True' : 'False'}, 
-    ${cat.colorId},
     ${cat.patternId},
     ${cat.eyeColorId},
     ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
@@ -20,6 +22,33 @@ const locationTypeFormatter = (locationType) => {
   return `INSERT INTO location_type ("id", "description") VALUES (
     ${locationType.id}, 
     '${locationType.description}'
+  );`;
+};
+
+const pictureFormatter = (inputPath, outputPath, picture) => {
+  const src = path.join(inputPath, picture.originalFilename);
+  const imageDst = path.join(outputPath, picture.image);
+  const thumbDst = path.join(outputPath, picture.thumbnail);
+
+  fs.copyFileSync(src, imageDst);
+
+  sharp(src)
+    .rotate()
+    .resize({
+      width: 160,
+      height: 108,
+      fit: sharp.fit.contain,
+    })
+    .png()
+    .toFile(thumbDst);
+
+  return `INSERT INTO picture ("id", "catId", "createdAt", "originalFilename", "image", "thumbnail") VALUES (
+    ${picture.id}, 
+    ${picture.catId}, 
+    ${dateToIso(picture.createdAt)},
+    '${picture.originalFilename}', 
+    '${picture.image}', 
+    '${picture.thumbnail}'
   );`;
 };
 
@@ -93,6 +122,13 @@ const colonyUserRelationFormatter = (entity) => {
   );`;
 };
 
+const catColorRelationFormatter = (entity) => {
+  return `INSERT INTO "cat_colors_color" ("catId", "colorId") VALUES (
+    ${entity.catId}, 
+    ${entity.colorId}
+  );`;
+};
+
 const annotationFormatter = (entity) => {
   return `INSERT INTO "annotation" ("id", "catId", "date", "annotation") VALUES (
     ${entity.id}, 
@@ -118,6 +154,7 @@ const patternFormatter = (pattern) => {
 
 module.exports = {
   annotationFormatter,
+  catColorRelationFormatter,
   catFormatter,
   ceaseCauseFormatter,
   colonyFormatter,
@@ -127,6 +164,7 @@ module.exports = {
   eyeColorFormatter,
   locationTypeFormatter,
   patternFormatter,
+  pictureFormatter,
   roleFormatter,
   townFormatter,
   userFormatter,

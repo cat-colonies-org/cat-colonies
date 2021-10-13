@@ -1,19 +1,23 @@
 import { apiCall, objToListString } from '../common/util';
-import { Cat, catQueryFields } from './cats';
+import { Cat, catDataFragment } from './cats';
 import { User, userQueryFields } from './users';
 
-export const colonyQueryFields: string = `
-  id
-  createdAt
-  address
-  managers { ${userQueryFields} }
-  cats { ${catQueryFields} }
-  locationTypeId
-  locationType { description }
-  environmentId
-  environment { description }
-  townId
-  town { name }
+export const colonyDataFragment: string = `
+  ${catDataFragment}
+
+  fragment colonyData on Colony {
+    id
+    createdAt
+    address
+    managers { ${userQueryFields} }
+    cats { ...catData }
+    locationTypeId
+    locationType { description }
+    environmentId
+    environment { description }
+    townId
+    town { name }
+  }
 `;
 
 export type Colony = {
@@ -42,9 +46,9 @@ const idSorter = (a: { id: number }, b: { id: number }): number => {
 const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   return {
     ...colony,
-    createdAt: new Date(colony.createdAt),
-    managers: colony.managers.sort(idSorter),
-    cats: colony.cats.sort(idSorter),
+    createdAt: colony.createdAt ? new Date(colony.createdAt) : undefined,
+    managers: colony.managers?.sort(idSorter),
+    cats: colony.cats?.sort(idSorter),
   } as Colony;
 };
 
@@ -52,14 +56,18 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
   const skip = Math.max(page - 1, 0) * perPage;
   const take = perPage;
 
-  const query = `query {
-    colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
-      total
-      items {
-        ${colonyQueryFields}
+  const query = `
+    ${colonyDataFragment}
+  
+    query {
+      colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
+        total
+        items {
+          ...colonyData
+        }
       }
     }
-  }`;
+  `;
 
   return await apiCall(query).then((response): ColoniesList => {
     const colonies = response?.data?.colonies;
@@ -74,11 +82,15 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
 }
 
 export async function getColony(id: number): Promise<Colony> {
-  const query = `query {
-    colony (id:${id}) {
-      ${colonyQueryFields}
+  const query = `
+    ${colonyDataFragment}
+      
+    query {
+      colony (id:${id}) {
+        ...colonyData
+      }
     }
-  }`;
+  `;
 
   return await apiCall(query).then((response): Colony => {
     return getColonyFromGraphQlResult(response?.data?.colony);
@@ -88,11 +100,15 @@ export async function getColony(id: number): Promise<Colony> {
 export async function updateColony(id: number, data: any): Promise<Colony> {
   const toUpdateString = objToListString(data);
 
-  const query = `mutation {
-    updateColony (updateColonyInput: {id: ${id}, ${toUpdateString}}) {
-      ${colonyQueryFields}
+  const query = `
+    ${colonyDataFragment}
+
+    mutation {
+      updateColony (updateColonyInput: {id: ${id}, ${toUpdateString}}) {
+        ...colonyData
+      }
     }
-  }`;
+  `;
 
   return await apiCall(query).then((response): Colony => {
     return response?.data?.updateColony as Colony;

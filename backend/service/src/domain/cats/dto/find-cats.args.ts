@@ -7,8 +7,8 @@ export class FindCatsArgs extends FindArgs {
   @Field(() => Int, { nullable: true })
   id?: number;
 
-  @Field(() => Int, { nullable: true })
-  birthYear?: number;
+  @Field(() => Date, { nullable: true })
+  bornAt?: Date;
 
   @Field(() => Boolean, { nullable: true })
   sterilized?: boolean;
@@ -30,7 +30,4 @@ export class FindCatsArgs extends FindArgs {
 
   @Field(() => Gender, { nullable: true })
   gender?: Gender;
-
-  @Field(() => Boolean, { nullable: true })
-  kitten?: boolean;
 }

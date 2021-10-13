@@ -1,6 +1,6 @@
 {
   "name": "cat-colonies-service",
-  "version": "0.0.1",
+  "version": "0.3.0-dev-build",
   "description": "",
   "author": "cat-colonies-org",
   "private": true,
@@ -19,8 +19,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service .",
-    "docker:push": "docker push daviddq/cat-colonies-service"
+    "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
+    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service:$npm_package_version .",
+    "docker:push": "docker push daviddq/cat-colonies-service:$npm_package_version"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -35,13 +36,16 @@
     "bcrypt": "^5.0.1",
     "graphql": "^15.5.1",
     "graphql-redis-subscriptions": "^2.4.0",
+    "minio": "^7.0.19",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.2.36"
+    "sharp": "^0.29.1",
+    "typeorm": "^0.2.36",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -50,9 +54,12 @@
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.24",
+    "@types/minio": "^7.0.10",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
+    "@types/sharp": "^0.29.2",
     "@types/supertest": "^2.0.11",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",

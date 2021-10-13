@@ -1,4 +1,5 @@
 import { apiCall, getCriteriaString } from '../common/util';
+import { Colony } from './colonies';
 
 export const userQueryFields: string = `
   id
@@ -7,6 +8,15 @@ export const userQueryFields: string = `
   surnames
   phoneNumber
   email
+  roleId
+  idCard
+  authorizesWhatsApp
+  role { id description }
+  colonies { id address createdAt 
+      town {name} 
+      locationType {description} 
+      environment {description} 
+    }
 `;
 
 export type User = {
@@ -16,6 +26,11 @@ export type User = {
   surnames: string;
   phoneNumber: number;
   email: string;
+  roleId: number;
+  idCard: string;
+  authorizesWhatsApp: boolean;
+  role: { description: string };
+  colonies: Colony[];
 };
 
 export interface UsersList {
@@ -26,7 +41,7 @@ export interface UsersList {
 const getUserFromGraphQlResult = (user: Record<string, any>): User => {
   return {
     ...user,
-    createdAt: new Date(user.createdAt),
+    createdAt: new Date(),
   } as User;
 };
 
@@ -61,5 +76,17 @@ export async function getUsersList({
       : [];
 
     return { items, total };
+  });
+}
+
+export async function getUser(id: number): Promise<User> {
+  const query = `query {
+      user (id:${id}) {
+        ${userQueryFields}
+      }
+    }`;
+
+  return await apiCall(query).then((response): User => {
+    return getUserFromGraphQlResult(response?.data?.user);
   });
 }

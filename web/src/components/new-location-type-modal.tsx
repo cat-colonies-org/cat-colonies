@@ -22,7 +22,6 @@ const NewLocationTypeModal = ({
       const locationTypeDescription = result.value;
 
       const locationType = await createLocationType(locationTypeDescription);
-      console.log(locationType);
       if (locationType) {
         onNewLocationType(locationType);
       } else {

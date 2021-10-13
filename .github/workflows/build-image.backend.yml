@@ -1,17 +1,13 @@
-name: Build web image
+name: Build backend image
 
 on:
   push:
     branches: ['main']
-    paths: ['.github/**', 'web/**']
-
-  # pull_request:
-  #   branches: ['main']
-  #   paths: ['.github/**', 'web/**']
+    paths: ['.github/workflows/**.backend.yml', 'backend/service/**']
 
 defaults:
   run:
-    working-directory: ./web
+    working-directory: ./backend/service
 
 jobs:
   build:
@@ -22,14 +18,24 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build web image
+      - uses: actions/checkout@v2
+
+      - name: Generate build number
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
+          prefix: backend
+
+      - name: Set build number in version
+        run: |
+          npm run version:setBuild
+
+      - name: Build backend image
         run: |
           npm run docker:build
 
@@ -39,6 +45,6 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push web image
+      - name: Push backend image
         run: |
           npm run docker:push

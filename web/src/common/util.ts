@@ -1,3 +1,5 @@
+import { Cat } from '../services/cats';
+import { Color } from '../services/colors';
 import { AuthToken } from './authToken';
 
 export const omit = (obj: Record<string, any>, props: string[]) => {
@@ -13,6 +15,18 @@ export const objToListString = (obj: Record<string, any>): string => {
     composed += composed ? ', ' : '';
     return composed + `${key}: ${JSON.stringify(obj[key])}`;
   }, '');
+};
+
+export const coatFromCat = (cat: Cat) => {
+  let pattern = cat.patternId !== 0 ? cat.pattern?.description : '';
+  return (
+    pattern +
+    (pattern ? ' ' : '') +
+    cat.colors?.reduce(
+      (acc: string, color: Color) => (color.id !== 0 ? (acc ? acc + ', ' : '') + color.description : acc),
+      '',
+    )
+  );
 };
 
 export const getCriteriaString = ({
@@ -40,7 +54,7 @@ export const getCriteriaString = ({
   return criteria;
 };
 
-export const apiCall = async (query: string) => {
+export const apiCall = async (query: string, variables?: any) => {
   const apiBaseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
   const options = {
@@ -51,9 +65,10 @@ export const apiCall = async (query: string) => {
     },
   };
 
+  // TODO: handle 401 - Unauthorized
   return await fetch(apiBaseUrl, {
     ...options,
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, variables }),
   }).then((response) => response.json());
   // TODO: catch
 };

@@ -1,20 +1,22 @@
-import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { Global, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { SettingsModule } from './settings/settings.module';
+import SettingsService from './settings/settings.service';
 
 export const PUB_SUB = 'PUB_SUB';
 
 @Global()
 @Module({
+  imports: [SettingsModule],
   providers: [
     {
       provide: PUB_SUB,
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
+      inject: [SettingsService],
+      useFactory: (settings: SettingsService) =>
         new RedisPubSub({
           connection: {
-            host: config.get<string>('redis.host'),
-            port: config.get<number>('redis.port'),
+            host: settings.redis.host,
+            port: settings.redis.port,
           },
         }),
     },

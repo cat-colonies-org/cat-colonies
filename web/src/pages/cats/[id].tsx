@@ -1,30 +1,33 @@
 import 'react-datepicker/dist/react-datepicker.css';
-
+import 'react-image-gallery/styles/css/image-gallery.css';
 import { Annotation, createAnnotation } from '../../services/annotations';
+import { AuthToken } from '../../common/authToken';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
 import { createEyeColor, EyeColor, getEyeColorsList } from '../../services/eyeColors';
 import { createPattern, getPatternsList, Pattern } from '../../services/patterns';
-import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
+import ImageGallery from 'react-image-gallery';
 import InputModal from '../../components/input-modal';
 import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
+import React, { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import UploadModal from '../../components/upload-modal';
 import withPrivateRoute from '../../components/with-private-route';
 
 registerLocale('es', es);
 
-const CatDetails = () => {
+const CatDetails = ({ authToken }: any) => {
   const router = useRouter();
 
   const annotationsColumns: TableColumn<Annotation>[] = [
-    { name: 'Id', selector: (row) => row.id },
-    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString() },
+    { name: 'Id', selector: (row) => row.id, width: '100px' },
+    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString(), width: '100px' },
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
@@ -33,7 +36,6 @@ const CatDetails = () => {
     bornAt: undefined,
     sterilizedAt: undefined,
     ceasedAt: undefined,
-    colorId: 0,
     eyeColorId: 0,
     patternId: 0,
     ceaseCauseId: 0,
@@ -46,19 +48,11 @@ const CatDetails = () => {
   const [colors, setColors] = useState([] as Color[]);
   const [patterns, setPatterns] = useState([] as Pattern[]);
   const [eyeColors, setEyeColors] = useState([] as Color[]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
-  };
-
-  const onNewCeaseCause = (item: CeaseCause) => {
-    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
-
-    setCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, ceaseCauseId: item.id };
-    });
   };
 
   const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
@@ -67,7 +61,7 @@ const CatDetails = () => {
       return;
     }
 
-    setModalOpen(true);
+    setAnnotationModalOpen(true);
   };
 
   const onNewAnnotation = async (result: { value: string }) => {
@@ -77,9 +71,7 @@ const CatDetails = () => {
     if (annotation) {
       cat.annotations.push(annotation);
 
-      setCat((prev) => {
-        return { ...prev, annotations: prev.annotations };
-      });
+      setCat((prev) => ({ ...prev, annotations: prev.annotations }));
 
       toast.success(`Creada nueva anotación "${annotation.annotation}"`);
     } else {
@@ -87,43 +79,82 @@ const CatDetails = () => {
     }
   };
 
-  const onNewColor = (item: Color) => {
-    toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
+  const onCreateCeaseCause = async (description: string) => {
+    const item: CeaseCause = await createCeaseCause(description);
+
+    if (!item) {
+      toast.error(`Error creando causa de baja "${description}"`);
+      return;
+    }
+
+    setCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
+
+    setCat((prev) => ({ ...prev, ceaseCauseId: item.id }));
+
+    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
+  };
+
+  const onCreateColor = async (description: string) => {
+    const item: Color = await createColor(description);
+
+    if (!item) {
+      toast.error(`Error creando color "${description}"`);
+      return;
+    }
 
     setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, colorId: item.id };
-    });
+
+    setCat((cat) => ({ ...cat, colors: [...cat.colors, item] }));
+
+    toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
   };
 
-  const onNewPattern = (item: Pattern) => {
-    toast.success(`Creada nueva distribución "${item.description}" con id "${item.id}"`);
+  const onCreatePattern = async (description: string) => {
+    const item: Pattern = await createPattern(description);
+
+    if (!item) {
+      toast.error(`Error creando distribución "${description}"`);
+      return;
+    }
 
     setPatterns((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, patternId: item.id };
-    });
+
+    setCat((prev) => ({ ...prev, patternId: item.id }));
+
+    toast.success(`Creada nueva distribución "${item.description}" con id "${item.id}"`);
   };
 
-  const onNewEyeColor = (item: EyeColor) => {
-    toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
+  const onCreateEyeColor = async (description: string) => {
+    const item: EyeColor = await createEyeColor(description);
+
+    if (!item) {
+      toast.error(`Error creando color de ojos "${description}"`);
+      return;
+    }
 
     setEyeColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
-    setCat((prev) => {
-      return { ...prev, eyeColorId: item.id };
-    });
+
+    setCat((prev) => ({ ...prev, eyeColorId: item.id }));
+
+    toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
   };
 
-  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
-    setCat((prev: any) => {
-      return { ...prev, [event.currentTarget.id]: event.currentTarget.value };
-    });
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
+    if (meta.name === 'colors') return onColorSelectChange(data);
+
+    setCat((prev: any) => ({ ...prev, [meta.name]: data?.value }));
+  };
+
+  const onColorSelectChange = (data: { value: number; label: string }[]): void => {
+    setCat((prev) => ({ ...prev, colors: data.map((c) => ({ id: c.value, description: c.label })) }));
+  };
+
+  const onGenderChange = (event: FormEvent<HTMLSelectElement>): void => {
+    setCat((prev: any) => ({ ...prev, [event.currentTarget.id]: event.currentTarget.value }));
   };
 
   const onDateChange = (date: Date, field: string): void => {
-    setCat((prev: Cat) => {
-      return { ...prev, [field]: date };
-    });
+    setCat((prev: Cat) => ({ ...prev, [field]: date }));
   };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
@@ -131,10 +162,7 @@ const CatDetails = () => {
 
     let promise: Promise<Cat>;
 
-    console.log('saving !!!!!!!!');
-    console.log(cat);
-
-    if (cat.id) promise = updateCat(+cat.id, cat);
+    if (cat.id) promise = updateCat(cat);
     else promise = createCat(cat);
 
     const saved = await toast.promise(promise, {
@@ -143,10 +171,32 @@ const CatDetails = () => {
       error: 'Error actualizando datos',
     });
 
-    console.log('saved !!!!!!!!');
-    console.log(saved);
-
     saved && setCat(saved);
+  };
+
+  const onPicturesSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    setUploadModalOpen(false);
+
+    const data = new FormData(event.target as HTMLFormElement);
+
+    // TODO: mover URL a configuración (http://localhost:8080/rest + /file-upload)
+    const response = await fetch(`http://localhost:8080/file-upload/${cat.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AuthToken.getToken()),
+      },
+      body: data,
+    });
+
+    const { uploaded } = await response.json();
+    if (uploaded) {
+      const updatedCat = await getCat(cat.id);
+      setCat((cat) => ({ ...cat, pictures: [...updatedCat.pictures] }));
+
+      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imagenes` : 'Añadida 1 nueva imagen');
+    }
   };
 
   const fetchData = async () => {
@@ -189,10 +239,18 @@ const CatDetails = () => {
         title="Nueva Anotación"
         caption="Texto"
         buttonCaption="Añadir"
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={isAnnotationModalOpen}
+        onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
       />
+
+      <UploadModal
+        id="UploadModal"
+        isOpen={isUploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onReturn={onPicturesSubmit}
+      ></UploadModal>
+
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -229,30 +287,29 @@ const CatDetails = () => {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="bornAt" className="form-label">
                         Nacimiento
                       </label>
                       <ReactDatePicker
+                        id="bornAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.bornAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'bornAt')}
                       />
                     </div>
                     <div className="col-md-2">
-                      <label htmlFor="address" className="form-label">
+                      <label htmlFor="gender" className="form-label">
                         Sexo
                       </label>
-                      <select id="gender" className="form-control" value={cat?.gender} onChange={onSelectChange}>
+                      <select id="gender" className="form-control" value={cat?.gender} onChange={onGenderChange}>
                         <option value="Male">Macho</option>
                         <option value="Female">Hembra</option>
                         <option value="Unknown">Desconocido</option>
                       </select>
                     </div>
                     <div className="col-md-2">
-                      <label htmlFor="id" className="form-label">
-                        Colonia
-                      </label>
+                      <label className="form-label">Colonia</label>
                       <div>
                         <Link href={`/colonies/${cat?.colonyId}`}>
                           <a className="btn btn-secondary">{cat?.colonyId}</a>
@@ -263,7 +320,7 @@ const CatDetails = () => {
 
                   <div className="row mt-3">
                     <div className="col-md-2">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="sterilized" className="form-label">
                         Esterilizado
                       </label>
                       <div className="form-check">
@@ -272,101 +329,96 @@ const CatDetails = () => {
                     </div>
 
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="sterilizedAt" className="form-label">
                         Fecha esterilización
                       </label>
                       <ReactDatePicker
+                        id="sterilizedAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.sterilizedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'sterilizedAt')}
                       />
                     </div>
 
                     <div className="col-md-3">
-                      <label htmlFor="town" className="form-label">
+                      <label htmlFor="ceasedAt" className="form-label">
                         Baja
                       </label>
                       <ReactDatePicker
+                        id="ceasedAt"
                         className="form-control"
-                        locale="el"
+                        locale="es"
                         value={cat?.ceasedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
                       />
                     </div>
                     <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
+                      <label htmlFor="ceaseCauseId" className="form-label">
                         Causa de baja
                       </label>
                       <PropertySelector
                         id="ceaseCauseId"
                         title="Nueva Causa de Baja"
                         caption="Descripción"
-                        buttonCaption="Crear"
-                        items={ceaseCauses}
+                        allowAdd={authToken.isAdmin}
+                        options={ceaseCauses.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.ceaseCauseId}
-                        setter={setCat}
-                        textGetter={(i: CeaseCause) => i.description}
-                        factory={createCeaseCause}
-                        onCreate={onNewCeaseCause}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                        onChange={onSelectChange}
+                        onCreate={onCreateCeaseCause}
                       />
                     </div>
                   </div>
 
                   <div className="row">
-                    <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
-                        Color
-                      </label>
-                      <PropertySelector
-                        id="colorId"
-                        title="Nuevo color"
-                        caption="Descripción"
-                        buttonCaption="Crear"
-                        items={colors}
-                        value={cat?.colorId}
-                        setter={setCat}
-                        textGetter={(i: Color) => i.description}
-                        factory={createColor}
-                        onCreate={onNewColor}
-                        onError={(i: string) => toast.error(`Error creando color "${i}"`)}
-                      />
-                    </div>
-                    <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
-                        Disposición
-                      </label>
-                      <PropertySelector
-                        id="patternId"
-                        title="Nueva disposición"
-                        caption="Descripción"
-                        buttonCaption="Crear"
-                        items={patterns}
-                        value={cat?.patternId}
-                        setter={setCat}
-                        textGetter={(i: Pattern) => i.description}
-                        factory={createPattern}
-                        onCreate={onNewPattern}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
-                      />
-                    </div>
-                    <div className="col-md-4">
-                      <label htmlFor="location" className="form-label">
+                    <div className="col-md-3">
+                      <label htmlFor="eyeColorId" className="form-label">
                         Ojos
                       </label>
                       <PropertySelector
                         id="eyeColorId"
                         title="Nuevo color de ojos"
                         caption="Descripción"
-                        buttonCaption="Crear"
-                        items={eyeColors}
+                        allowAdd={authToken.isAdmin}
+                        multiple={false}
+                        options={eyeColors.map((i) => ({ value: i.id, label: i.description }))}
                         value={cat?.eyeColorId}
-                        setter={setCat}
-                        textGetter={(i: EyeColor) => i.description}
-                        factory={createEyeColor}
-                        onCreate={onNewEyeColor}
-                        onError={(i: string) => toast.error(`Error creando causa de baja "${i}"`)}
+                        onChange={onSelectChange}
+                        onCreate={onCreateEyeColor}
+                      />
+                    </div>
+
+                    <div className="col-md-3">
+                      <label htmlFor="patternId" className="form-label">
+                        Disposición
+                      </label>
+                      <PropertySelector
+                        id="patternId"
+                        title="Nueva disposición"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        multiple={false}
+                        options={patterns.map((i) => ({ value: i.id, label: i.description }))}
+                        value={cat?.patternId}
+                        onChange={onSelectChange}
+                        onCreate={onCreatePattern}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label htmlFor="colors" className="form-label">
+                        Colores
+                      </label>
+                      <PropertySelector
+                        id="colors"
+                        title="Nuevo color"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        multiple={true}
+                        value={cat?.colors}
+                        options={colors.map((i) => ({ value: i.id, label: i.description }))}
+                        onChange={onSelectChange}
+                        onCreate={onCreateColor}
                       />
                     </div>
                   </div>
@@ -384,15 +436,15 @@ const CatDetails = () => {
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
-              <p className="d-flex justify-content-between">
+              <div className="d-flex justify-content-between">
                 <div>
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Anotaciones
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation}>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!cat.id}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
-              </p>
+              </div>
 
               <DataTable
                 columns={annotationsColumns}
@@ -402,6 +454,42 @@ const CatDetails = () => {
                 progressPending={loading}
                 striped={true}
               />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded" style={{ minHeight: '500px' }}>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  Fotos
+                </div>
+                <button
+                  className="btn btn-primary btn-sm mb-3"
+                  disabled={!cat.id}
+                  onClick={() => setUploadModalOpen(true)}
+                >
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              {cat?.pictures?.length > 0 && (
+                <ImageGallery
+                  thumbnailPosition="right"
+                  showFullscreenButton={true}
+                  showPlayButton={false}
+                  items={
+                    cat.pictures
+                      ? cat.pictures.map((i) => ({
+                          original: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.image}`,
+                          thumbnail: `${process.env.NEXT_PUBLIC_PICTURES_BASE_URL}/${i.thumbnail}`,
+                        }))
+                      : []
+                  }
+                />
+              )}
             </div>
           </div>
         </div>

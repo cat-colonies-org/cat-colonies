@@ -1,33 +1,44 @@
-import { apiCall, getCriteriaString, objToListString, omit } from '../common/util';
+import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
+import { Color } from './colors';
 
-export const catQueryFields: string = `
-  id
-  createdAt
-  ceasedAt
-  ceaseCauseId
-  ceaseCause { description }
-  bornAt
-  sterilized
-  sterilizedAt
-  imageURL
-  gender
-  colonyId
-  colony { address }
-  colorId
-  color { description }
-  patternId
-  pattern { description }
-  eyeColorId
-  eyeColor { description }
-  annotations { id date annotation }
-`;
+interface Picture {
+  id: number;
+  catId: number;
+  createdAt: Date;
+  originalFilename: string;
+  image: string;
+  thumbnail: string;
+}
 
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
   Unknown = 'Unknown',
 }
+
+export const catDataFragment: string = `
+  fragment catData on Cat {
+    id
+    createdAt
+    ceasedAt
+    ceaseCauseId
+    ceaseCause { description }
+    bornAt
+    sterilized
+    sterilizedAt
+    gender
+    colonyId
+    colony { address }
+    eyeColorId
+    eyeColor { description }
+    patternId
+    pattern { description }
+    colors { id description }
+    annotations { id catId date annotation }
+    pictures { id catId createdAt originalFilename image thumbnail }
+  }
+`;
 
 export type Cat = {
   id: number;
@@ -38,18 +49,22 @@ export type Cat = {
   bornAt: Date;
   sterilized: boolean;
   sterilizedAt: Date;
-  imageURL: string;
   gender: Gender;
   colonyId: number;
   colony: { address: string };
-  colorId: number;
-  color: { description: string };
-  patternId: number;
-  pattern: { description: string };
   eyeColorId: number;
   eyeColor: { description: string };
+  patternId: number;
+  pattern: { description: string };
+  colors: Color[];
   annotations: Annotation[];
+  pictures: Picture[];
 };
+
+export interface CatsList {
+  total: number;
+  items: Cat[];
+}
 
 export const isKitten = (cat: Cat): boolean => {
   if (!cat?.bornAt) return false;
@@ -61,18 +76,15 @@ export const isKitten = (cat: Cat): boolean => {
   return today.getTime() - birthDate.getTime() <= sixMonths;
 };
 
-export interface CatsList {
-  total: number;
-  items: Cat[];
-}
-
 const getCatFromGraphQlResult = (cat: Record<string, any>): Cat => {
+  if (!cat) return {} as Cat;
+
   return {
     ...cat,
-    createdAt: new Date(cat.createdAt),
-    bornAt: new Date(cat.bornAt),
-    sterilizedAt: new Date(cat.ceasedAt),
-    ceasedAt: new Date(cat.ceasedAt),
+    createdAt: cat.createdAt ? new Date(cat.createdAt) : undefined,
+    bornAt: cat.bornAt ? new Date(cat.bornAt) : undefined,
+    sterilizedAt: cat.sterilizedAt ? new Date(cat.sterilizedAt) : undefined,
+    ceasedAt: cat.ceasedAt ? new Date(cat.ceasedAt) : undefined,
   } as Cat;
 };
 
@@ -87,11 +99,14 @@ export async function getCatsList({
 }): Promise<CatsList> {
   const criteria = getCriteriaString({ filter, page, perPage });
 
-  const query = `query {
+  const query = `
+    ${catDataFragment}
+    
+    query {
       cats (${criteria}) {
         total
         items {
-          ${catQueryFields}
+          ...catData
         }
       }
     }`;
@@ -111,11 +126,15 @@ export async function getCatsList({
 }
 
 export async function getCat(id: number): Promise<Cat> {
-  const query = `query {
-    cat (id:${id}) {
-      ${catQueryFields}
+  const query = `
+    ${catDataFragment}
+    
+    query {
+      cat (id:${id}) {
+        ...catData
+      }
     }
-  }`;
+  `;
 
   return await apiCall(query).then((response): Cat => {
     return getCatFromGraphQlResult(response?.data?.cat);
@@ -123,46 +142,83 @@ export async function getCat(id: number): Promise<Cat> {
 }
 
 export async function createCat(cat: Partial<Cat>): Promise<Cat> {
-  const gender = `gender: ${cat.gender}`;
+  const query = `
+    ${catDataFragment}
+    
+    mutation (
+      $bornAt: DateTime, 
+      $sterilized: Boolean,
+      $sterilizedAt: DateTime,
+      $colors: [InputColor!]
+      $colonyId: Int,
+      $patternId: Int,
+      $eyeColorId: Int,
+      $gender: Gender,
+      $ceasedAt: DateTime,
+      $ceaseCauseId: Int,
+      $annotations: [InputAnnotation!]
+    ) {
+      createCat(createCatInput: { 
+        bornAt: $bornAt,
+        colors: $colors,
+        sterilized: $sterilized,
+        sterilizedAt: $sterilizedAt,
+        colonyId: $colonyId,
+        patternId: $patternId,
+        eyeColorId: $eyeColorId,
+        gender: $gender,
+        ceasedAt: $ceasedAt,
+        ceaseCauseId: $ceaseCauseId,
+        annotations: $annotations
+      }) { 
+        ...catData 
+      }
+    }
+  `;
 
-  cat = omit(cat, ['createdAt', 'gender', 'imageURL', 'annotations']);
-
-  const fields = objToListString(cat);
-
-  const query = `mutation {
-    createCat(createCatInput: { ${fields}, ${gender} }) { ${catQueryFields} }
-  }`;
-
-  return await apiCall(query).then((response): Cat => {
+  return await apiCall(query, cat).then((response): Cat => {
     return getCatFromGraphQlResult(response?.data?.createCat);
   });
 }
 
-export async function updateCat(id: number, cat: Partial<Cat>): Promise<Cat> {
-  const gender = `gender: ${cat.gender}`;
-
-  cat = omit(cat, [
-    'id',
-    'createdAt',
-    'gender',
-    'ceaseCause',
-    'colony',
-    'color',
-    'pattern',
-    'eyeColor',
-    'imageURL',
-    'annotations',
-  ]);
-
-  const fields = objToListString(cat);
-
-  const query = `mutation {
-    updateCat (updateCatInput: {id: ${id}, ${fields}, ${gender}}) {
-      ${catQueryFields}
+export async function updateCat(cat: Partial<Cat>): Promise<Cat> {
+  const query = `
+    ${catDataFragment}
+  
+    mutation (
+        $id: Int!, 
+        $bornAt: DateTime, 
+        $sterilized: Boolean,
+        $sterilizedAt: DateTime,
+        $colors: [InputColor!]
+        $colonyId: Int,
+        $patternId: Int,
+        $eyeColorId: Int,
+        $gender: Gender,
+        $ceasedAt: DateTime,
+        $ceaseCauseId: Int,
+        $annotations: [InputAnnotation!]
+      ) {
+      updateCat (updateCatInput: {
+        id: $id, 
+        bornAt: $bornAt,
+        colors: $colors,
+        sterilized: $sterilized,
+        sterilizedAt: $sterilizedAt,
+        colonyId: $colonyId,
+        patternId: $patternId,
+        eyeColorId: $eyeColorId,
+        gender: $gender,
+        ceasedAt: $ceasedAt,
+        ceaseCauseId: $ceaseCauseId,
+        annotations: $annotations
+      }) {
+        ...catData
+      }
     }
-  }`;
+  `;
 
-  return await apiCall(query).then((response): Cat => {
+  return await apiCall(query, cat).then((response): Cat => {
     let cat = response?.data?.updateCat;
 
     cat = cat ? getCatFromGraphQlResult(cat) : undefined;

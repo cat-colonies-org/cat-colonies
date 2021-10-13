@@ -21,18 +21,17 @@ const EyeColor = Object.freeze({
 const Color = Object.freeze({
   Desconocido: 0,
   Atigrado: 1,
-  AtigradoDiluido: 2,
-  Azul: 3,
-  Blanco: 4,
-  Calico: 5,
-  Canela: 6,
-  Carey: 7,
-  CareyDiluido: 8,
-  Chocolate: 9,
-  Crema: 10,
-  Gris: 11,
-  Negro: 12,
-  Rojo: 13,
+  Azul: 2,
+  Blanco: 3,
+  Calico: 4,
+  Canela: 5,
+  Carey: 6,
+  Chocolate: 7,
+  Crema: 8,
+  Gris: 9,
+  Negro: 10,
+  Rojo: 11,
+  Diluido: 12,
 });
 
 const Pattern = Object.freeze({
@@ -117,28 +116,28 @@ const strToEyeColorId = (str) => {
   return EyeColor.Desconocido;
 };
 
-const strToColorId = (str) => {
-  if (str.toLowerCase().includes('azul')) return Color.Azul;
-  if (str.toLowerCase().includes('blanc')) return Color.Blanco;
-  if (str.toLowerCase().includes('canela')) return Color.Canela;
-  if (str.toLowerCase().includes('carey')) return Color.Carey;
-  if (str.toLowerCase().includes('chocolate')) return Color.Chocolate;
-  if (str.toLowerCase().includes('crema')) return Color.Crema;
-  if (str.toLowerCase().includes('negr')) return Color.Negro;
-  if (str.toLowerCase().includes('gris')) return Color.Gris;
-  if (str.toLowerCase().includes('rojo')) return Color.Rojo;
-  if (str.toLowerCase().includes('red')) return Color.Rojo;
-  if (str.toLowerCase() === 'particolor') return Color.Negro;
-  if (str.toLowerCase() === 'particolor tabby') return Color.Gris;
-  if (str.toLowerCase() === 'siamés') return Color.Chocolate;
-  if (str.toLowerCase() === 'siamés atigrado') return Color.Atigrado;
-  if (str.toLowerCase() === 'tricolor atigrada') return Color.Atigrado;
-  if (str.toLowerCase() === 'tricolor') return Color.Calico;
-  if (str.toLowerCase() === 'tricolor atigrada diluida') return Color.AtigradoDiluido;
-  if (str.toLowerCase() === 'tricolor cálico') return Color.Calico;
-  if (str.toLowerCase() === 'tricolor diluido') return Color.CareyDiluido;
+const strToColorIds = (str) => {
+  if (str.toLowerCase().includes('azul')) return [Color.Azul];
+  if (str.toLowerCase().includes('blanc')) return [Color.Blanco];
+  if (str.toLowerCase().includes('canela')) return [Color.Canela];
+  if (str.toLowerCase().includes('carey')) return [Color.Carey];
+  if (str.toLowerCase().includes('chocolate')) return [Color.Chocolate];
+  if (str.toLowerCase().includes('crema')) return [Color.Crema];
+  if (str.toLowerCase().includes('negr')) return [Color.Negro];
+  if (str.toLowerCase().includes('gris')) return [Color.Gris];
+  if (str.toLowerCase().includes('rojo')) return [Color.Rojo];
+  if (str.toLowerCase().includes('red')) return [Color.Rojo];
+  if (str.toLowerCase() === 'particolor') return [Color.Negro];
+  if (str.toLowerCase() === 'particolor tabby') return [Color.Gris];
+  if (str.toLowerCase() === 'siamés') return [Color.Chocolate];
+  if (str.toLowerCase() === 'siamés atigrado') return [Color.Atigrado];
+  if (str.toLowerCase() === 'tricolor atigrada') return [Color.Atigrado];
+  if (str.toLowerCase() === 'tricolor') return [Color.Calico];
+  if (str.toLowerCase() === 'tricolor atigrada diluida') return [Color.Atigrado, Color.Diluido];
+  if (str.toLowerCase() === 'tricolor cálico') return [Color.Calico];
+  if (str.toLowerCase() === 'tricolor diluido') return [Color.Carey, Color.Diluido];
 
-  return Color.Desconocido;
+  return [Color.Desconocido];
 };
 
 const strToPatternId = (str) => {
@@ -199,10 +198,11 @@ const strToPatternId = (str) => {
 };
 
 module.exports = {
+  Color,
   birthYearToBornAt,
   dateToIso,
   strToCeaseCauseId,
-  strToColorId,
+  strToColorIds,
   strToDate,
   strToEnvironment,
   strToEyeColorId,

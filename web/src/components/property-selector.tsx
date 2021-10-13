@@ -1,60 +1,43 @@
 import { FormEvent, useState } from 'react';
 import InputModal, { InputModalResult } from './input-modal';
+import Select, { GroupBase, OptionsOrGroups } from 'react-select';
 
 interface Item {
-  id: number;
+  value: number;
+  label: string;
 }
 
 interface PropertySelectorProps {
   id: string;
-  items: Item[];
+  options: OptionsOrGroups<any, GroupBase<Item>>;
   value: any;
-  setter: any;
-  textGetter: any;
   title: string;
   caption: string;
-  buttonCaption: string;
-  factory: any;
+  onChange: any;
   onCreate: any;
-  onError: any;
+  buttonCaption?: string;
+  allowAdd?: boolean;
+  multiple?: boolean;
 }
 
 const PropertySelector = ({
   id,
-  items,
+  options,
   value,
-  setter,
-  textGetter,
   title,
   caption,
-  buttonCaption,
-  factory,
+  onChange,
   onCreate,
-  onError,
+  buttonCaption = 'Crear',
+  allowAdd = false,
+  multiple = false,
 }: PropertySelectorProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
-
-  const onSelectChange = (event: FormEvent<HTMLSelectElement>): void => {
-    setter((prev: any) => {
-      return { ...prev, [event.currentTarget.id]: +event.currentTarget.value };
-    });
-  };
 
   const onCreateRequest = (event: FormEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
     setModalOpen(true);
-  };
-
-  const create = async (result: InputModalResult): Promise<void> => {
-    if (result.value) {
-      const value = await factory(result.value);
-      if (value) {
-        onCreate(value);
-      } else {
-        onError(result.value);
-      }
-    }
   };
 
   const onModalClose = () => {
@@ -69,23 +52,35 @@ const PropertySelector = ({
         caption={caption}
         buttonCaption={buttonCaption}
         isOpen={isModalOpen}
-        onReturn={create}
+        onReturn={(result: InputModalResult) => result.value && onCreate(result.value)}
         onClose={onModalClose}
       />
-      <div className="input-group mb-3">
-        <select id={id} className="form-control" value={value} onChange={onSelectChange}>
-          {items.length &&
-            items.map((item: Item, i) => (
-              <option key={i} value={item.id}>
-                {textGetter(item)}
-              </option>
-            ))}
-        </select>
-        <div className="input-group-append">
-          <button className="input-group-text" onClick={onCreateRequest}>
-            <i className="fa fa-plus-circle" aria-hidden="true"></i>
-          </button>
-        </div>
+      <div className="input-group mb-3 flex-nowrap">
+        <Select
+          id={id}
+          name={id}
+          value={
+            value?.find
+              ? options.filter((option: any) => value.find((value: any) => value.id === option.value))
+              : options.find((option) => option.value === value)
+          }
+          onChange={onChange}
+          isMulti={multiple}
+          options={options}
+          isSearchable={false}
+          isClearable={true}
+          placeholder={<div>Seleccione...</div>}
+          styles={{
+            container: (prev: any) => ({ ...prev, width: '100%' }),
+          }}
+        />
+        {allowAdd && (
+          <div className="input-group-append">
+            <button className="input-group-text" onClick={onCreateRequest}>
+              <i className="fa fa-plus-circle" aria-hidden="true"></i>
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
