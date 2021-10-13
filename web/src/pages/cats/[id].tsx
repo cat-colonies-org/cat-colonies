@@ -181,8 +181,7 @@ const CatDetails = ({ authToken }: any) => {
 
     const data = new FormData(event.target as HTMLFormElement);
 
-    // TODO: mover URL a configuración (http://localhost:8080/rest + /file-upload)
-    const response = await fetch(`http://localhost:8080/file-upload/${cat.id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/file-upload/${cat.id}`, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + (await AuthToken.getToken()),
