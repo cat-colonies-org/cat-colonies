@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
+import { coatFromCat } from '../../common/util';
 
 const ColonyDetails = ({ authToken }: any) => {
   const router = useRouter();
@@ -37,7 +38,11 @@ const ColonyDetails = ({ authToken }: any) => {
   const catsColumns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id, width: '60px' },
     { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
-    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString(), width: '100px' },
+    {
+      name: 'Nacimiento',
+      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
     {
       name: 'Sexo',
       width: '100px',
@@ -58,12 +63,8 @@ const ColonyDetails = ({ authToken }: any) => {
     },
     {
       name: 'Capa',
-      width: '200px',
-      selector: (cat) => 'N/A',
-      // selector: (cat) =>
-      //   `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
-      //     cat.colorId !== 0 ? cat.color?.description : ''
-      //   }`,
+      width: '300px',
+      selector: coatFromCat,
     },
     {
       name: 'Baja',

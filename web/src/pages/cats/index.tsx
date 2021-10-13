@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
+import { coatFromCat } from '../../common/util';
 
 const CatsList = () => {
   const [data, setData] = useState([] as Cat[]);
@@ -38,7 +39,11 @@ const CatsList = () => {
   const columns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id, width: '60px' },
     { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
-    { name: 'Nacimiento', selector: (cat) => new Date(cat.bornAt).toLocaleDateString(), width: '100px' },
+    {
+      name: 'Nacimiento',
+      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
     {
       name: 'Sexo',
       width: '100px',
@@ -59,15 +64,12 @@ const CatsList = () => {
     },
     {
       name: 'Capa',
-      width: '200px',
-      selector: (cat) => 'N/A',
-      // selector: (cat) =>
-      //   `${cat.patternId !== 0 ? cat.pattern?.description + ' ' : ''}${
-      //     cat.colorId !== 0 ? cat.color?.description : ''
-      //   }`,
+      width: '300px',
+      selector: coatFromCat,
     },
     {
       name: 'Fotos',
+      width: '100px',
       selector: (cat) => cat.pictures?.length || '',
     },
     {

@@ -1,3 +1,5 @@
+import { Cat } from '../services/cats';
+import { Color } from '../services/colors';
 import { AuthToken } from './authToken';
 
 export const omit = (obj: Record<string, any>, props: string[]) => {
@@ -13,6 +15,18 @@ export const objToListString = (obj: Record<string, any>): string => {
     composed += composed ? ', ' : '';
     return composed + `${key}: ${JSON.stringify(obj[key])}`;
   }, '');
+};
+
+export const coatFromCat = (cat: Cat) => {
+  let pattern = cat.patternId !== 0 ? cat.pattern?.description : '';
+  return (
+    pattern +
+    (pattern ? ' ' : '') +
+    cat.colors?.reduce(
+      (acc: string, color: Color) => (color.id !== 0 ? (acc ? acc + ', ' : '') + color.description : acc),
+      '',
+    )
+  );
 };
 
 export const getCriteriaString = ({
