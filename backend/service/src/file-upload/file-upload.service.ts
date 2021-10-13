@@ -51,7 +51,9 @@ export class FileUploadService {
 
     const bucket = this.settings.pictures.bucket;
 
-    await this.minioClient.makeBucket(bucket, this.settings.storage.region);
+    try {
+      await this.minioClient.makeBucket(bucket, this.settings.storage.region);
+    } catch (error) {}
 
     await Promise.all([
       this.minioClient.putObject(bucket, imageFilename, image, file.size),
