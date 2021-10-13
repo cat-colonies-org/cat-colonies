@@ -1,4 +1,4 @@
-name: Build backend image
+name: Build service image
 
 on:
   push:
@@ -35,16 +35,24 @@ jobs:
         run: |
           npm run version:setBuild
 
-      - name: Build backend image
-        run: |
-          npm run docker:build
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push backend image
+      - name: Build tagged service image
+        run: |
+          npm run docker:build
+
+      - name: Push tagged service image
         run: |
           npm run docker:push
+
+      - name: Build latest service image
+        run: |
+          npm run docker:buildLatest
+
+      - name: Push latest service image
+        run: |
+          npm run docker:pushLatest

@@ -35,16 +35,24 @@ jobs:
         run: |
           npm run version:setBuild
 
-      - name: Build web image
-        run: |
-          npm run docker:build
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push web image
+      - name: Build tagged web image
+        run: |
+          npm run docker:build
+
+      - name: Push tagged web image
         run: |
           npm run docker:push
+
+      - name: Build latest web image
+        run: |
+          npm run docker:buildLatest
+
+      - name: Push latest web image
+        run: |
+          npm run docker:pushLatest
