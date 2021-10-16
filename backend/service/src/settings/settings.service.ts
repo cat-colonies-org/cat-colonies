@@ -11,9 +11,10 @@ export class Settings {
     port: number;
   };
 
-  jwt: {
-    secret: string;
-    expiresIn: number; // seconds
+  auth: {
+    jwtSecret: string;
+    jwtExpiresIn: number; // seconds
+    saltRounds: number;
   };
 
   pictures: {
@@ -69,9 +70,10 @@ export class SettingsService extends Settings {
       port: getNumber('REDIS_PORT', 6379),
     };
 
-    this.jwt = {
-      secret: getString('JWT_SECRET', 'jwt-secret!'),
-      expiresIn: getNumber('JWT_EXPIRES_IN', 3600), //seconds
+    this.auth = {
+      jwtSecret: getString('JWT_SECRET', 'jwt-secret!'),
+      jwtExpiresIn: getNumber('JWT_EXPIRES_IN', 3600), //seconds
+      saltRounds: getNumber('SALT_ROUNDS', 10),
     };
 
     this.pictures = {

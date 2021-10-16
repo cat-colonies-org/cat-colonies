@@ -59,10 +59,6 @@ export class User extends BaseEntity {
   @Field(() => String)
   password: string;
 
-  @Column()
-  @Field(() => String)
-  salt: string;
-
   @ManyToMany(() => Colony, (colony) => colony.managers)
   @JoinTable()
   @Field(() => [Colony])

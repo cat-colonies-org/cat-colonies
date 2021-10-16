@@ -20,9 +20,9 @@ import SettingsService from 'src/settings/settings.service';
       imports: [SettingsModule],
       inject: [SettingsService],
       useFactory: async (settings: SettingsService) => ({
-        secret: settings.jwt.secret,
+        secret: settings.auth.jwtSecret,
         signOptions: {
-          expiresIn: settings.jwt.expiresIn,
+          expiresIn: settings.auth.jwtExpiresIn,
         },
       }),
     }),
