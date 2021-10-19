@@ -42,7 +42,7 @@ const UsersList = () => {
     {
       name: 'Rol',
       width: '150px',
-      selector: (user) => user.role.description,
+      selector: (user) => user.role?.description,
     },
     { name: 'Nombre', selector: (user) => user.name, width: '150px' },
     { name: 'Apellidos', selector: (user) => user.surnames, width: '250px' },

@@ -20,23 +20,33 @@ export const userQueryFields: string = `
 //  environment {description}
 // }
 
+// export const userDataFragment: string = `
+//   fragment userData on User {
+//     id
+//     createdAt
+//     name
+//     surnames
+//     phoneNumber
+//     email
+//     roleId
+//     idCard
+//     authorizesWhatsApp
+//     role { id description }
+//     colonies { id address createdAt  }
+//   }
+// `;
+
 export const userDataFragment: string = `
   fragment userData on User {
     id
-    createdAt
     name
     surnames
+    createdAt
+    idCard
     phoneNumber
     email
-    roleId
-    idCard
     authorizesWhatsApp
-    role { id description }
-    colonies { id address createdAt
-      town {name}
-      locationType {description}
-      environment {description}
-    }
+    password
   }
 `;
 
@@ -163,16 +173,13 @@ export async function updateUser(user: Partial<User>): Promise<User> {
     ${userDataFragment}
 
     mutation (
-      $id: Int,
+      $id: Int!,
       $name: String,
       $surnames: String,
       $idCard: String,
       $phoneNumber: Int,
       $email: String,
-      $createdAt: DateTime,
       $authorizesWhatsApp: Boolean,
-      $roleId: Number,
-      $colonies: [InputColony!],
     ) {
       updateUser(updateUserInput: {
         id: $id,
@@ -181,18 +188,14 @@ export async function updateUser(user: Partial<User>): Promise<User> {
         idCard: $idCard,
         phoneNumber: $phoneNumber,
         email: $email,
-        createdAt: $createdAt,
         authorizesWhatsApp: $authorizesWhatsApp,
-        roleId: $roleId,
-        colonies: $colonies
       }) {
         ...userData
       }
     }
   `;
 
-  console.log(user);
-  console.log(query);
+  console.log(JSON.stringify({ query, user }));
   return await apiCall(query, user).then((response): User => {
     let user = response?.data?.updateUser;
     user = user ? getUserFromGraphQlResult(user) : undefined;

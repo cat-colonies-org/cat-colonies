@@ -21,10 +21,10 @@ const UserDetails = () => {
   const coloniesColumns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (colony) => colony.id },
     { name: 'Alta', selector: (colony) => new Date(colony.createdAt).toLocaleDateString() },
-    { name: 'Ciudad', selector: (colony) => colony.town.name },
+    { name: 'Ciudad', selector: (colony) => colony.town?.name? colony.town.name : undefined },
     { name: 'Calle', selector: (colony) => colony.address },
-    { name: 'Ubicación', selector: (colony) => colony.locationType.description },
-    { name: 'Entorno', selector: (colony) => colony.environment.description },
+    { name: 'Ubicación', selector: (colony) => colony.locationType?.description },
+    { name: 'Entorno', selector: (colony) => colony.environment?.description },
   ];
 
   const [loading, setLoading] = useState(false);
