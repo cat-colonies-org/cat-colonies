@@ -99,7 +99,7 @@ const eyeColorFormatter = (eyeColor) => {
 };
 
 const userFormatter = (user) => {
-  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "salt", "roleId") VALUES (
+  return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "roleId") VALUES (
     ${user.id}, 
     ${dateToIso(user.createdAt)},
     '${user.name}',
@@ -110,7 +110,6 @@ const userFormatter = (user) => {
     ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
     ${user.authorizesWhatsApp ? 'True' : 'False'},
     '${user.password}',
-    '${user.salt}',
     ${user.roleId}
   );`;
 };
