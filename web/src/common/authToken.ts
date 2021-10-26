@@ -14,7 +14,7 @@ export type DecodedToken = {
   readonly exp: number;
 };
 
-export class AuthToken {
+export class Auth {
   readonly decodedToken: DecodedToken;
 
   constructor(readonly token?: string) {

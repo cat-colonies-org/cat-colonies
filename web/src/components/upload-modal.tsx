@@ -27,7 +27,7 @@ const UploadModal = ({ id, isOpen, onClose, onReturn }: UploadModalProps) => {
           justifyContent: 'center',
         },
         content: {
-          width: '40%',
+          width: '80pc',
           position: 'relative',
           WebkitOverflowScrolling: 'touch',
           borderRadius: '20px',
@@ -53,11 +53,11 @@ const UploadModal = ({ id, isOpen, onClose, onReturn }: UploadModalProps) => {
           </div>
           <div className="row">
             <div className="col" style={{ textAlign: 'right' }}>
+              <button type="submit" className="btn btn-primary mr-2">
+                Añadir
+              </button>
               <button className="btn btn-secondary" onClick={onClose}>
                 Cerrar
-              </button>
-              <button type="submit" className="btn btn-primary ml-2">
-                Añadir
               </button>
             </div>
           </div>

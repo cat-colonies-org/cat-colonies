@@ -1,7 +1,7 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { Annotation, createAnnotation } from '../../services/annotations';
-import { AuthToken } from '../../common/authToken';
+import { Auth } from '../../common/authToken';
 import { Cat, createCat, Gender, getCat, updateCat } from '../../services/cats';
 import { CeaseCause, createCeaseCause, getCeaseCausesList } from '../../services/cease-causes';
 import { Color, createColor, getColorsList } from '../../services/colors';
@@ -184,7 +184,7 @@ const CatDetails = ({ authToken }: any) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/file-upload/${cat.id}`, {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer ' + (await AuthToken.getToken()),
+        Authorization: 'Bearer ' + (await Auth.getToken()),
       },
       body: data,
     });
@@ -448,7 +448,7 @@ const CatDetails = ({ authToken }: any) => {
               <DataTable
                 columns={annotationsColumns}
                 data={cat.annotations}
-                dense
+                dense={true}
                 highlightOnHover={true}
                 progressPending={loading}
                 striped={true}
@@ -462,7 +462,7 @@ const CatDetails = ({ authToken }: any) => {
             <div className="shadow p-3 bg-body rounded" style={{ minHeight: '500px' }}>
               <div className="d-flex justify-content-between">
                 <div>
-                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  <i className="fa fa-camera mr-2" aria-hidden="true"></i>
                   Fotos
                 </div>
                 <button
@@ -476,8 +476,9 @@ const CatDetails = ({ authToken }: any) => {
 
               {cat?.pictures?.length > 0 && (
                 <ImageGallery
-                  thumbnailPosition="right"
-                  showFullscreenButton={true}
+                  thumbnailPosition="bottom"
+                  showNav={!isUploadModalOpen && !isAnnotationModalOpen}
+                  showFullscreenButton={!isUploadModalOpen && !isAnnotationModalOpen}
                   showPlayButton={false}
                   items={
                     cat.pictures
