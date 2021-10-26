@@ -1,4 +1,4 @@
-import { AuthToken, TOKEN_STORAGE_KEY } from '../common/authToken';
+import { Auth, TOKEN_STORAGE_KEY } from '../common/authToken';
 import { NextPageContext } from 'next';
 import Router from 'next/router';
 import ServerCookie from 'next-cookies';
@@ -11,7 +11,7 @@ const checkUserAuthentication = (context: NextPageContext) => {
   const token = ServerCookie(context)[TOKEN_STORAGE_KEY];
   if (!token) return noAuth;
 
-  const auth = new AuthToken(token);
+  const auth = new Auth(token);
   if (!auth) return noAuth;
 
   if (!auth.isValid) return noAuth;

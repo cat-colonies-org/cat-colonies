@@ -3,7 +3,7 @@
 
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthToken } from '../common/authToken';
+import { Auth } from '../common/authToken';
 import { ToastContainer } from 'react-toastify';
 import Cookies from 'js-cookie';
 import DefaultLayout from '../components/default-layout';
@@ -12,7 +12,7 @@ import type { AppProps } from 'next/app';
 
 function App({ Component, pageProps }: AppProps) {
   const tokenCookie = Cookies.get('authToken');
-  const authToken = new AuthToken(tokenCookie);
+  const authToken = new Auth(tokenCookie);
 
   const Layout = (Component as any).Layout || DefaultLayout;
 

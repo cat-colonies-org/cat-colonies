@@ -28,6 +28,6 @@ export class AuthService {
   private async validateUserPassword(providedCredentials: UserCredentials, user?: User): Promise<boolean> {
     if (!user) return false;
 
-    return user.password === (await bcrypt.hash(providedCredentials.password, user.salt));
+    return bcrypt.compare(providedCredentials.password, user.password);
   }
 }

@@ -1,6 +1,6 @@
 import { Cat } from '../services/cats';
 import { Color } from '../services/colors';
-import { AuthToken } from './authToken';
+import { Auth } from './authToken';
 
 export const omit = (obj: Record<string, any>, props: string[]) => {
   const result = { ...obj };
@@ -61,7 +61,7 @@ export const apiCall = async (query: string, variables?: any) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + (await AuthToken.getToken()),
+      Authorization: 'Bearer ' + (await Auth.getToken()),
     },
   };
 

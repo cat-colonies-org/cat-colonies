@@ -27,10 +27,9 @@ const UserDetails = () => {
     { name: 'Entorno', selector: (colony) => colony.environment.description },
   ];
 
-
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
- 
+
   // const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
 
   // const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
@@ -47,12 +46,10 @@ const UserDetails = () => {
       return;
     }
 
-    const [user] = await Promise.all([
-      id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User),      
-    ]);
+    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
 
-    if (user) setUser(user); 
-    
+    if (user) setUser(user);
+
     setLoading(false);
   };
 
@@ -60,36 +57,35 @@ const UserDetails = () => {
     fetchData();
   }, []);
 
-  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {   
+  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     const target = (event.target || event.currentTarget) as any;
-    
+
     setUser((user) => {
-     return { ...user, [target.id]: target.value };
+      return { ...user, [target.id]: target.value };
     });
   };
 
-  const onCheckboxChange = (event: FormEvent<HTMLInputElement>): void => {   
-    const target = (event.target || event.currentTarget) as any;   
-    
+  const onCheckboxChange = (event: FormEvent<HTMLInputElement>): void => {
+    const target = (event.target || event.currentTarget) as any;
+
     setUser((user) => {
-     return { ...user, [target.id]: target.checked };
+      return { ...user, [target.id]: target.checked };
     });
   };
 
-const onDateChange = (date: Date, field: string): void => {
-  setUser((prev: User) => {
-    return { ...prev, [field]: date };
-  });
-};
+  const onDateChange = (date: Date, field: string): void => {
+    setUser((prev: User) => {
+      return { ...prev, [field]: date };
+    });
+  };
 
-const onSubmit = async (event: FormEvent): Promise<void> => {
-  event.preventDefault();
-}
+  const onSubmit = async (event: FormEvent): Promise<void> => {
+    event.preventDefault();
+  };
 
-
-useEffect((): void => {
-  fetchData();
-}, []);
+  useEffect((): void => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -162,12 +158,12 @@ useEffect((): void => {
                       <label htmlFor="email" className="form-label">
                         Email
                       </label>
-                      <input 
-                        id="email" 
-                        type="text" 
-                        className="form-control" 
-                        value={user?.email} 
-                        placeholder="Email" 
+                      <input
+                        id="email"
+                        type="text"
+                        className="form-control"
+                        value={user?.email}
+                        placeholder="Email"
                         onChange={onInputChange}
                       />
                     </div>
@@ -213,23 +209,19 @@ useEffect((): void => {
                     </div>
                   </div>
                 </form>
-                </div>
-                  </div>
+              </div>
             </div>
           </div>
-                              
+        </div>
 
-          <div className="row mb-4">
-            <div className="col-md-12">
-              <div className="shadow p-3 bg-body rounded">
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
               <p className="d-flex justify-content-between">
                 <div>
                   <i className="fas fa-home mr-2" aria-hidden="true"></i>
                   Colonias
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" >
-                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                </button>
               </p>
 
               <DataTable
@@ -242,9 +234,9 @@ useEffect((): void => {
                 onRowClicked={(row) => router.push(`/colonies/${row.id}`)}
               />
             </div>
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
     </>
   );
 };

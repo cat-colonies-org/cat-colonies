@@ -1,4 +1,4 @@
-import { AuthToken } from '../common/authToken';
+import { Auth } from '../common/authToken';
 import { apiCall } from '../common/util';
 
 export const signIn = async (email: string, password: string): Promise<boolean> => {
@@ -11,7 +11,7 @@ export const signIn = async (email: string, password: string): Promise<boolean> 
   try {
     const result = await apiCall(query);
     if (result?.data?.signin?.result) {
-      await AuthToken.storeToken(result.data.signin.result);
+      await Auth.storeToken(result.data.signin.result);
       return true;
     }
 

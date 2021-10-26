@@ -226,7 +226,6 @@ const importUsers = async () => {
       authorizesWhatsApp: mdbColony['Autoriza WhatsApp'] ? true : false,
       ceaseCause: mdbColony['Motivo baja'],
       password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
-      salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
       roleId: ManagerRoleId,
     };
   });
@@ -240,7 +239,6 @@ const importUsers = async () => {
     phoneNumber: 999999999,
     email: 'admin@cats.org',
     password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
-    salt: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e',
     roleId: AdminRoleId,
   });
 

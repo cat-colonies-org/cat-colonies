@@ -1,4 +1,4 @@
-import { AuthToken } from '../common/authToken';
+import { Auth } from '../common/authToken';
 import { FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ const Sidebar = ({ authToken }: any) => {
   const router = useRouter();
 
   const onLogoutClick = (event: FormEvent<HTMLButtonElement>) => {
-    AuthToken.logout();
+    Auth.logout();
     router.push('/login');
   };
 
