@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { Auth } from '../common/authToken';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface NavbarProps {
   authToken: Auth;
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 function NavBar({ authToken: auth }: NavbarProps) {
   const router = useRouter();
+  const [email, setEmail] = useState('');
 
   const logout = async () => {
     Auth.logout();
@@ -17,11 +19,17 @@ function NavBar({ authToken: auth }: NavbarProps) {
     router.push('/login');
   };
 
+  useEffect(() => {
+    setEmail(auth?.email);
+  });
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between mt-3 mb-3 rounded shadow">
-      <a className="navbar-brand" href="#">
-        Colonias
-      </a>
+      <Link href="/">
+        <a className="navbar-brand" href="#">
+          Colonias
+        </a>
+      </Link>
       <button
         className="navbar-toggler"
         type="button"
@@ -84,17 +92,17 @@ function NavBar({ authToken: auth }: NavbarProps) {
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
               <Link href="#">
                 <a className="dropdown-item" href="#">
-                  <a>Informe 1</a>
+                  Informe 1
                 </a>
               </Link>
               <Link href="#">
                 <a className="dropdown-item" href="#">
-                  <a>Informe 2</a>
+                  Informe 2
                 </a>
               </Link>
               <Link href="#">
                 <a className="dropdown-item" href="#">
-                  <a>Informe 3</a>
+                  Informe 3
                 </a>
               </Link>
             </div>
@@ -102,7 +110,7 @@ function NavBar({ authToken: auth }: NavbarProps) {
         </ul>
 
         <div>
-          <a className="navbar-link mr-3">{auth?.email}</a>
+          <a className="navbar-link mr-3">{email}</a>
           <button className="btn btn-outline-danger" onClick={logout}>
             Salir
           </button>
