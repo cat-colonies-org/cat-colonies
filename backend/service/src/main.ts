@@ -22,4 +22,6 @@ if (fs.existsSync(crPath) && fs.existsSync(pkPath)) {
   await app.listen(port);
 
   console.log(`Service listening on port ${port}`);
+  console.log(`SSL certificate: ${sslOptions.cert ? 'available' : 'unavailable'}`);
+  console.log(`SSL key: ${sslOptions.key ? 'available' : 'unavailable'}`);
 })();
