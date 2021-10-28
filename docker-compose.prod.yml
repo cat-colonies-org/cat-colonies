@@ -65,6 +65,8 @@ services:
       - STORAGE_SSL
       - STORAGE_ACCESS_KEY
       - STORAGE_SECRET_KEY
+    volumes:
+      - /etc/letsencrypt/live/colonias.cincohocicos.com:/etc/letsencrypt/live/colonias.cincohocicos.com
     networks:
       - network
     ports:
