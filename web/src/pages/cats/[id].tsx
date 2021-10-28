@@ -319,11 +319,10 @@ const CatDetails = ({ authToken }: any) => {
 
                   <div className="row mt-3">
                     <div className="col-md-2">
-                      <label htmlFor="sterilized" className="form-label">
-                        Esterilizado
-                      </label>
+                      <label htmlFor="sterilized" className="form-label"></label>
                       <div className="form-check">
-                        <input id="sterilized" className="form-check-input" type="checkbox" checked={cat.sterilized} />
+                        <input id="sterilized" className="form-check-input" type="checkbox" checked={cat.sterilized} />{' '}
+                        Esterilizado
                       </div>
                     </div>
 
