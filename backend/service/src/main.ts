@@ -1,11 +1,21 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import SettingsService from './settings/settings.service';
+import { NestFactory } from '@nestjs/core';
+import * as fs from 'fs';
+
+const crPath = '/etc/letsencrypt/live/colonias.cincohocicos.com/fullchain.pem';
+const pkPath = '/etc/letsencrypt/live/colonias.cincohocicos.com/privkey.pem';
+const sslOptions: any = {};
+
+if (fs.existsSync(crPath) && fs.existsSync(pkPath)) {
+  sslOptions.httpsOptions = {
+    cert: fs.readFileSync(crPath),
+    key: fs.readFileSync(pkPath),
+  };
+}
 
 (async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
-  const settings: SettingsService = app.get(SettingsService);
-  const port: number = settings.port;
+  const app = await NestFactory.create(AppModule, { ...sslOptions, cors: true });
+  const port: number = sslOptions.cert ? 443 : 80;
 
   await app.listen(port);
 
