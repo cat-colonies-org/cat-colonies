@@ -43,7 +43,7 @@ const CatDetails = ({ authToken }: any) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [cat, setCat] = useState({} as Cat);
+  const [cat, setCat] = useState(emptyCat);
   const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
   const [colors, setColors] = useState([] as Color[]);
   const [patterns, setPatterns] = useState([] as Pattern[]);
@@ -69,7 +69,8 @@ const CatDetails = ({ authToken }: any) => {
 
     const annotation: Annotation = await createAnnotation(cat.id, result.value);
     if (annotation) {
-      cat.annotations.push(annotation);
+      if (cat.annotations) cat.annotations.push(annotation);
+      else cat.annotations = [annotation];
 
       setCat((prev) => ({ ...prev, annotations: prev.annotations }));
 
@@ -104,7 +105,7 @@ const CatDetails = ({ authToken }: any) => {
 
     setColors((prev) => [...prev, { ...item }].sort(descriptionSorter));
 
-    setCat((cat) => ({ ...cat, colors: [...cat.colors, item] }));
+    setCat((cat) => ({ ...cat, colors: [...(cat.colors || []), item] }));
 
     toast.success(`Creado nuevo color "${item.description}" con id "${item.id}"`);
   };
@@ -139,6 +140,10 @@ const CatDetails = ({ authToken }: any) => {
     toast.success(`Creado nuevo color de ojos "${item.description}" con id "${item.id}"`);
   };
 
+  const onCheckboxChange = (event: any): void => {
+    setCat((prev: any) => ({ ...prev, [event.target.id]: event.target.checked }));
+  };
+
   const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
     if (meta.name === 'colors') return onColorSelectChange(data);
 
@@ -149,12 +154,12 @@ const CatDetails = ({ authToken }: any) => {
     setCat((prev) => ({ ...prev, colors: data.map((c) => ({ id: c.value, description: c.label })) }));
   };
 
-  const onGenderChange = (event: FormEvent<HTMLSelectElement>): void => {
+  const onGenderChange = (event: any): void => {
     setCat((prev: any) => ({ ...prev, [event.currentTarget.id]: event.currentTarget.value }));
   };
 
   const onDateChange = (date: Date, field: string): void => {
-    setCat((prev: Cat) => ({ ...prev, [field]: date }));
+    setCat((prev: any) => ({ ...prev, [field]: date }));
   };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
@@ -176,6 +181,11 @@ const CatDetails = ({ authToken }: any) => {
 
   const onPicturesSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!cat.id) {
+      toast.warn('No es posible asignar imágenes a un gato que todavía no tiene ID');
+      return;
+    }
 
     setUploadModalOpen(false);
 
@@ -321,7 +331,13 @@ const CatDetails = ({ authToken }: any) => {
                     <div className="col-md-2">
                       <label htmlFor="sterilized" className="form-label"></label>
                       <div className="form-check">
-                        <input id="sterilized" className="form-check-input" type="checkbox" checked={cat.sterilized} />{' '}
+                        <input
+                          id="sterilized"
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={cat.sterilized}
+                          onChange={onCheckboxChange}
+                        />{' '}
                         Esterilizado
                       </div>
                     </div>
@@ -446,7 +462,7 @@ const CatDetails = ({ authToken }: any) => {
 
               <DataTable
                 columns={annotationsColumns}
-                data={cat.annotations}
+                data={cat.annotations || []}
                 dense={true}
                 highlightOnHover={true}
                 progressPending={loading}
@@ -473,7 +489,7 @@ const CatDetails = ({ authToken }: any) => {
                 </button>
               </div>
 
-              {cat?.pictures?.length > 0 && (
+              {cat?.pictures?.length && cat.pictures.length > 0 && (
                 <ImageGallery
                   thumbnailPosition="bottom"
                   showNav={!isUploadModalOpen && !isAnnotationModalOpen}
