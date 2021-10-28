@@ -231,7 +231,7 @@ const importUsers = async () => {
   });
 
   users.push({
-    id: maxId + 1,
+    id: ++maxId,
     createdAt: new Date(),
     name: 'Administrador',
     surnames: '',
@@ -240,6 +240,18 @@ const importUsers = async () => {
     email: 'admin@cats.org',
     password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
     roleId: AdminRoleId,
+  });
+
+  users.push({
+    id: ++maxId,
+    createdAt: new Date(),
+    name: 'Administrador',
+    surnames: '',
+    idCard: '',
+    phoneNumber: 999999998,
+    email: 'manager@cats.org',
+    password: '$2b$10$4.2Qt8mc9T.Hj0ofYf8D0e7uA8013PXuB/KWPAxh4Frmy9yJmV7om',
+    roleId: ManagerRoleId,
   });
 
   return users;
