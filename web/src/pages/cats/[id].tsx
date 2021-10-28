@@ -22,7 +22,11 @@ import withPrivateRoute from '../../components/with-private-route';
 
 registerLocale('es', es);
 
-const CatDetails = ({ authToken }: any) => {
+interface CatDetailsProps {
+  authToken: Auth;
+}
+
+const CatDetails = ({ authToken }: CatDetailsProps) => {
   const router = useRouter();
 
   const annotationsColumns: TableColumn<Annotation>[] = [
@@ -194,7 +198,7 @@ const CatDetails = ({ authToken }: any) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/file-upload/${cat.id}`, {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer ' + (await Auth.getToken()),
+        Authorization: authToken.authorizationString,
       },
       body: data,
     });
@@ -489,7 +493,7 @@ const CatDetails = ({ authToken }: any) => {
                 </button>
               </div>
 
-              {cat?.pictures?.length && cat.pictures.length > 0 && (
+              {cat.pictures?.length && (
                 <ImageGallery
                   thumbnailPosition="bottom"
                   showNav={!isUploadModalOpen && !isAnnotationModalOpen}
