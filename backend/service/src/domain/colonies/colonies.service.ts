@@ -1,36 +1,36 @@
 import { BaseCrudService } from 'src/common/base-crud.service';
 import { Colony } from './entities/colony.entity';
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { User } from '../users/entities/user.entity';
-import { Roles } from '../roles/entities/role.entity';
-import { CONTEXT } from '@nestjs/graphql';
 import { omit } from 'src/util';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+import { REQUEST } from '@nestjs/core';
+import { Roles } from '../roles/entities/role.entity';
+import { User } from '../users/entities/user.entity';
 
-@Injectable({ scope: Scope.REQUEST })
 export class ColoniesService extends BaseCrudService<Colony> {
-  constructor(@InjectRepository(Colony) repository: Repository<Colony>, @Inject(CONTEXT) private context) {
+  constructor(@Inject(REQUEST) private req, @InjectRepository(Colony) repository: Repository<Colony>) {
     super(repository);
   }
 
-  private async GetSecuredQueryBuilder(): Promise<SelectQueryBuilder<Colony>> {
-    const user: User = this.context.req.user;
+  private GetSecuredQueryBuilder(): SelectQueryBuilder<Colony> {
+    // With GraphQL the request comes in req.req. With REST it comes in req... 🤯
+    const request = this.req.req || this.req;
+
+    const user: User = request.user;
     const qb = this.repository.createQueryBuilder('Colony');
 
-    if ((await user.roleId) != Roles.Administrator)
-      qb.innerJoin('Colony.managers', 'user')
-        .where('user.id = :userId')
-        .setParameter('userId', await user.id);
+    if (user.roleId != Roles.Administrator)
+      qb.innerJoin('Colony.managers', 'user').where('user.id = :userId').setParameter('userId', user.id);
 
     return qb;
   }
 
-  override async find(opts: Record<string, any>): Promise<[Colony[], number]> {
+  override find(opts: Record<string, any>): Promise<[Colony[], number]> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
-    return (await this.GetSecuredQueryBuilder())
+    return this.GetSecuredQueryBuilder()
       .andWhere(filter)
       .take(take)
       .skip(skip)
@@ -38,10 +38,7 @@ export class ColoniesService extends BaseCrudService<Colony> {
       .getManyAndCount();
   }
 
-  override async findOne(id: number): Promise<Colony> {
-    return (await this.GetSecuredQueryBuilder())
-      .andWhere('Colony.id = :colonyId')
-      .setParameter('colonyId', id)
-      .getOne();
+  override findOne(id: number): Promise<Colony> {
+    return this.GetSecuredQueryBuilder().andWhere('Colony.id = :colonyId').setParameter('colonyId', id).getOne();
   }
 }
