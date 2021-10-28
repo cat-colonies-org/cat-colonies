@@ -57,18 +57,24 @@ export const getCriteriaString = ({
 export const apiCall = async (query: string, variables?: any) => {
   const apiBaseUrl: string = process.env.NEXT_PUBLIC_GRAPHQL_BASE_URL as string;
 
-  const options = {
+  return await fetch(apiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + (await Auth.getToken()),
     },
-  };
-
-  // TODO: handle 401 - Unauthorized
-  return await fetch(apiBaseUrl, {
-    ...options,
     body: JSON.stringify({ query, variables }),
-  }).then((response) => response.json());
-  // TODO: catch
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        Auth.logout();
+        window.location.assign('/login');
+        return;
+      }
+
+      return response.json();
+    })
+    .catch((e) => {
+      console.error(e.stack);
+    });
 };
