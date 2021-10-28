@@ -11,11 +11,14 @@ const httpsOptions: any = {};
 if (fs.existsSync(CR_PATH) && fs.existsSync(PK_PATH)) {
   httpsOptions.cert = fs.readFileSync(CR_PATH);
   httpsOptions.key = fs.readFileSync(PK_PATH);
+} else {
+  console.log(`${CR_PATH}: ${fs.existsSync(CR_PATH)}`);
+  console.log(`${PK_PATH}: ${fs.existsSync(PK_PATH)}`);
 }
 
 (async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    ...(httpsOptions && { httpsOptions }),
+    httpsOptions,
     cors: true,
   });
   const settings: SettingsService = app.get(SettingsService);
