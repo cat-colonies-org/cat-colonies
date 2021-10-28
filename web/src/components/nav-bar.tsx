@@ -49,23 +49,23 @@ function NavBar({ authToken: auth }: NavbarProps) {
             </a>
 
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a className="dropdown-item" href="#">
-                <Link href="/users">
-                  <a>Gestoras</a>
-                </Link>
-              </a>
+              <Link href="/users">
+                <a className="dropdown-item" href="#">
+                  Gestoras
+                </a>
+              </Link>
 
-              <a className="dropdown-item" href="#">
-                <Link href="/colonies">
-                  <a>Colonias</a>
-                </Link>
-              </a>
+              <Link href="/colonies">
+                <a className="dropdown-item" href="#">
+                  Colonias
+                </a>
+              </Link>
 
-              <a className="dropdown-item" href="#">
-                <Link href="/cats">
-                  <a>Gatos</a>
-                </Link>
-              </a>
+              <Link href="/cats">
+                <a className="dropdown-item" href="#">
+                  Gatos
+                </a>
+              </Link>
             </div>
           </li>
 
@@ -82,15 +82,21 @@ function NavBar({ authToken: auth }: NavbarProps) {
               Informes
             </a>
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a className="dropdown-item" href="#">
-                <a>Informe 1</a>
-              </a>
-              <a className="dropdown-item" href="#">
-                <a>Informe 2</a>
-              </a>
-              <a className="dropdown-item" href="#">
-                <a>Informe 3</a>
-              </a>
+              <Link href="#">
+                <a className="dropdown-item" href="#">
+                  <a>Informe 1</a>
+                </a>
+              </Link>
+              <Link href="#">
+                <a className="dropdown-item" href="#">
+                  <a>Informe 2</a>
+                </a>
+              </Link>
+              <Link href="#">
+                <a className="dropdown-item" href="#">
+                  <a>Informe 3</a>
+                </a>
+              </Link>
             </div>
           </li>
         </ul>
