@@ -1,4 +1,4 @@
-# A service to track cat colonies
+# A service to track cat colonies.
 
 GitHub repository: https://github.com/cat-colonies-org/cat-colonies
 
