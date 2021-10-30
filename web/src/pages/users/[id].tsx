@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
 import { Colony } from '../../services/colonies';
-import { User, getUser } from '../../services/users';
+import { User, getUser, updateUser, createUser } from '../../services/users';
 
 const UserDetails = () => {
   const router = useRouter();
@@ -21,10 +21,10 @@ const UserDetails = () => {
   const coloniesColumns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (colony) => colony.id },
     { name: 'Alta', selector: (colony) => new Date(colony.createdAt).toLocaleDateString() },
-    { name: 'Ciudad', selector: (colony) => colony.town.name },
+    { name: 'Ciudad', selector: (colony) => colony.town?.name? colony.town.name : undefined },
     { name: 'Calle', selector: (colony) => colony.address },
-    { name: 'Ubicación', selector: (colony) => colony.locationType.description },
-    { name: 'Entorno', selector: (colony) => colony.environment.description },
+    { name: 'Ubicación', selector: (colony) => colony.locationType?.description },
+    { name: 'Entorno', selector: (colony) => colony.environment?.description },
   ];
 
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,9 @@ const UserDetails = () => {
       return;
     }
 
-    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
+    const [user] = await Promise.all([
+      id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User),
+    ]);
 
     if (user) setUser(user);
 
@@ -73,15 +75,28 @@ const UserDetails = () => {
     });
   };
 
-  const onDateChange = (date: Date, field: string): void => {
-    setUser((prev: User) => {
-      return { ...prev, [field]: date };
-    });
-  };
+const onDateChange = (date: Date, field: string): void => {
+  setUser((prev: User) => {
+    return { ...prev, [field]: date };
+  });
+};
 
-  const onSubmit = async (event: FormEvent): Promise<void> => {
-    event.preventDefault();
-  };
+const onSubmit = async (event: FormEvent): Promise<void> => {
+  event.preventDefault();
+
+  let promise: Promise<User>;
+
+  if (user.id) promise = updateUser(user);
+  else promise = createUser(user);
+
+  const saved = await toast.promise(promise, {
+    pending: 'Conectando con el servidor...',
+    success: 'Datos actualizados',
+    error: 'Error actualizando datos',
+  });
+
+  saved && setUser(saved);
+};
 
   useEffect((): void => {
     fetchData();
@@ -208,12 +223,16 @@ const UserDetails = () => {
                       />
                     </div>
                   </div>
+                  <div className="row mt-3">
+                    <div className="col-md-12">
+                      <button className="btn btn-primary">Guardar</button>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
           </div>
         </div>
-
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">

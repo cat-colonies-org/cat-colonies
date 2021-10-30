@@ -12,11 +12,42 @@ export const userQueryFields: string = `
   idCard
   authorizesWhatsApp
   role { id description }
-  colonies { id address createdAt 
-      town {name} 
-      locationType {description} 
-      environment {description} 
-    }
+  colonies { id address createdAt }
+ `;
+
+//  town {name}
+//  locationType {description}
+//  environment {description}
+// }
+
+// export const userDataFragment: string = `
+//   fragment userData on User {
+//     id
+//     createdAt
+//     name
+//     surnames
+//     phoneNumber
+//     email
+//     roleId
+//     idCard
+//     authorizesWhatsApp
+//     role { id description }
+//     colonies { id address createdAt  }
+//   }
+// `;
+
+export const userDataFragment: string = `
+  fragment userData on User {
+    id
+    name
+    surnames
+    createdAt
+    idCard
+    phoneNumber
+    email
+    authorizesWhatsApp
+    password
+  }
 `;
 
 export type User = {
@@ -39,9 +70,11 @@ export interface UsersList {
 }
 
 const getUserFromGraphQlResult = (user: Record<string, any>): User => {
+  if (!user) return {} as User;
+
   return {
     ...user,
-    createdAt: new Date(),
+    createdAt: user.createdAt ? new Date(user.createdAt) : undefined,
   } as User;
 };
 
@@ -56,11 +89,14 @@ export async function getUsersList({
 }): Promise<UsersList> {
   const criteria = getCriteriaString({ filter, page, perPage });
 
-  const query = `query {
+  const query = `
+   ${userDataFragment}
+
+  query {
       users (${criteria}) {
         total
         items {
-          ${userQueryFields}
+          ...userData
         }
       }
     }`;
@@ -80,13 +116,89 @@ export async function getUsersList({
 }
 
 export async function getUser(id: number): Promise<User> {
-  const query = `query {
+  const query = `
+    ${userDataFragment}
+
+    query {
       user (id:${id}) {
-        ${userQueryFields}
+        ...userData
       }
     }`;
 
   return await apiCall(query).then((response): User => {
     return getUserFromGraphQlResult(response?.data?.user);
+  });
+}
+
+export async function createUser(user: Partial<User>): Promise<User> {
+  const query = `
+    ${userDataFragment}
+
+    mutation (
+      $id: Int,
+      $name: String,
+      $surnames: String,
+      $idCard: String,
+      $phoneNumber: Int,
+      $email: String,
+      $createdAt: DateTime,
+      $authorizesWhatsApp: Boolean,
+      $roleId: Number,
+      $colonies: [InputColony!],
+    ) {
+      createUser(createUserInput: {
+        id: $id,
+        name: $name,
+        surnames: $surnames,
+        idCard: $idCard,
+        phoneNumber: $phoneNumber,
+        email: $email,
+        createdAt: $createdAt,
+        authorizesWhatsApp: $authorizesWhatsApp,
+        roleId: $roleId,
+        colonies: $colonies
+      }) {
+        ...userData
+      }
+    }
+  `;
+
+  return await apiCall(query, user).then((response): User => {
+    return getUserFromGraphQlResult(response?.data?.createUser);
+  });
+}
+
+export async function updateUser(user: Partial<User>): Promise<User> {
+  const query = `
+    ${userDataFragment}
+
+    mutation (
+      $id: Int!,
+      $name: String,
+      $surnames: String,
+      $idCard: String,
+      $phoneNumber: Int,
+      $email: String,
+      $authorizesWhatsApp: Boolean,
+    ) {
+      updateUser(updateUserInput: {
+        id: $id,
+        name: $name,
+        surnames: $surnames,
+        idCard: $idCard,
+        phoneNumber: $phoneNumber,
+        email: $email,
+        authorizesWhatsApp: $authorizesWhatsApp,
+      }) {
+        ...userData
+      }
+    }
+  `;
+
+  console.log(JSON.stringify({ query, user }));
+  return await apiCall(query, user).then((response): User => {
+    let user = response?.data?.updateUser;
+    user = user ? getUserFromGraphQlResult(user) : undefined;
+    return user;
   });
 }
