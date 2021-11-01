@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PICTURES_INPUT_PATH = './pictures';
+const PICTURES_INPUT_PATH = './data/pictures';
 const SQL_OUTPUT_PATH = './output/sql';
 const PICTURES_OUTPUT_PATH = './output/pictures';
 const COMBINED_OUTPUT = path.join(SQL_OUTPUT_PATH, 'combined.sql');
