@@ -77,10 +77,7 @@ const ColonyDetails = ({ authToken }: any) => {
   const managersColumns: TableColumn<User>[] = [
     { name: 'Id', selector: (user) => user.id },
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString() },
-    { name: 'Nombre', selector: (user) => user.name },
-    { name: 'Apellidos', selector: (user) => user.surnames },
-    { name: 'Teléfono', selector: (user) => user.phoneNumber },
-    { name: 'Email', selector: (user) => user.email },
+    { name: 'Nombre', selector: (user) => user.name },    
   ];
 
   const [colony, setColony] = useState({} as Colony);

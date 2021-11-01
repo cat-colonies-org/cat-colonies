@@ -1,20 +1,6 @@
 import { apiCall, getCriteriaString } from '../common/util';
 import { Colony } from './colonies';
 
-export const userQueryFields: string = `
-  id
-  createdAt
-  name
-  surnames
-  phoneNumber
-  email
-  roleId
-  idCard
-  authorizesWhatsApp
-  role { id description }
-  colonies { id address createdAt }
- `;
-
 export const userDataFragment: string = `
   fragment userData on User {
     id

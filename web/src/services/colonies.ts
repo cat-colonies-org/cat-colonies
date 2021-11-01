@@ -1,6 +1,6 @@
 import { apiCall, objToListString } from '../common/util';
 import { Cat, catDataFragment } from './cats';
-import { User, userQueryFields } from './users';
+import { User } from './users';
 
 export const colonyDataFragment: string = `
   ${catDataFragment}
@@ -9,7 +9,7 @@ export const colonyDataFragment: string = `
     id
     createdAt
     address
-    managers { ${userQueryFields} }
+    managers { id name createdAt }
     cats { ...catData }
     locationTypeId
     locationType { description }
