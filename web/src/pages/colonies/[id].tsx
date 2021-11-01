@@ -244,6 +244,7 @@ const ColonyDetails = ({ authToken }: any) => {
 
   return (
     <>
+    <h1>Colonia CO{colony?.id}</h1>
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">

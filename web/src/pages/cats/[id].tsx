@@ -247,6 +247,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
 
   return (
     <>
+    <h1>Gato CAT{cat?.id}</h1>
       <InputModal
         id="AnnotationModal"
         title="Nueva Anotación"
