@@ -15,27 +15,6 @@ export const userQueryFields: string = `
   colonies { id address createdAt }
  `;
 
-//  town {name}
-//  locationType {description}
-//  environment {description}
-// }
-
-// export const userDataFragment: string = `
-//   fragment userData on User {
-//     id
-//     createdAt
-//     name
-//     surnames
-//     phoneNumber
-//     email
-//     roleId
-//     idCard
-//     authorizesWhatsApp
-//     role { id description }
-//     colonies { id address createdAt  }
-//   }
-// `;
-
 export const userDataFragment: string = `
   fragment userData on User {
     id
@@ -47,6 +26,8 @@ export const userDataFragment: string = `
     email
     authorizesWhatsApp
     password
+    role { id description }
+    colonies { id address createdAt  }
   }
 `;
 
