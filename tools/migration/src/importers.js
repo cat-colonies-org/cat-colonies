@@ -117,7 +117,7 @@ const importPictures = async (path) => {
   let counter = 1;
 
   return files
-    .filter((file) => file.includes('.jpg'))
+    .filter((file) => file.toLocaleLowerCase().includes('.jpg'))
     .map((file) => {
       const id = uuid();
       const catId = file.split('_')[0];
