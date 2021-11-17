@@ -247,7 +247,6 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
 
   return (
     <>
-    <h1>Gato CAT{cat?.id}</h1>
       <InputModal
         id="AnnotationModal"
         title="Nueva Anotación"
@@ -272,7 +271,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
               <div className="shadow p-3 bg-body rounded">
                 <p>
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
-                  Datos generales
+                  Datos generales del GATO
                 </p>
                 <form onSubmit={onSubmit}>
                   <div className="row mt-3">
@@ -284,7 +283,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
                         id="id"
                         type="text"
                         className="form-control"
-                        value={cat?.id}
+                        value={cat?.id ? `CAT${cat.id}` : ''}
                         placeholder="Nuevo gato"
                         readOnly
                       />

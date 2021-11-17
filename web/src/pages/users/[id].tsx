@@ -21,7 +21,7 @@ const UserDetails = () => {
   const coloniesColumns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (colony) => colony.id },
     { name: 'Alta', selector: (colony) => new Date(colony.createdAt).toLocaleDateString() },
-    { name: 'Ciudad', selector: (colony) => colony.town?.name? colony.town.name : undefined },
+    { name: 'Ciudad', selector: (colony) => (colony.town?.name ? colony.town.name : undefined) },
     { name: 'Calle', selector: (colony) => colony.address },
     { name: 'Ubicación', selector: (colony) => colony.locationType?.description },
     { name: 'Entorno', selector: (colony) => colony.environment?.description },
@@ -46,9 +46,7 @@ const UserDetails = () => {
       return;
     }
 
-    const [user] = await Promise.all([
-      id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User),
-    ]);
+    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
 
     if (user) setUser(user);
 
@@ -75,28 +73,28 @@ const UserDetails = () => {
     });
   };
 
-const onDateChange = (date: Date, field: string): void => {
-  setUser((prev: User) => {
-    return { ...prev, [field]: date };
-  });
-};
+  const onDateChange = (date: Date, field: string): void => {
+    setUser((prev: User) => {
+      return { ...prev, [field]: date };
+    });
+  };
 
-const onSubmit = async (event: FormEvent): Promise<void> => {
-  event.preventDefault();
+  const onSubmit = async (event: FormEvent): Promise<void> => {
+    event.preventDefault();
 
-  let promise: Promise<User>;
+    let promise: Promise<User>;
 
-  if (user.id) promise = updateUser(user);
-  else promise = createUser(user);
+    if (user.id) promise = updateUser(user);
+    else promise = createUser(user);
 
-  const saved = await toast.promise(promise, {
-    pending: 'Conectando con el servidor...',
-    success: 'Datos actualizados',
-    error: 'Error actualizando datos',
-  });
+    const saved = await toast.promise(promise, {
+      pending: 'Conectando con el servidor...',
+      success: 'Datos actualizados',
+      error: 'Error actualizando datos',
+    });
 
-  saved && setUser(saved);
-};
+    saved && setUser(saved);
+  };
 
   useEffect((): void => {
     fetchData();
@@ -104,7 +102,6 @@ const onSubmit = async (event: FormEvent): Promise<void> => {
 
   return (
     <>
-     <h1>Gestora GES{user?.id}</h1>
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -112,11 +109,11 @@ const onSubmit = async (event: FormEvent): Promise<void> => {
               <div className="shadow p-3 bg-body rounded">
                 <p>
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
-                  Datos generales
+                  Datos generales de la GESTORA
                 </p>
                 <form onSubmit={onSubmit}>
                   <div className="row mt-3">
-                    <div className="col-md-1">
+                    <div className="col-md-2">
                       <label htmlFor="id" className="form-label">
                         Id
                       </label>
@@ -124,19 +121,19 @@ const onSubmit = async (event: FormEvent): Promise<void> => {
                         id="id"
                         type="text"
                         className="form-control"
-                        value={user?.id}
+                        value={user?.id ? `GES${user.id}` : ''}
                         placeholder="Nueva colonia"
                         readOnly
                       />
                     </div>
-                    <div className="col-md-5">
+                    <div className="col-md-4">
                       <label htmlFor="name" className="form-label">
                         Nombre
                       </label>
                       <input
                         id="name"
                         type="text"
-                        placeholder="Nombre del usuario"
+                        placeholder="Nombre de la gestora"
                         className="form-control"
                         value={user?.name}
                         onChange={onInputChange}
@@ -149,7 +146,7 @@ const onSubmit = async (event: FormEvent): Promise<void> => {
                       <input
                         id="surnames"
                         type="text"
-                        placeholder="Apellidos del usuario"
+                        placeholder="Apellidos de la gestora"
                         className="form-control"
                         value={user?.surnames}
                         onChange={onInputChange}

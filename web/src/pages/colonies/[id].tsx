@@ -252,7 +252,6 @@ const ColonyDetails = ({ authToken }: any) => {
 
   return (
     <>
-      <h1>Colonia CO{colony?.id}</h1>
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -260,7 +259,7 @@ const ColonyDetails = ({ authToken }: any) => {
               <div className="shadow p-3 bg-body rounded">
                 <p>
                   <i className="fa fa-id-card mr-2" aria-hidden="true"></i>
-                  Datos generales
+                  Datos generales de la COLONIA
                 </p>
                 <form onSubmit={onSubmit}>
                   <div className="row mt-3">
@@ -272,7 +271,7 @@ const ColonyDetails = ({ authToken }: any) => {
                         id="id"
                         type="text"
                         className="form-control"
-                        value={colony?.id}
+                        value={colony?.id ? `CO${colony.id}` : ''}
                         placeholder="Nueva colonia"
                         readOnly
                       />
