@@ -31,6 +31,10 @@ const Colonies = () => {
     setPerPage(newPerPage);
   };
 
+  const addColony = () => {
+    router.push(`/colonies/new`);
+  };
+
   useEffect(() => {
     fetchData(1, perPage);
   }, []);
@@ -53,7 +57,12 @@ const Colonies = () => {
 
   return (
     <>
-      <p>Listado de Colonias</p>
+      <p className="d-flex justify-content-between">
+        <div>Listado de Colonias</div>
+        <button className="btn btn-primary btn-sm" onClick={addColony}>
+          <i className="fa fa-plus-circle" aria-hidden="true"></i>
+        </button>
+      </p>
 
       <DataTable
         columns={columns}

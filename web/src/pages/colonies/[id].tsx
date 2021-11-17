@@ -1,5 +1,5 @@
 import { Cat, Gender, isKitten } from '../../services/cats';
-import { Colony, getColony, updateColony } from '../../services/colonies';
+import { Colony, createColony, getColony, updateColony } from '../../services/colonies';
 import { createEnvironment, Environment, getEnvironmentsList } from '../../services/environments';
 import { createLocationType, getLocationTypesList, LocationType } from '../../services/location-types';
 import { createTown, getTownsList, Town } from '../../services/towns';
@@ -77,7 +77,7 @@ const ColonyDetails = ({ authToken }: any) => {
   const managersColumns: TableColumn<User>[] = [
     { name: 'Id', selector: (user) => user.id },
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString() },
-    { name: 'Nombre', selector: (user) => user.name },    
+    { name: 'Nombre', selector: (user) => user.name },
   ];
 
   const [colony, setColony] = useState({} as Colony);
@@ -166,8 +166,8 @@ const ColonyDetails = ({ authToken }: any) => {
       return;
     }
 
-    const savedColony = await save();
-    if (savedColony) {
+    const colonySaved = await save();
+    if (colonySaved) {
       router.push(`/cats/new?colonyId=${colony.id}`);
     }
   };
@@ -175,24 +175,31 @@ const ColonyDetails = ({ authToken }: any) => {
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
-    const promise = save();
+    const colony = await toast.promise(save(), {
+      pending: 'Conectando con el servidor...',
+      success: 'Datos actualizados',
+      error: 'Error actualizando datos',
+    });
 
-    if (colony.id) {
-      toast.promise(promise, {
-        pending: 'Conectando con el servidor...',
-        success: 'Datos actualizados',
-        error: 'Error actualizando datos',
-      });
-    }
+    setColony(colony);
   };
 
   const save = () => {
-    return updateColony(+colony.id, {
-      ...{ address: colony.address },
-      ...{ locationTypeId: +colony.locationTypeId },
-      ...{ environmentId: +colony.environmentId },
-      ...{ townId: +colony.townId },
-    });
+    if (colony.id) {
+      return updateColony(+colony.id, {
+        ...{ address: colony.address },
+        ...{ locationTypeId: +colony.locationTypeId },
+        ...{ environmentId: +colony.environmentId },
+        ...{ townId: +colony.townId },
+      });
+    } else {
+      return createColony({
+        ...{ address: colony.address },
+        ...{ locationTypeId: +colony.locationTypeId },
+        ...{ environmentId: +colony.environmentId },
+        ...{ townId: +colony.townId },
+      });
+    }
   };
 
   const reduceAndSetStats = (cats: Cat[]): void => {
@@ -221,7 +228,8 @@ const ColonyDetails = ({ authToken }: any) => {
   const fetchData = async () => {
     setLoading(true);
 
-    const id = router.query.id;
+    const id = router.query.id === 'new' ? null : router.query.id;
+
     const [colony, environments, locationTypes, towns] = await Promise.all([
       id ? getColony(+id) : null,
       getEnvironmentsList({}),
@@ -244,7 +252,7 @@ const ColonyDetails = ({ authToken }: any) => {
 
   return (
     <>
-    <h1>Colonia CO{colony?.id}</h1>
+      <h1>Colonia CO{colony?.id}</h1>
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">

@@ -58,7 +58,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
 
   const query = `
     ${colonyDataFragment}
-  
+
     query {
       colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
         total
@@ -84,7 +84,7 @@ export async function getColoniesList(page: number, perPage: number): Promise<Co
 export async function getColony(id: number): Promise<Colony> {
   const query = `
     ${colonyDataFragment}
-      
+
     query {
       colony (id:${id}) {
         ...colonyData
@@ -94,6 +94,24 @@ export async function getColony(id: number): Promise<Colony> {
 
   return await apiCall(query).then((response): Colony => {
     return getColonyFromGraphQlResult(response?.data?.colony);
+  });
+}
+
+export async function createColony(data: any): Promise<Colony> {
+  const toCreateString = objToListString(data);
+
+  const query = `
+    ${colonyDataFragment}
+
+    mutation {
+      createColony (createColonyInput: {${toCreateString}}) {
+        ...colonyData
+      }
+    }
+  `;
+
+  return await apiCall(query).then((response): Colony => {
+    return getColonyFromGraphQlResult(response?.data?.createColony);
   });
 }
 
@@ -111,6 +129,6 @@ export async function updateColony(id: number, data: any): Promise<Colony> {
   `;
 
   return await apiCall(query).then((response): Colony => {
-    return response?.data?.updateColony as Colony;
+    return getColonyFromGraphQlResult(response?.data?.updateColony);
   });
 }
