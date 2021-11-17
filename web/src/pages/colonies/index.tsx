@@ -53,9 +53,7 @@ const Colonies = () => {
 
   return (
     <>
-      <h1>Colonias</h1>
-
-      <p>Lista de Colonias</p>
+      <p>Listado de Colonias</p>
 
       <DataTable
         columns={columns}

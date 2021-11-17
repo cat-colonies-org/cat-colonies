@@ -99,9 +99,7 @@ const CatsList = () => {
 
   return (
     <>
-      <h1>Gatos</h1>
-
-      <p>Lista de gatos</p>
+      <p>Listado de gatos</p>
 
       <DataTable
         columns={columns}

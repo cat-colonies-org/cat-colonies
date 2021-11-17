@@ -48,15 +48,13 @@ const UsersList = () => {
     { name: 'Apellidos', selector: (user) => user.surnames, width: '250px' },
     { name: 'Teléfono', selector: (user) => user.phoneNumber, width: '100px' },
     { name: 'Email', selector: (user) => user.email, width: '200px' },
-   
-    
+
+
   ];
 
   return (
     <>
-      <h1>Usuarios</h1>
-
-      <p>Lista de usuarios</p>
+      <p>Listado de gestoras</p>
 
       <DataTable
         columns={columns}
