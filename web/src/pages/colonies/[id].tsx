@@ -85,6 +85,7 @@ const ColonyDetails = ({ authToken }: any) => {
   const [locationTypes, setLocationTypes] = useState([] as LocationType[]);
   const [towns, setTowns] = useState([] as Town[]);
   const [stats, setStats] = useState(zeroStats);
+  const [esterilizedStyle, setEsterilizedStyle] = useState({});
   const [loading, setLoading] = useState(false);
 
   const valueAndPercent = (value: number, total: number): string => {
@@ -203,26 +204,30 @@ const ColonyDetails = ({ authToken }: any) => {
   };
 
   const reduceAndSetStats = (cats: Cat[]): void => {
-    setStats(
-      cats.reduce(
-        (stats: Stats, cat: Cat): Stats => {
-          ++stats.total;
+    const stats = cats.reduce(
+      (stats: Stats, cat: Cat): Stats => {
+        ++stats.total;
 
-          if (!cat.ceasedAt && !cat.ceaseCauseId) {
-            ++stats.active;
+        if (!cat.ceasedAt && !cat.ceaseCauseId) {
+          ++stats.active;
 
-            stats.males += cat.gender === Gender.Male ? 1 : 0;
-            stats.females += cat.gender === Gender.Female ? 1 : 0;
-            stats.malesEsteriliced += cat.gender === Gender.Male && cat.sterilized ? 1 : 0;
-            stats.femalesEsteriliced += cat.gender === Gender.Female && cat.sterilized ? 1 : 0;
-            stats.kittens += isKitten(cat) ? 1 : 0;
-          }
+          stats.males += cat.gender === Gender.Male ? 1 : 0;
+          stats.females += cat.gender === Gender.Female ? 1 : 0;
+          stats.malesEsteriliced += cat.gender === Gender.Male && cat.sterilized ? 1 : 0;
+          stats.femalesEsteriliced += cat.gender === Gender.Female && cat.sterilized ? 1 : 0;
+          stats.kittens += isKitten(cat) ? 1 : 0;
+        }
 
-          return stats;
-        },
-        { ...zeroStats },
-      ),
+        return stats;
+      },
+      { ...zeroStats },
     );
+
+    setStats(stats);
+
+    if ((stats.malesEsteriliced + stats.femalesEsteriliced) / stats.active < 0.7) {
+      setEsterilizedStyle({ color: 'red' });
+    }
   };
 
   const fetchData = async () => {
@@ -388,9 +393,8 @@ const ColonyDetails = ({ authToken }: any) => {
                   <span className="lead">Esterilizados</span>
                   <p>Machos: {valueAndPercent(stats.malesEsteriliced, stats.active)}</p>
                   <p>Hembras: {valueAndPercent(stats.femalesEsteriliced, stats.active)}</p>
-                  <p>
-                    Desconocido:{' '}
-                    {valueAndPercent(stats.active - stats.malesEsteriliced - stats.femalesEsteriliced, stats.active)}
+                  <p style={esterilizedStyle}>
+                    Total: {valueAndPercent(stats.malesEsteriliced + stats.femalesEsteriliced, stats.active)}
                   </p>
                 </div>
                 <div className="col-sm">
