@@ -1,5 +1,6 @@
 import { apiCall, getCriteriaString } from '../common/util';
 import { Colony } from './colonies';
+import { UserAnnotation } from './user-annotations';
 
 export const userDataFragment: string = `
   fragment userData on User {
@@ -14,6 +15,7 @@ export const userDataFragment: string = `
     password
     role { id description }
     colonies { id address createdAt  }
+    annotations { id userId date annotation }
   }
 `;
 
@@ -29,6 +31,7 @@ export type User = {
   authorizesWhatsApp: boolean;
   role: { description: string };
   colonies: Colony[];
+  annotations: UserAnnotation[];
 };
 
 export interface UsersList {

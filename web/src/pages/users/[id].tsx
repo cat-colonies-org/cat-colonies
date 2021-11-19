@@ -5,6 +5,8 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
 import { Colony } from '../../services/colonies';
 import { User, getUser, updateUser, createUser } from '../../services/users';
+import { createUserAnnotation, UserAnnotation } from '../../services/user-annotations';
+import InputModal from '../../components/input-modal';
 
 const UserDetails = () => {
   const router = useRouter();
@@ -29,12 +31,13 @@ const UserDetails = () => {
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
 
-  // const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
-
-  // const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
-  //   return a.description.localeCompare(b.description);
-  // };
+  const annotationsColumns: TableColumn<UserAnnotation>[] = [
+    { name: 'Id', selector: (row) => row.id, width: '100px' },
+    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString(), width: '100px' },
+    { name: 'Anotación', selector: (row) => row.annotation },
+  ];
 
   const fetchData = async () => {
     setLoading(true);
@@ -56,6 +59,31 @@ const UserDetails = () => {
   useEffect((): void => {
     fetchData();
   }, []);
+
+  const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
+    if (!user.id) {
+      toast.warn('Debe guardar la gestora antes de poder hacer anotaciones');
+      return;
+    }
+
+    setAnnotationModalOpen(true);
+  };
+
+  const onNewAnnotation = async (result: { value: string }) => {
+    if (!result?.value || !user.id) return;
+
+    const userAnnotation: UserAnnotation = await createUserAnnotation(user.id, result.value);
+    if (userAnnotation) {
+      if (user.annotations) user.annotations.push(userAnnotation);
+      else user.annotations = [userAnnotation];
+
+      setUser((prev) => ({ ...prev, annotations: prev.annotations }));
+
+      toast.success(`Creada nueva anotación "${userAnnotation.annotation}"`);
+    } else {
+      toast.error(`Error creando nueva anotación "${result.value}"`);
+    }
+  };
 
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     const target = (event.target || event.currentTarget) as any;
@@ -102,6 +130,16 @@ const UserDetails = () => {
 
   return (
     <>
+      <InputModal
+        id="AnnotationModal"
+        title="Nueva Anotación"
+        caption="Texto"
+        buttonCaption="Añadir"
+        isOpen={isAnnotationModalOpen}
+        onClose={() => setAnnotationModalOpen(false)}
+        onReturn={onNewAnnotation}
+      />
+
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -231,6 +269,7 @@ const UserDetails = () => {
             </div>
           </div>
         </div>
+
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
@@ -249,6 +288,31 @@ const UserDetails = () => {
                 striped={true}
                 progressPending={loading}
                 onRowClicked={(row) => router.push(`/colonies/${row.id}`)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  Anotaciones
+                </div>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!user.id}>
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <DataTable
+                columns={annotationsColumns}
+                data={user.annotations || []}
+                dense={true}
+                highlightOnHover={true}
+                progressPending={loading}
+                striped={true}
               />
             </div>
           </div>
