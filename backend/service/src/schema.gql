@@ -32,6 +32,19 @@ type Role {
   users: [User!]!
 }
 
+type UserAnnotation {
+  id: Int!
+  annotation: String!
+  date: DateTime!
+  userId: Int!
+  user: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: Int!
   name: String!
@@ -46,12 +59,8 @@ type User {
   colonies: [Colony!]!
   roleId: Int
   role: Role
+  annotations: [UserAnnotation!]
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Colony {
   id: Int!
@@ -239,6 +248,15 @@ type FindTownsResult {
   items: [Town!]!
 }
 
+type RemoveUserAnnotationResult {
+  result: Boolean!
+}
+
+type FindUserAnnotationsResult {
+  total: Int!
+  items: [UserAnnotation!]!
+}
+
 type Query {
   annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
@@ -266,6 +284,8 @@ type Query {
   user(id: Int!): User
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
+  userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
+  userAnnotation(id: Int!): UserAnnotation
 }
 
 input UserCredentials {
@@ -310,6 +330,9 @@ type Mutation {
   createTown(createTownInput: CreateTownInput!): Town!
   updateTown(updateTownInput: UpdateTownInput!): Town!
   removeTown(id: Int!): RemoveTownResult!
+  createUserAnnotation(createUserAnnotationInput: CreateUserAnnotationInput!): UserAnnotation!
+  updateUserAnnotation(updateUserAnnotationInput: UpdateUserAnnotationInput!): UserAnnotation!
+  removeUserAnnotation(id: Int!): RemoveUserAnnotationResult!
 }
 
 input CreateAnnotationInput {
@@ -473,6 +496,17 @@ input UpdateTownInput {
   id: Int!
 }
 
+input CreateUserAnnotationInput {
+  userId: Int!
+  annotation: String!
+}
+
+input UpdateUserAnnotationInput {
+  userId: Int
+  annotation: String
+  id: Int!
+}
+
 type Subscription {
   annotationAdded: Annotation!
   annotationUpdated: Annotation!
@@ -507,4 +541,7 @@ type Subscription {
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!
+  userAnnotationAdded: UserAnnotation!
+  userAnnotationUpdated: UserAnnotation!
+  userAnnotationRemoved: UserAnnotation!
 }

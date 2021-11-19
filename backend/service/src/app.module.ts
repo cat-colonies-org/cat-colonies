@@ -20,6 +20,7 @@ import { TownsModule } from './domain/towns/towns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './domain/users/users.module';
 import SettingsService from './settings/settings.service';
+import { UserAnnotationsModule } from './domain/user-annotations/user-annotations.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import SettingsService from './settings/settings.service';
     SeederModule,
     SettingsModule,
     TownsModule,
+    UserAnnotationsModule,
     UsersModule,
     TypeOrmModule.forRootAsync({
       imports: [SettingsModule],
@@ -59,6 +61,7 @@ import SettingsService from './settings/settings.service';
         PatternsModule,
         RolesModule,
         TownsModule,
+        UserAnnotationsModule,
         UsersModule,
       ],
       debug: true,
