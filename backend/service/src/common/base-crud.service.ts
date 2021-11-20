@@ -1,4 +1,4 @@
-import { BaseEntity, Repository } from 'typeorm';
+import { BaseEntity, Repository, ILike, Like } from 'typeorm';
 import { omit } from '../util';
 export interface ICrudService<T> {
   create(createInput: Record<string, any>): Promise<T>;
@@ -21,11 +21,16 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     return this.repository.count();
   }
 
-  find(opts: Record<string, any>): Promise<[T[], number]> {
+  async find(opts: Record<string, any>): Promise<[T[], number]> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
-    const filterClause = Object.keys(filter).length ? { where: filter } : undefined;
+    // Allow searching for partial strings ignoring case
+    const conditions = Object.entries(filter).map(([field, value]) => {
+      return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
+    });
+
+    const filterClause = { where: Object.assign({}, ...conditions) };
     const orderClause = order ? JSON.parse(JSON.stringify({ order: { [order]: descending ? -1 : 1 } })) : undefined;
     const paginationClause = skip !== undefined && take !== undefined ? { skip, take } : undefined;
 

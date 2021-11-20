@@ -65,8 +65,8 @@ export class UsersResolver extends BaseResolver<User> {
   @Query(() => FindUsersResult, { name: 'users', nullable: true })
   @hasRoles(Roles.Administrator)
   @UseGuards(GqlAuthGuard, RolesGuard)
-  async findUsers(@Args() filter: FindUsersArgs): Promise<FindUsersResult> {
-    return this.find(filter);
+  async findUsers(@Args() args: FindUsersArgs): Promise<FindUsersResult> {
+    return this.find(args);
   }
 
   @Query(() => User, { name: 'user', nullable: true })

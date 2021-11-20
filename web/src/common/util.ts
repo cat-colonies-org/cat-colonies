@@ -34,24 +34,24 @@ export const getCriteriaString = ({
   page,
   perPage,
 }: {
+  // TODO: add "order"
   filter?: Record<string, any>;
   page?: number;
   perPage?: number;
 }): string => {
-  let criteria = 'order: "id"';
+  const criteria: string[] = [];
 
-  if (filter) {
-    const filterString = objToListString(filter);
-    criteria += filterString;
-  }
+  if (filter) criteria.push(objToListString(filter));
+
+  if (true) criteria.push('order: "id"');
 
   if (page && perPage) {
     const skip = Math.max(page - 1, 0) * perPage;
     const take = perPage;
-    criteria += `, skip: ${skip}, take: ${take}`;
+    criteria.push(`skip: ${skip}, take: ${take}`);
   }
 
-  return criteria;
+  return criteria.join(', ');
 };
 
 export const apiCall = async (query: string, variables?: any) => {
