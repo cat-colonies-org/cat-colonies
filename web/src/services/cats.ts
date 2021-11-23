@@ -29,7 +29,7 @@ export const catDataFragment: string = `
     sterilizedAt
     gender
     colonyId
-    colony { address }
+    colony { address cats { id } }
     eyeColorId
     eyeColor { description }
     patternId
@@ -39,6 +39,10 @@ export const catDataFragment: string = `
     pictures { id catId createdAt originalFilename image thumbnail }
   }
 `;
+
+export type CatId = {
+  id: number;
+};
 
 export type Cat = {
   id: number;
@@ -51,7 +55,7 @@ export type Cat = {
   sterilizedAt: Date;
   gender: Gender;
   colonyId: number;
-  colony: { address: string };
+  colony: { address: string; cats: CatId[] };
   eyeColorId: number;
   eyeColor: { description: string };
   patternId: number;
@@ -101,7 +105,7 @@ export async function getCatsList({
 
   const query = `
     ${catDataFragment}
-    
+
     query {
       cats (${criteria}) {
         total
@@ -128,7 +132,7 @@ export async function getCatsList({
 export async function getCat(id: number): Promise<Cat> {
   const query = `
     ${catDataFragment}
-    
+
     query {
       cat (id:${id}) {
         ...catData
@@ -144,9 +148,9 @@ export async function getCat(id: number): Promise<Cat> {
 export async function createCat(cat: Partial<Cat>): Promise<Cat> {
   const query = `
     ${catDataFragment}
-    
+
     mutation (
-      $bornAt: DateTime, 
+      $bornAt: DateTime,
       $sterilized: Boolean,
       $sterilizedAt: DateTime,
       $colors: [InputColor!]
@@ -158,7 +162,7 @@ export async function createCat(cat: Partial<Cat>): Promise<Cat> {
       $ceaseCauseId: Int,
       $annotations: [InputAnnotation!]
     ) {
-      createCat(createCatInput: { 
+      createCat(createCatInput: {
         bornAt: $bornAt,
         colors: $colors,
         sterilized: $sterilized,
@@ -170,8 +174,8 @@ export async function createCat(cat: Partial<Cat>): Promise<Cat> {
         ceasedAt: $ceasedAt,
         ceaseCauseId: $ceaseCauseId,
         annotations: $annotations
-      }) { 
-        ...catData 
+      }) {
+        ...catData
       }
     }
   `;
@@ -184,10 +188,10 @@ export async function createCat(cat: Partial<Cat>): Promise<Cat> {
 export async function updateCat(cat: Partial<Cat>): Promise<Cat> {
   const query = `
     ${catDataFragment}
-  
+
     mutation (
-        $id: Int!, 
-        $bornAt: DateTime, 
+        $id: Int!,
+        $bornAt: DateTime,
         $sterilized: Boolean,
         $sterilizedAt: DateTime,
         $colors: [InputColor!]
@@ -200,7 +204,7 @@ export async function updateCat(cat: Partial<Cat>): Promise<Cat> {
         $annotations: [InputAnnotation!]
       ) {
       updateCat (updateCatInput: {
-        id: $id, 
+        id: $id,
         bornAt: $bornAt,
         colors: $colors,
         sterilized: $sterilized,

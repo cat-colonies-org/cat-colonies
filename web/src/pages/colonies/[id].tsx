@@ -72,6 +72,7 @@ const ColonyDetails = ({ authToken }: any) => {
       width: '100px',
     },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
+    { name: 'Fotos', selector: (cat) => cat?.pictures?.length },
   ];
 
   const managersColumns: TableColumn<User>[] = [

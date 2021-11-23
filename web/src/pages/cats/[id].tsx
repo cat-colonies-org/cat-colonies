@@ -46,6 +46,11 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
     gender: Gender.Unknown,
   });
 
+  interface Navigation {
+    prev: number | undefined;
+    next: number | undefined;
+  }
+
   const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState(emptyCat);
   const [ceaseCauses, setCeaseCauses] = useState([] as CeaseCause[]);
@@ -54,6 +59,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
   const [eyeColors, setEyeColors] = useState([] as Color[]);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
+  const [navigation, setNavigation] = useState({} as Navigation);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -166,6 +172,12 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
     setCat((prev: any) => ({ ...prev, [field]: date }));
   };
 
+  const onNavigateCat = (id: number) => {
+    // TODO: ver cómo hacer esto bien con REACT
+    router.push(`/cats/${id}`);
+    fetchData(id);
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -212,10 +224,11 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (catId?: number) => {
     setLoading(true);
 
-    const id = router?.query?.id ? +router.query.id : undefined;
+    const id = catId || router?.query?.id || undefined;
+
     const colonyId = router?.query?.colonyId ? +router.query.colonyId : undefined;
 
     if (!id && !colonyId) {
@@ -231,6 +244,14 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
       getPatternsList({}),
       getEyeColorsList({}),
     ]);
+
+    const catIds = cat.colony.cats.map((cat) => cat.id).sort((a, b) => a - b);
+    const idIdx = catIds.indexOf(cat.id);
+
+    setNavigation({
+      prev: idIdx > 0 ? catIds[idIdx - 1] : undefined,
+      next: idIdx < catIds.length - 1 ? catIds[idIdx + 1] : undefined,
+    });
 
     if (cat) setCat(cat);
     if (ceaseCauses) setCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
@@ -275,19 +296,34 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
                 </p>
                 <form onSubmit={onSubmit}>
                   <div className="row mt-3">
-                    <div className="col-md-2">
+                    <div className="col-md-3">
                       <label htmlFor="id" className="form-label">
                         Id
                       </label>
-                      <input
-                        id="id"
-                        type="text"
-                        className="form-control"
-                        value={cat?.id ? `CAT${cat.id}` : ''}
-                        placeholder="Nuevo gato"
-                        readOnly
-                      />
+                      <div style={{ display: 'flex' }}>
+                        <input
+                          id="id"
+                          type="text"
+                          className="form-control mr-1"
+                          value={cat?.id ? `CAT${cat.id}` : ''}
+                          placeholder="Nuevo gato"
+                          readOnly
+                        />
+                        <a
+                          className={navigation.prev ? 'btn btn-primary mr-1' : 'btn btn-primary disabled mr-1'}
+                          onClick={() => navigation.prev && onNavigateCat(navigation.prev)}
+                        >
+                          &lt;
+                        </a>
+                        <a
+                          className={navigation.next ? 'btn btn-primary' : 'btn btn-primary disabled'}
+                          onClick={() => navigation.next && onNavigateCat(navigation.next)}
+                        >
+                          &gt;
+                        </a>
+                      </div>
                     </div>
+
                     <div className="col-md-3">
                       <label htmlFor="createdAt" className="form-label">
                         Alta
@@ -321,7 +357,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
                         <option value="Unknown">Desconocido</option>
                       </select>
                     </div>
-                    <div className="col-md-2">
+                    <div className="col-md-1">
                       <label className="form-label">Colonia</label>
                       <div>
                         <Link href={`/colonies/${cat?.colonyId}`}>
@@ -442,7 +478,9 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
                   </div>
                   <div className="row mt-3">
                     <div className="col-md-12">
-                      <button className="btn btn-primary">Guardar</button>
+                      <button type="submit" className="btn btn-primary">
+                        Guardar
+                      </button>
                     </div>
                   </div>
                 </form>
@@ -493,7 +531,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
                 </button>
               </div>
 
-              {cat.pictures?.length && (
+              {cat?.pictures?.length !== 0 && (
                 <ImageGallery
                   thumbnailPosition="bottom"
                   showNav={!isUploadModalOpen && !isAnnotationModalOpen}
