@@ -15,8 +15,8 @@ export class FindUsersArgs extends FindArgs {
   @Field(() => String, { nullable: true })
   idCard?: string;
 
-  @Field(() => Int, { nullable: true })
-  phoneNumber?: number;
+  @Field(() => String, { nullable: true })
+  phoneNumber?: string;
 
   @Field(() => String, { nullable: true })
   email?: string;

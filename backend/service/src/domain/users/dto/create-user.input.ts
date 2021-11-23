@@ -11,8 +11,8 @@ export class CreateUserInput {
   @Field(() => String)
   idCard: string;
 
-  @Field(() => Int)
-  phoneNumber: number;
+  @Field(() => String)
+  phoneNumber: string;
 
   @Field(() => String)
   email: string;

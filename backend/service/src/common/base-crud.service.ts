@@ -30,7 +30,7 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
       return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
     });
 
-    const filterClause = { where: Object.assign({}, ...conditions) };
+    const filterClause = { where: conditions };
     const orderClause = order ? JSON.parse(JSON.stringify({ order: { [order]: descending ? -1 : 1 } })) : undefined;
     const paginationClause = skip !== undefined && take !== undefined ? { skip, take } : undefined;
 

@@ -24,7 +24,7 @@ export type User = {
   createdAt: Date;
   name: string;
   surnames: string;
-  phoneNumber: number;
+  phoneNumber: string;
   email: string;
   roleId: number;
   idCard: string;
@@ -62,7 +62,7 @@ export async function getUsersList({
   const query = `
    ${userDataFragment}
 
-  query {
+    query {
       users (${criteria}) {
         total
         items {
@@ -109,7 +109,7 @@ export async function createUser(user: Partial<User>): Promise<User> {
       $name: String,
       $surnames: String,
       $idCard: String,
-      $phoneNumber: Int,
+      $phoneNumber: String,
       $email: String,
       $createdAt: DateTime,
       $authorizesWhatsApp: Boolean,
@@ -147,7 +147,7 @@ export async function updateUser(user: Partial<User>): Promise<User> {
       $name: String,
       $surnames: String,
       $idCard: String,
-      $phoneNumber: Int,
+      $phoneNumber: String,
       $email: String,
       $authorizesWhatsApp: Boolean,
     ) {
@@ -165,7 +165,6 @@ export async function updateUser(user: Partial<User>): Promise<User> {
     }
   `;
 
-  console.log(JSON.stringify({ query, user }));
   return await apiCall(query, user).then((response): User => {
     let user = response?.data?.updateUser;
     user = user ? getUserFromGraphQlResult(user) : undefined;

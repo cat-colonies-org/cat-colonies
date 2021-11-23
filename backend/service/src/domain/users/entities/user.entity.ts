@@ -38,8 +38,8 @@ export class User extends BaseEntity {
   idCard: string;
 
   @Column()
-  @Field(() => Int)
-  phoneNumber: number;
+  @Field(() => String)
+  phoneNumber: string;
 
   @Column()
   @Field(() => String)

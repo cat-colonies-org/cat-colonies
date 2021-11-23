@@ -5,12 +5,12 @@ const path = require('path');
 
 const catFormatter = (cat) => {
   return `INSERT INTO cat ("id", "colonyId", "createdAt", "bornAt", "gender", "sterilized", "patternId", "eyeColorId", "ceasedAt", "ceaseCauseId") VALUES (
-    ${cat.id}, 
+    ${cat.id},
     ${cat.colonyId},
     ${dateToIso(cat.createdAt)},
     ${cat.bornAt ? dateToIso(cat.bornAt) : null},
-    '${cat.gender}', 
-    ${cat.esterilized ? 'True' : 'False'}, 
+    '${cat.gender}',
+    ${cat.esterilized ? 'True' : 'False'},
     ${cat.patternId},
     ${cat.eyeColorId},
     ${cat.ceasedAt ? dateToIso(cat.ceasedAt) : null},
@@ -20,7 +20,7 @@ const catFormatter = (cat) => {
 
 const locationTypeFormatter = (locationType) => {
   return `INSERT INTO location_type ("id", "description") VALUES (
-    ${locationType.id}, 
+    ${locationType.id},
     '${locationType.description}'
   );`;
 };
@@ -43,69 +43,69 @@ const pictureFormatter = (inputPath, outputPath, picture) => {
     .toFile(thumbDst);
 
   return `INSERT INTO picture ("id", "catId", "createdAt", "originalFilename", "image", "thumbnail") VALUES (
-    ${picture.id}, 
-    ${picture.catId}, 
+    ${picture.id},
+    ${picture.catId},
     ${dateToIso(picture.createdAt)},
-    '${picture.originalFilename}', 
-    '${picture.image}', 
+    '${picture.originalFilename}',
+    '${picture.image}',
     '${picture.thumbnail}'
   );`;
 };
 
 const roleFormatter = (role) => {
   return `INSERT INTO role ("id", "description") VALUES (
-    ${role.id}, 
+    ${role.id},
     '${role.description}'
   );`;
 };
 
 const townFormatter = (town) => {
   return `INSERT INTO town ("id", "name") VALUES (
-    ${town.id}, 
+    ${town.id},
     '${town.name}'
   );`;
 };
 
 const environmentFormatter = (environment) => {
   return `INSERT INTO environment ("id", "description") VALUES (
-    ${environment.id}, 
+    ${environment.id},
     '${environment.description}'
   );`;
 };
 
 const colonyFormatter = (colony) => {
   return `INSERT INTO colony ("id", "createdAt", "address", "locationTypeId", "environmentId", "townId") VALUES (
-    ${colony.id}, 
+    ${colony.id},
     ${dateToIso(colony.createdAt)},
-    '${colony.address}', 
-    ${colony.locationTypeId}, 
-    ${colony.environmentId}, 
+    '${colony.address}',
+    ${colony.locationTypeId},
+    ${colony.environmentId},
     ${colony.townId}
   );`;
 };
 
 const ceaseCauseFormatter = (cause) => {
   return `INSERT INTO cease_cause ("id", "description") VALUES (
-      ${cause.id}, 
+      ${cause.id},
       '${cause.description}'
     );`;
 };
 
 const eyeColorFormatter = (eyeColor) => {
   return `INSERT INTO eye_color ("id", "description") VALUES (
-    ${eyeColor.id}, 
+    ${eyeColor.id},
     '${eyeColor.description}'
   );`;
 };
 
 const userFormatter = (user) => {
   return `INSERT INTO "user" ("id", "createdAt", "name", "surnames", "idCard", "phoneNumber", "email", "ceasedAt", "authorizesWhatsApp", "password", "roleId") VALUES (
-    ${user.id}, 
+    ${user.id},
     ${dateToIso(user.createdAt)},
     '${user.name}',
     '${user.surnames}',
     '${user.idCard}',
-    ${user.phoneNumber || 0},
+    '${user.phoneNumber || ''}',
     '${user.email}',
     ${user.ceasedAt ? dateToIso(user.ceasedAt) : null},
     ${user.authorizesWhatsApp ? 'True' : 'False'},
@@ -116,21 +116,21 @@ const userFormatter = (user) => {
 
 const colonyUserRelationFormatter = (entity) => {
   return `INSERT INTO "user_colonies_colony" ("userId", "colonyId") VALUES (
-    ${entity.userId}, 
+    ${entity.userId},
     ${entity.colonyId}
   );`;
 };
 
 const catColorRelationFormatter = (entity) => {
   return `INSERT INTO "cat_colors_color" ("catId", "colorId") VALUES (
-    ${entity.catId}, 
+    ${entity.catId},
     ${entity.colorId}
   );`;
 };
 
 const annotationFormatter = (entity) => {
   return `INSERT INTO "annotation" ("id", "catId", "date", "annotation") VALUES (
-    ${entity.id}, 
+    ${entity.id},
     ${entity.catId},
     ${entity.createdAt ? dateToIso(entity.createdAt) : null},
     '${entity.annotation}'
@@ -139,14 +139,14 @@ const annotationFormatter = (entity) => {
 
 const colorFormatter = (color) => {
   return `INSERT INTO color ("id", "description") VALUES (
-    ${color.id}, 
+    ${color.id},
     '${color.description}'
   );`;
 };
 
 const patternFormatter = (pattern) => {
   return `INSERT INTO pattern ("id", "description") VALUES (
-    ${pattern.id}, 
+    ${pattern.id},
     '${pattern.description}'
   );`;
 };

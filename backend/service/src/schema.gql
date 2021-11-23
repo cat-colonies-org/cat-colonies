@@ -50,7 +50,7 @@ type User {
   name: String!
   surnames: String!
   idCard: String!
-  phoneNumber: Int!
+  phoneNumber: String!
   email: String!
   createdAt: DateTime!
   ceasedAt: DateTime
@@ -280,7 +280,7 @@ type Query {
   pattern(id: Int!): Pattern
   roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
   role(id: Int!): Role
-  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: Int, email: String, authorizesWhatsApp: Boolean): FindUsersResult
+  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
@@ -470,7 +470,7 @@ input CreateUserInput {
   name: String!
   surnames: String!
   idCard: String!
-  phoneNumber: Int!
+  phoneNumber: String!
   email: String!
   authorizesWhatsApp: Boolean
   password: String!
@@ -480,7 +480,7 @@ input UpdateUserInput {
   name: String
   surnames: String
   idCard: String
-  phoneNumber: Int
+  phoneNumber: String
   email: String
   authorizesWhatsApp: Boolean
   password: String

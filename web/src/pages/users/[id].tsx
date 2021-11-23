@@ -15,7 +15,7 @@ const UserDetails = () => {
     createdAt: new Date(),
     name: '',
     surnames: '',
-    phoneNumber: 0,
+    phoneNumber: '',
     email: '',
     roleId: 0,
   });

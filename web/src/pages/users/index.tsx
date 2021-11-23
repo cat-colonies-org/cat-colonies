@@ -5,27 +5,26 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
 
 const UsersList = () => {
-  class SearchFields {
-    name: string = '';
-    surnames: string = '';
-  }
-
-  const emptySearchFields = new SearchFields();
-
   const [data, setData] = useState([] as User[]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
-
-  const [search, setSearch] = useState(emptySearchFields);
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
 
   const fetchData = async (page: number = 1, newPerPage: number = perPage) => {
     setLoading(true);
 
+    const filter = {
+      name: search,
+      surnames: search,
+      email: search,
+      phoneNumber: search,
+    };
+
     const users = await getUsersList({
-      filter: search,
+      filter,
       page,
       perPage: newPerPage,
     });
@@ -47,9 +46,7 @@ const UsersList = () => {
   const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
     const target = (event.target || event.currentTarget) as any;
 
-    setSearch((search: SearchFields) => {
-      return { ...search, [target.id]: target.value };
-    });
+    setSearch(target.value);
   };
 
   const onSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -85,23 +82,13 @@ const UsersList = () => {
         <div className="col-lg-12 mb-3">
           <div className="shadow-sm p-3 bg-body rounded">
             <div className="row mt-3">
-              <div className="col-md-5">
-                <input
-                  id="name"
-                  type="search"
-                  placeholder="Filtrar por nombre"
-                  className="form-control"
-                  value={search.name}
-                  onChange={onInputChange}
-                />
-              </div>
-              <div className="col-md-5">
+              <div className="col-md-10">
                 <input
                   id="surnames"
                   type="search"
-                  placeholder="Filtrar por apellidos"
+                  placeholder="Indicar filtro"
                   className="form-control"
-                  value={search.surnames}
+                  value={search}
                   onChange={onInputChange}
                 />
               </div>
@@ -113,18 +100,6 @@ const UsersList = () => {
             </div>
           </div>
         </div>
-
-        {/* <label className="form-label" htmlFor="name">
-          Nombre:
-        </label>
-        <input className="form-control" id="name" value={search.name} onChange={onInputChange} />
-        <label className="form-label" htmlFor="surnames">
-          Apellidos:
-        </label>
-        <input className="form-control" id="surnames" value={search.surnames} onChange={onInputChange} />
-        <button className="btn btn-primary" type="submit">
-          Buscar
-        </button> */}
       </form>
 
       <DataTable
