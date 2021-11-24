@@ -19,14 +19,17 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import UploadModal from '../../components/upload-modal';
 import withPrivateRoute from '../../components/with-private-route';
+import { NextPageContext } from 'next';
 
 registerLocale('es', es);
 
 interface CatDetailsProps {
+  id: string;
+  colonyId: string;
   authToken: Auth;
 }
 
-const CatDetails = ({ authToken }: CatDetailsProps) => {
+const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
   const router = useRouter();
 
   const annotationsColumns: TableColumn<Annotation>[] = [
@@ -173,9 +176,7 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
   };
 
   const onNavigateCat = (id: number) => {
-    // TODO: ver cómo hacer esto bien con REACT
     router.push(`/cats/${id}`);
-    fetchData(id);
   };
 
   const onSubmit = async (event: FormEvent): Promise<void> => {
@@ -224,34 +225,24 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
     }
   };
 
-  const fetchData = async (catId?: number) => {
+  const fetchData = async () => {
     setLoading(true);
 
-    const id = catId || router?.query?.id || undefined;
+    const catId = id === 'new' ? undefined : id;
 
-    const colonyId = router?.query?.colonyId ? +router.query.colonyId : undefined;
-
-    if (!id && !colonyId) {
+    if (!catId && !colonyId) {
       toast.error('Error inesperado');
       router.replace('/');
       return;
     }
 
     const [cat, ceaseCauses, colors, patterns, eyeColors] = await Promise.all([
-      id ? getCat(+id) : Promise.resolve({ ...emptyCat, colonyId } as Cat),
+      catId ? getCat(+catId) : Promise.resolve({ ...emptyCat, colonyId: +colonyId } as Cat),
       getCeaseCausesList({}),
       getColorsList({}),
       getPatternsList({}),
       getEyeColorsList({}),
     ]);
-
-    const catIds = cat.colony.cats.map((cat) => cat.id).sort((a, b) => a - b);
-    const idIdx = catIds.indexOf(cat.id);
-
-    setNavigation({
-      prev: idIdx > 0 ? catIds[idIdx - 1] : undefined,
-      next: idIdx < catIds.length - 1 ? catIds[idIdx + 1] : undefined,
-    });
 
     if (cat) setCat(cat);
     if (ceaseCauses) setCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
@@ -259,12 +250,21 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
     if (patterns) setPatterns(patterns.items.sort(descriptionSorter));
     if (eyeColors) setEyeColors(eyeColors.items.sort(descriptionSorter));
 
+    const catIds = cat.colony?.cats?.map((cat) => cat.id).sort((a, b) => a - b);
+    if (catIds) {
+      const idIdx = catIds.indexOf(cat.id);
+      setNavigation({
+        prev: idIdx > 0 ? catIds[idIdx - 1] : undefined,
+        next: idIdx < catIds.length - 1 ? catIds[idIdx + 1] : undefined,
+      });
+    }
+
     setLoading(false);
   };
 
   useEffect((): void => {
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -553,6 +553,10 @@ const CatDetails = ({ authToken }: CatDetailsProps) => {
       </div>
     </>
   );
+};
+
+CatDetails.getInitialProps = async (ctx: NextPageContext) => {
+  return { id: ctx.query.id, colonyId: ctx.query.colonyId };
 };
 
 export default withPrivateRoute(CatDetails);
