@@ -74,9 +74,7 @@ const UsersList = () => {
 
   return (
     <>
-      <p>
-        <i className="fa fa-female mr-2" aria-hidden="true"></i>Listado de gestoras
-      </p>
+      <p>Listado de gestoras</p>
 
       <form onSubmit={onSearchSubmit}>
         <div className="col-lg-12 mb-3">
