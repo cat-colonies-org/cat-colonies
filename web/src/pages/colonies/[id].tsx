@@ -3,7 +3,7 @@ import { Colony, createColony, getColony, updateColony } from '../../services/co
 import { createEnvironment, Environment, getEnvironmentsList } from '../../services/environments';
 import { createLocationType, getLocationTypesList, LocationType } from '../../services/location-types';
 import { createTown, getTownsList, Town } from '../../services/towns';
-import { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { User } from '../../services/users';
 import { useRouter } from 'next/router';
@@ -11,6 +11,9 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import PropertySelector from '../../components/property-selector';
 import withPrivateRoute from '../../components/with-private-route';
 import { coatFromCat } from '../../common/util';
+import { UserAnnotation } from '../../services/user-annotations';
+import { createColonyAnnotation } from '../../services/colony-annotations';
+import InputModal from '../../components/input-modal';
 
 const ColonyDetails = ({ authToken }: any) => {
   const router = useRouter();
@@ -63,7 +66,7 @@ const ColonyDetails = ({ authToken }: any) => {
     },
     {
       name: 'Capa',
-      width: '300px',
+      width: '200px',
       selector: coatFromCat,
     },
     {
@@ -72,7 +75,7 @@ const ColonyDetails = ({ authToken }: any) => {
       width: '100px',
     },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
-    { name: 'Fotos', selector: (cat) => cat?.pictures?.length },
+    { name: 'Fotos', selector: (cat) => cat?.pictures?.length, width: '90px' },
   ];
 
   const managersColumns: TableColumn<User>[] = [
@@ -81,12 +84,19 @@ const ColonyDetails = ({ authToken }: any) => {
     { name: 'Nombre', selector: (user) => user.name },
   ];
 
+  const annotationsColumns: TableColumn<UserAnnotation>[] = [
+    { name: 'Id', selector: (row) => row.id, width: '100px' },
+    { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString(), width: '100px' },
+    { name: 'Anotación', selector: (row) => row.annotation },
+  ];
+
   const [colony, setColony] = useState({} as Colony);
   const [environments, setEnvironments] = useState([] as Environment[]);
   const [locationTypes, setLocationTypes] = useState([] as LocationType[]);
   const [towns, setTowns] = useState([] as Town[]);
   const [stats, setStats] = useState(zeroStats);
   const [sterilizedStyle, setSterilizedStyle] = useState({});
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const valueAndPercent = (value: number, total: number): string => {
@@ -174,6 +184,31 @@ const ColonyDetails = ({ authToken }: any) => {
     }
   };
 
+  const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
+    if (!colony.id) {
+      toast.warn('Debe guardar la colonia antes de poder hacer anotaciones');
+      return;
+    }
+
+    setAnnotationModalOpen(true);
+  };
+
+  const onNewAnnotation = async (result: { value: string }) => {
+    if (!result?.value || !colony.id) return;
+
+    const colonyAnnotation: UserAnnotation = await createColonyAnnotation(colony.id, result.value);
+    if (colonyAnnotation) {
+      if (colony.annotations) colony.annotations.push(colonyAnnotation);
+      else colony.annotations = [colonyAnnotation];
+
+      setColony((prev) => ({ ...prev, annotations: prev.annotations }));
+
+      toast.success(`Creada nueva anotación "${colonyAnnotation.annotation}"`);
+    } else {
+      toast.error(`Error creando nueva anotación "${result.value}"`);
+    }
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -258,6 +293,16 @@ const ColonyDetails = ({ authToken }: any) => {
 
   return (
     <>
+      <InputModal
+        id="AnnotationModal"
+        title="Nueva Anotación"
+        caption="Texto"
+        buttonCaption="Añadir"
+        isOpen={isAnnotationModalOpen}
+        onClose={() => setAnnotationModalOpen(false)}
+        onReturn={onNewAnnotation}
+      />
+
       <div className="container">
         <div className="row mb-4">
           <div className="col-lg-12">
@@ -424,6 +469,31 @@ const ColonyDetails = ({ authToken }: any) => {
                 striped={true}
                 progressPending={loading}
                 onRowClicked={(row) => router.push(`/users/${row.id}`)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
+                  Anotaciones
+                </div>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!colony.id}>
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <DataTable
+                columns={annotationsColumns}
+                data={colony.annotations || []}
+                dense={true}
+                highlightOnHover={true}
+                progressPending={loading}
+                striped={true}
               />
             </div>
           </div>

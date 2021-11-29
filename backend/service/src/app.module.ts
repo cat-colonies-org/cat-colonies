@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { CatsModule } from './domain/cats/cats.module';
 import { CeaseCausesModule } from './domain/cease-causes/cease-causes.module';
 import { ColoniesModule } from './domain/colonies/colonies.module';
+import { ColonyAnnotationsModule } from './domain/colony-annotations/colony-annotations.module';
 import { ColorsModule } from './domain/colors/colors.module';
 import { EnvironmentsModule } from './domain/environments/environments.module';
 import { EyeColorsModule } from './domain/eye-colors/eye-colors.module';
@@ -18,9 +19,9 @@ import { SeederModule } from './seeder/seeder.module';
 import { SettingsModule } from './settings/settings.module';
 import { TownsModule } from './domain/towns/towns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserAnnotationsModule } from './domain/user-annotations/user-annotations.module';
 import { UsersModule } from './domain/users/users.module';
 import SettingsService from './settings/settings.service';
-import { UserAnnotationsModule } from './domain/user-annotations/user-annotations.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserAnnotationsModule } from './domain/user-annotations/user-annotation
     CatsModule,
     CeaseCausesModule,
     ColoniesModule,
+    ColonyAnnotationsModule,
     ColorsModule,
     EnvironmentsModule,
     EyeColorsModule,
@@ -54,6 +56,7 @@ import { UserAnnotationsModule } from './domain/user-annotations/user-annotation
         CatsModule,
         CeaseCausesModule,
         ColoniesModule,
+        ColonyAnnotationsModule,
         ColorsModule,
         EnvironmentsModule,
         EyeColorsModule,

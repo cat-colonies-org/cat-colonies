@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Cat } from 'src/domain/cats/entities/cat.entity';
+import { ColonyAnnotation } from 'src/domain/colony-annotations/entities/colony-annotation.entity';
 import { Environment } from 'src/domain/environments/entities/environment.entity';
 import { LocationType } from 'src/domain/location-types/entities/location-type.entity';
 import { Town } from 'src/domain/towns/entities/town.entity';
@@ -61,4 +62,8 @@ export class Colony extends BaseEntity {
   @ManyToOne(() => Town, (town) => town.colonies)
   @Field(() => Town)
   town: Promise<Town>;
+
+  @OneToMany(() => ColonyAnnotation, (annotation) => annotation.colony)
+  @Field(() => [ColonyAnnotation], { nullable: true })
+  annotations?: Promise<ColonyAnnotation[]>;
 }

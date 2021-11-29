@@ -1,5 +1,6 @@
 import { apiCall, objToListString } from '../common/util';
 import { Cat, catDataFragment } from './cats';
+import { ColonyAnnotation } from './colony-annotations';
 import { User } from './users';
 
 export const colonyDataFragment: string = `
@@ -17,6 +18,7 @@ export const colonyDataFragment: string = `
     environment { description }
     townId
     town { name }
+    annotations { id colonyId date annotation }
   }
 `;
 
@@ -32,6 +34,7 @@ export type Colony = {
   locationType: { description: string };
   environment: { description: string };
   town: { name: string };
+  annotations: ColonyAnnotation[];
 };
 
 export interface ColoniesList {

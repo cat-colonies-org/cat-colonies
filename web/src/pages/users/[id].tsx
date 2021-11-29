@@ -29,15 +29,15 @@ const UserDetails = () => {
     { name: 'Entorno', selector: (colony) => colony.environment?.description },
   ];
 
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({} as User);
-  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
-
   const annotationsColumns: TableColumn<UserAnnotation>[] = [
     { name: 'Id', selector: (row) => row.id, width: '100px' },
     { name: 'Fecha', selector: (row) => new Date(row.date).toLocaleDateString(), width: '100px' },
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
+
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({} as User);
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
