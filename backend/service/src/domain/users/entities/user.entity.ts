@@ -2,6 +2,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Role } from 'src/domain/roles/entities/role.entity';
 import { UserAnnotation } from 'src/domain/user-annotations/entities/user-annotation.entity';
+import { UserCeaseCause } from 'src/domain/user-cease-causes/entities/user-cease-cause.entity';
 import {
   BaseEntity,
   Column,
@@ -52,6 +53,14 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Date, { nullable: true })
   ceasedAt?: Date;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  ceaseCauseId?: number;
+
+  @ManyToOne(() => UserCeaseCause, (ceaseCause) => ceaseCause.users)
+  @Field(() => UserCeaseCause, { nullable: true })
+  ceaseCause?: Promise<UserCeaseCause>;
 
   @Column({ nullable: true })
   @Field(() => Boolean, { nullable: true })

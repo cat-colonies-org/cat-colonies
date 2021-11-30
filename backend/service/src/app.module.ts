@@ -22,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAnnotationsModule } from './domain/user-annotations/user-annotations.module';
 import { UsersModule } from './domain/users/users.module';
 import SettingsService from './settings/settings.service';
+import { UserCeaseCausesModule } from './domain/user-cease-causes/user-cease-causes.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import SettingsService from './settings/settings.service';
     SettingsModule,
     TownsModule,
     UserAnnotationsModule,
+    UserCeaseCausesModule,
     UsersModule,
     TypeOrmModule.forRootAsync({
       imports: [SettingsModule],
@@ -65,6 +67,7 @@ import SettingsService from './settings/settings.service';
         RolesModule,
         TownsModule,
         UserAnnotationsModule,
+        UserCeaseCausesModule,
         UsersModule,
       ],
       debug: true,

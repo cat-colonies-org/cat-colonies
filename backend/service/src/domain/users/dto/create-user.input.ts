@@ -1,4 +1,4 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserInput {
@@ -17,9 +17,15 @@ export class CreateUserInput {
   @Field(() => String)
   email: string;
 
+  @Field(() => String)
+  password: string;
+
   @Field(() => Boolean, { nullable: true })
   authorizesWhatsApp?: boolean;
 
-  @Field(() => String)
-  password: string;
+  @Field(() => Date, { nullable: true })
+  ceasedAt?: Date;
+
+  @Field(() => Int, { nullable: true })
+  ceaseCauseId?: number;
 }

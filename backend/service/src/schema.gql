@@ -53,6 +53,12 @@ type UserAnnotation {
   user: User!
 }
 
+type UserCeaseCause {
+  id: Int!
+  description: String!
+  users: [User!]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -62,6 +68,8 @@ type User {
   email: String!
   createdAt: DateTime!
   ceasedAt: DateTime
+  ceaseCauseId: Int
+  ceaseCause: UserCeaseCause
   authorizesWhatsApp: Boolean
   password: String!
   colonies: [Colony!]!
@@ -275,6 +283,15 @@ type FindUserAnnotationsResult {
   items: [UserAnnotation!]!
 }
 
+type FindUserCeaseCausesResult {
+  total: Int!
+  items: [UserCeaseCause!]!
+}
+
+type RemoveUserCeaseCauseResult {
+  result: Boolean!
+}
+
 type Query {
   annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
   annotation(id: Int!): Annotation
@@ -306,6 +323,8 @@ type Query {
   town(id: Int!): Town
   userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
   userAnnotation(id: Int!): UserAnnotation
+  userCeaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindUserCeaseCausesResult
+  userCeaseCause(id: Int!): UserCeaseCause
 }
 
 input UserCredentials {
@@ -356,6 +375,9 @@ type Mutation {
   createUserAnnotation(createUserAnnotationInput: CreateUserAnnotationInput!): UserAnnotation!
   updateUserAnnotation(updateUserAnnotationInput: UpdateUserAnnotationInput!): UserAnnotation!
   removeUserAnnotation(id: Int!): RemoveUserAnnotationResult!
+  createUserCeaseCause(createUserCeaseCauseInput: CreateUserCeaseCauseInput!): UserCeaseCause!
+  updateUserCeaseCause(updateUserCeaseCauseInput: UpdateUserCeaseCauseInput!): UserCeaseCause!
+  removeUserCeaseCause(id: Int!): RemoveUserCeaseCauseResult!
 }
 
 input CreateAnnotationInput {
@@ -506,8 +528,10 @@ input CreateUserInput {
   idCard: String!
   phoneNumber: String!
   email: String!
-  authorizesWhatsApp: Boolean
   password: String!
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
 }
 
 input UpdateUserInput {
@@ -516,8 +540,10 @@ input UpdateUserInput {
   idCard: String
   phoneNumber: String
   email: String
-  authorizesWhatsApp: Boolean
   password: String
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
   id: Int!
 }
 
@@ -539,6 +565,15 @@ input UpdateUserAnnotationInput {
   userId: Int
   annotation: String
   id: Int!
+}
+
+input CreateUserCeaseCauseInput {
+  description: String!
+}
+
+input UpdateUserCeaseCauseInput {
+  description: String
+  id: Int
 }
 
 type Subscription {
@@ -581,4 +616,7 @@ type Subscription {
   userAnnotationAdded: UserAnnotation!
   userAnnotationUpdated: UserAnnotation!
   userAnnotationRemoved: UserAnnotation!
+  userCeaseCauseAdded: UserCeaseCause!
+  userCeaseCauseUpdated: UserCeaseCause!
+  userCeaseCauseRemoved: UserCeaseCause!
 }

@@ -8,6 +8,9 @@ export const userDataFragment: string = `
     name
     surnames
     createdAt
+    ceasedAt
+    ceaseCauseId
+    ceaseCause { description }
     idCard
     phoneNumber
     email
@@ -22,6 +25,9 @@ export const userDataFragment: string = `
 export type User = {
   id: number;
   createdAt: Date;
+  ceasedAt: Date;
+  ceaseCauseId: number;
+  ceaseCause: { description: string };
   name: string;
   surnames: string;
   phoneNumber: string;
@@ -45,6 +51,7 @@ const getUserFromGraphQlResult = (user: Record<string, any>): User => {
   return {
     ...user,
     createdAt: user.createdAt ? new Date(user.createdAt) : undefined,
+    ceasedAt: user.ceasedAt ? new Date(user.ceasedAt) : undefined,
   } as User;
 };
 
@@ -115,6 +122,8 @@ export async function createUser(user: Partial<User>): Promise<User> {
       $authorizesWhatsApp: Boolean,
       $roleId: Number,
       $colonies: [InputColony!],
+      ceaseAt: DateTime,
+      ceaseCauseId: Int
     ) {
       createUser(createUserInput: {
         id: $id,
@@ -127,6 +136,8 @@ export async function createUser(user: Partial<User>): Promise<User> {
         authorizesWhatsApp: $authorizesWhatsApp,
         roleId: $roleId,
         colonies: $colonies
+        ceaseAt: $ceaseAt,
+        ceaseCauseId: $ceaseCauseId
       }) {
         ...userData
       }
@@ -150,6 +161,8 @@ export async function updateUser(user: Partial<User>): Promise<User> {
       $phoneNumber: String,
       $email: String,
       $authorizesWhatsApp: Boolean,
+      $ceasedAt: DateTime,
+      $ceaseCauseId: Int
     ) {
       updateUser(updateUserInput: {
         id: $id,
@@ -159,6 +172,8 @@ export async function updateUser(user: Partial<User>): Promise<User> {
         phoneNumber: $phoneNumber,
         email: $email,
         authorizesWhatsApp: $authorizesWhatsApp,
+        ceasedAt: $ceasedAt,
+        ceaseCauseId: $ceaseCauseId
       }) {
         ...userData
       }

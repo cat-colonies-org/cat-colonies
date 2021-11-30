@@ -1,14 +1,28 @@
-import { useRouter } from 'next/router';
-import React, { FormEvent, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import DataTable, { TableColumn } from 'react-data-table-component';
-import withPrivateRoute from '../../components/with-private-route';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Auth } from '../../common/authToken';
 import { Colony } from '../../services/colonies';
-import { User, getUser, updateUser, createUser } from '../../services/users';
 import { createUserAnnotation, UserAnnotation } from '../../services/user-annotations';
+import { createUserCeaseCause, getUserCeaseCausesList, UserCeaseCause } from '../../services/user-cease-causes';
+import { NextPageContext } from 'next';
+import { toast } from 'react-toastify';
+import { User, getUser, updateUser, createUser } from '../../services/users';
+import { useRouter } from 'next/router';
+import DataTable, { TableColumn } from 'react-data-table-component';
+import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
+import PropertySelector from '../../components/property-selector';
+import React, { FormEvent, useEffect, useState } from 'react';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import withPrivateRoute from '../../components/with-private-route';
 
-const UserDetails = () => {
+registerLocale('es', es);
+
+interface UserDetailsProps {
+  id: string;
+  authToken: Auth;
+}
+
+const UserDetails = ({ id, authToken }: UserDetailsProps) => {
   const router = useRouter();
 
   const emptyUser: Partial<User> = Object.freeze({
@@ -37,28 +51,28 @@ const UserDetails = () => {
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
+  const [userCeaseCauses, setUserCeaseCauses] = useState([] as UserCeaseCause[]);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+
+  const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
+    return a.description.localeCompare(b.description);
+  };
 
   const fetchData = async () => {
     setLoading(true);
 
-    const id = router?.query?.id ? +router.query.id : undefined;
-    if (!id) {
-      toast.error('Error inesperado');
-      router.replace('/');
-      return;
-    }
+    const userId = id === 'new' ? undefined : id;
 
-    const [user] = await Promise.all([id ? getUser(+id) : Promise.resolve({ ...emptyUser } as User)]);
+    const [user, ceaseCauses] = await Promise.all([
+      userId ? getUser(+userId) : Promise.resolve({ ...emptyUser } as User),
+      getUserCeaseCausesList({}),
+    ]);
 
     if (user) setUser(user);
+    if (ceaseCauses) setUserCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
 
     setLoading(false);
   };
-
-  useEffect((): void => {
-    fetchData();
-  }, []);
 
   const onAddAnnotation = (event: FormEvent<HTMLButtonElement>) => {
     if (!user.id) {
@@ -107,6 +121,25 @@ const UserDetails = () => {
     });
   };
 
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
+    setUser((prev: any) => ({ ...prev, [meta.name]: data?.value }));
+  };
+
+  const onCreateCeaseCause = async (description: string) => {
+    const item: UserCeaseCause = await createUserCeaseCause(description);
+
+    if (!item) {
+      toast.error(`Error creando causa de baja "${description}"`);
+      return;
+    }
+
+    setUserCeaseCauses((prev) => [...prev, { ...item }].sort(descriptionSorter));
+
+    setUser((prev) => ({ ...prev, ceaseCauseId: item.id }));
+
+    toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -126,7 +159,7 @@ const UserDetails = () => {
 
   useEffect((): void => {
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -258,6 +291,34 @@ const UserDetails = () => {
                         value={user?.createdAt?.toLocaleDateString()}
                       />
                     </div>
+
+                    <div className="col-md-3">
+                      <label htmlFor="ceasedAt" className="form-label">
+                        Baja
+                      </label>
+                      <ReactDatePicker
+                        id="ceasedAt"
+                        className="form-control"
+                        locale="es"
+                        value={user?.ceasedAt?.toLocaleDateString()}
+                        onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label htmlFor="ceaseCauseId" className="form-label">
+                        Causa de baja
+                      </label>
+                      <PropertySelector
+                        id="ceaseCauseId"
+                        title="Nueva Causa de Baja"
+                        caption="Descripción"
+                        allowAdd={authToken.isAdmin}
+                        options={userCeaseCauses.map((i) => ({ value: i.id, label: i.description }))}
+                        value={user?.ceaseCauseId}
+                        onChange={onSelectChange}
+                        onCreate={onCreateCeaseCause}
+                      />
+                    </div>
                   </div>
                   <div className="row mt-3">
                     <div className="col-md-12">
@@ -320,6 +381,10 @@ const UserDetails = () => {
       </div>
     </>
   );
+};
+
+UserDetails.getInitialProps = async (ctx: NextPageContext) => {
+  return { id: ctx.query.id };
 };
 
 export default withPrivateRoute(UserDetails);
