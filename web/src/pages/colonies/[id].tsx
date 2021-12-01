@@ -94,9 +94,9 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
   ];
 
   const managersColumns: TableColumn<User>[] = [
-    { name: 'Id', selector: (user) => user.id },
-    { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString() },
-    { name: 'Nombre', selector: (user) => user.name },
+    { name: 'Id', selector: (user) => user.id, width: '60px' },
+    { name: 'Nombre', selector: (user) => user.name, width: '200px' },
+    { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString(), width: '100px' },
     {
       cell: (user: User) => (
         <div style={{ width: '100%', textAlign: 'right' }}>
