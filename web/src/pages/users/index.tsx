@@ -67,9 +67,14 @@ const UsersList = () => {
       selector: (user) => user.role?.description,
     },
     { name: 'Nombre', selector: (user) => user.name, width: '150px' },
-    { name: 'Apellidos', selector: (user) => user.surnames, width: '250px' },
+    { name: 'Apellidos', selector: (user) => user.surnames, width: '200px' },
     { name: 'Teléfono', selector: (user) => user.phoneNumber, width: '100px' },
     { name: 'Email', selector: (user) => user.email, width: '200px' },
+    {
+      name: 'Baja',
+      selector: (user) => (user.ceasedAt ? new Date(user.ceasedAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
   ];
 
   return (
@@ -102,17 +107,25 @@ const UsersList = () => {
 
       <DataTable
         columns={columns}
+        conditionalRowStyles={[
+          {
+            when: (user: User) => !!user.ceasedAt,
+            style: {
+              color: 'red',
+            },
+          },
+        ]}
         data={data}
         highlightOnHover={false}
-        striped={true}
-        progressPending={loading}
-        pagination
-        paginationServer
-        paginationRowsPerPageOptions={[10, 25, 50, 100]}
-        paginationTotalRows={totalRows}
-        onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}
+        onChangeRowsPerPage={handlePerRowsChange}
         onRowClicked={(row) => router.push(`/users/${row.id}`)}
+        pagination
+        paginationRowsPerPageOptions={[10, 25, 50, 100]}
+        paginationServer
+        paginationTotalRows={totalRows}
+        progressPending={loading}
+        striped={true}
       />
     </>
   );
