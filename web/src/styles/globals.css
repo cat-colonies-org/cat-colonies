@@ -75,6 +75,14 @@ a[data-toggle='collapse'] {
   opacity: 0;
 }
 
+.btn-circle.btn-sm {
+  width: 20px;
+  height: 20px;
+  padding: 0px 0px;
+  font-size: 11px;
+  text-align: center;
+}
+
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */

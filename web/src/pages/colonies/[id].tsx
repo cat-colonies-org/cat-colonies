@@ -1,21 +1,36 @@
+import { Auth } from '../../common/authToken';
 import { Cat, Gender, isKitten } from '../../services/cats';
-import { Colony, createColony, getColony, updateColony } from '../../services/colonies';
+import { coatFromCat } from '../../common/util';
+import {
+  addColonyManager,
+  Colony,
+  createColony,
+  getColony,
+  removeColonyManager,
+  updateColony,
+} from '../../services/colonies';
+import { createColonyAnnotation } from '../../services/colony-annotations';
 import { createEnvironment, Environment, getEnvironmentsList } from '../../services/environments';
 import { createLocationType, getLocationTypesList, LocationType } from '../../services/location-types';
 import { createTown, getTownsList, Town } from '../../services/towns';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { NextPageContext } from 'next';
 import { toast } from 'react-toastify';
-import { User } from '../../services/users';
+import { getUsersList, User } from '../../services/users';
+import { UserAnnotation } from '../../services/user-annotations';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import PropertySelector from '../../components/property-selector';
-import withPrivateRoute from '../../components/with-private-route';
-import { coatFromCat } from '../../common/util';
-import { UserAnnotation } from '../../services/user-annotations';
-import { createColonyAnnotation } from '../../services/colony-annotations';
 import InputModal from '../../components/input-modal';
+import PropertySelector from '../../components/property-selector';
+import React, { FormEvent, useEffect, useState } from 'react';
+import Select from 'react-select';
+import withPrivateRoute from '../../components/with-private-route';
 
-const ColonyDetails = ({ authToken }: any) => {
+interface ColonyDetailsProps {
+  id: string;
+  authToken: Auth;
+}
+
+const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
   const router = useRouter();
 
   interface Stats {
@@ -82,6 +97,20 @@ const ColonyDetails = ({ authToken }: any) => {
     { name: 'Id', selector: (user) => user.id },
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString() },
     { name: 'Nombre', selector: (user) => user.name },
+    {
+      cell: (user: User) => (
+        <div style={{ width: '100%', textAlign: 'right' }}>
+          <button
+            title="eliminar"
+            type="button"
+            className="btn btn-secondary btn-circle btn-sm"
+            onClick={() => onRemoveColonyManager(user.id)}
+          >
+            <i className="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+      ),
+    },
   ];
 
   const annotationsColumns: TableColumn<UserAnnotation>[] = [
@@ -94,6 +123,7 @@ const ColonyDetails = ({ authToken }: any) => {
   const [environments, setEnvironments] = useState([] as Environment[]);
   const [locationTypes, setLocationTypes] = useState([] as LocationType[]);
   const [towns, setTowns] = useState([] as Town[]);
+  const [users, setUsers] = useState([] as User[]);
   const [stats, setStats] = useState(zeroStats);
   const [sterilizedStyle, setSterilizedStyle] = useState({});
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
@@ -209,6 +239,42 @@ const ColonyDetails = ({ authToken }: any) => {
     }
   };
 
+  const onAddColonyManager = async (userId: number) => {
+    const existingUser = colony.managers.find((u) => u.id === userId);
+    if (existingUser) {
+      toast.warn('El usuario ya es gestor');
+      return;
+    }
+
+    const selectedUser = users.find((u) => u.id === userId);
+    if (!selectedUser) {
+      toast.error('El usuario no existe');
+      return;
+    }
+
+    if (!!(await addColonyManager(colony.id, selectedUser.id))) {
+      toast.success(`Añadido gestor "${selectedUser.name}"`);
+      setColony(await getColony(colony.id));
+    } else {
+      toast.error(`Error añadiendo gestor "${selectedUser.name}"`);
+    }
+  };
+
+  const onRemoveColonyManager = async (userId: number) => {
+    const existingUser = colony.managers.find((u) => u.id === userId);
+    if (!existingUser) {
+      toast.warn('El usuario no es gestor');
+      return;
+    }
+
+    if (!!(await removeColonyManager(colony.id, userId))) {
+      toast.success(`Eliminado gestor "${existingUser.name}"`);
+      setColony(await getColony(colony.id));
+    } else {
+      toast.error(`Error eliminando gestor "${existingUser.name}"`);
+    }
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -269,13 +335,14 @@ const ColonyDetails = ({ authToken }: any) => {
   const fetchData = async () => {
     setLoading(true);
 
-    const id = router.query.id === 'new' ? null : router.query.id;
+    const userId = id === 'new' ? undefined : id;
 
-    const [colony, environments, locationTypes, towns] = await Promise.all([
-      id ? getColony(+id) : null,
+    const [colony, environments, locationTypes, towns, users] = await Promise.all([
+      userId ? getColony(+userId) : undefined,
       getEnvironmentsList({}),
       getLocationTypesList({}),
       getTownsList({}),
+      getUsersList({}),
     ]);
 
     if (colony) setColony(colony);
@@ -283,13 +350,14 @@ const ColonyDetails = ({ authToken }: any) => {
     if (environments) setEnvironments(environments.items.sort(descriptionSorter));
     if (locationTypes) setLocationTypes(locationTypes.items.sort(descriptionSorter));
     if (towns) setTowns(towns.items.sort(nameSorter));
+    if (users) setUsers(users.items.sort(nameSorter));
 
     setLoading(false);
   };
 
   useEffect((): void => {
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -461,6 +529,21 @@ const ColonyDetails = ({ authToken }: any) => {
                 Gestoras
               </p>
 
+              {colony.id && (
+                <Select
+                  onChange={(v: any) => v?.value && onAddColonyManager(v.value)}
+                  options={users
+                    .filter((u) => !colony.managers.find((m) => m.id === u.id))
+                    .map((user: User) => ({
+                      value: user.id,
+                      label: `${user.name} ${user.surnames} (GES${user.id})`,
+                    }))}
+                  isSearchable={true}
+                  isClearable={true}
+                  placeholder={<div>Seleccione gestora para añadir a la colonia...</div>}
+                />
+              )}
+
               <DataTable
                 columns={managersColumns}
                 data={colony.managers}
@@ -478,10 +561,11 @@ const ColonyDetails = ({ authToken }: any) => {
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
               <div className="d-flex justify-content-between">
-                <div>
+                <p>
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Anotaciones
-                </div>
+                </p>
+
                 <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!colony.id}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
@@ -507,7 +591,7 @@ const ColonyDetails = ({ authToken }: any) => {
                   <i className="fas fa-cat mr-2" aria-hidden="true"></i>
                   Gatos
                 </div>
-                <button className="btn btn-primary btn-sm mb-3" onClick={onAddCat}>
+                <button className="btn btn-primary btn-sm mb-3" onClick={onAddCat} disabled={!colony.id}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
               </p>
@@ -527,6 +611,10 @@ const ColonyDetails = ({ authToken }: any) => {
       </div>
     </>
   );
+};
+
+ColonyDetails.getInitialProps = async (ctx: NextPageContext) => {
+  return { id: ctx.query.id };
 };
 
 export default withPrivateRoute(ColonyDetails);

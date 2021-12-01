@@ -49,9 +49,9 @@ const idSorter = (a: { id: number }, b: { id: number }): number => {
 const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   return {
     ...colony,
-    createdAt: colony.createdAt ? new Date(colony.createdAt) : undefined,
-    managers: colony.managers?.sort(idSorter),
-    cats: colony.cats?.sort(idSorter),
+    createdAt: colony?.createdAt ? new Date(colony.createdAt) : undefined,
+    managers: colony?.managers?.sort(idSorter),
+    cats: colony?.cats?.sort(idSorter),
   } as Colony;
 };
 
@@ -133,5 +133,33 @@ export async function updateColony(id: number, data: any): Promise<Colony> {
 
   return await apiCall(query).then((response): Colony => {
     return getColonyFromGraphQlResult(response?.data?.updateColony);
+  });
+}
+
+export async function addColonyManager(colonyId: number, userId: number): Promise<boolean> {
+  const query = `
+    mutation {
+      addColonyManager(colonyId: ${colonyId}, userId:${userId}) {
+        result
+      }
+    }
+  `;
+
+  return await apiCall(query).then((response): boolean => {
+    return response?.data?.addColonyManager?.result;
+  });
+}
+
+export async function removeColonyManager(colonyId: number, userId: number): Promise<boolean> {
+  const query = `
+    mutation {
+      removeColonyManager(colonyId: ${colonyId}, userId:${userId}) {
+        result
+      }
+    }
+  `;
+
+  return await apiCall(query).then((response): boolean => {
+    return response?.data?.removeColonyManager?.result;
   });
 }

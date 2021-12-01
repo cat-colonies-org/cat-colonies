@@ -14,11 +14,20 @@ import { hasRoles } from 'src/auth/decorators/roles.decorator';
 import { Roles } from '../roles/entities/role.entity';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles-guard';
+import { AddColonyManagerResult } from './dto/add-colony-manager.result';
+import { UsersService } from '../users/users.service';
+import { RemoveColonyManagerResult } from './dto/remove-colony-manager.result';
 
 @Resolver(() => Colony)
 export class ColoniesResolver extends BaseResolver<Colony> {
-  constructor(service: ColoniesService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
-    super(service, pubSub, Colony.name);
+  readonly coloniesService: ColoniesService;
+  readonly usersService: UsersService;
+
+  constructor(coloniesService: ColoniesService, usersService: UsersService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+    super(coloniesService, pubSub, Colony.name);
+
+    this.coloniesService = coloniesService;
+    this.usersService = usersService;
   }
 
   // #region Subscriptions
@@ -58,6 +67,32 @@ export class ColoniesResolver extends BaseResolver<Colony> {
   @UseGuards(GqlAuthGuard, RolesGuard)
   async removeColony(@Args('id', { type: () => Int }) id: number): Promise<RemoveColonyResult> {
     return this.remove(id);
+  }
+
+  @Mutation(() => AddColonyManagerResult)
+  @hasRoles(Roles.Administrator)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  async addColonyManager(
+    @Args('colonyId', { type: () => Int }) colonyId: number,
+    @Args('userId', { type: () => Int }) userId: number,
+  ): Promise<AddColonyManagerResult> {
+    const [colony, user] = await Promise.all([this.findOne(colonyId), this.usersService.findOne(userId)]);
+    if (!colony || !user) return { result: false };
+
+    return this.coloniesService.addManager(colony, user);
+  }
+
+  @Mutation(() => RemoveColonyManagerResult)
+  @hasRoles(Roles.Administrator)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  async removeColonyManager(
+    @Args('colonyId', { type: () => Int }) colonyId: number,
+    @Args('userId', { type: () => Int }) userId: number,
+  ): Promise<RemoveColonyManagerResult> {
+    const [colony, user] = await Promise.all([this.findOne(colonyId), this.usersService.findOne(userId)]);
+    if (!colony || !user) return { result: false };
+
+    return this.coloniesService.removeManager(colony, user);
   }
   // #endregion Mutations
 

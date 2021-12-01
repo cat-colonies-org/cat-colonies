@@ -197,6 +197,23 @@ type FindColoniesResult {
   items: [Colony!]!
 }
 
+type AddColonyManagerResult {
+  result: Boolean!
+}
+
+type RemoveColonyManagerResult {
+  result: Boolean!
+}
+
+type RemoveUserResult {
+  result: Boolean!
+}
+
+type FindUsersResult {
+  total: Int!
+  items: [User!]!
+}
+
 type RemoveColonyAnnotationResult {
   result: Boolean!
 }
@@ -256,15 +273,6 @@ type RemoveRoleResult {
   result: Boolean!
 }
 
-type RemoveUserResult {
-  result: Boolean!
-}
-
-type FindUsersResult {
-  total: Int!
-  items: [User!]!
-}
-
 type RemoveTownResult {
   result: Boolean!
 }
@@ -303,6 +311,8 @@ type Query {
   ceaseCause(id: Int!): CeaseCause
   colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): FindColoniesResult
   colony(id: Int!): Colony
+  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
+  user(id: Int!): User
   colonyAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, colonyId: Int, annotation: String): FindColonyAnnotationsResult
   colonyAnnotation(id: Int!): ColonyAnnotation
   colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
@@ -317,8 +327,6 @@ type Query {
   pattern(id: Int!): Pattern
   roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
   role(id: Int!): Role
-  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
-  user(id: Int!): User
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
   userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
@@ -345,6 +353,11 @@ type Mutation {
   createColony(createColonyInput: CreateColonyInput!): Colony!
   updateColony(updateColonyInput: UpdateColonyInput!): Colony!
   removeColony(id: Int!): RemoveColonyResult!
+  addColonyManager(userId: Int!, colonyId: Int!): AddColonyManagerResult!
+  removeColonyManager(userId: Int!, colonyId: Int!): RemoveColonyManagerResult!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): RemoveUserResult!
   createColonyAnnotation(createColonyAnnotationInput: CreateColonyAnnotationInput!): ColonyAnnotation!
   updateColonyAnnotation(updateColonyAnnotationInput: UpdateColonyAnnotationInput!): ColonyAnnotation!
   removeColonyAnnotation(id: Int!): RemoveColonyAnnotationResult!
@@ -366,9 +379,6 @@ type Mutation {
   createRole(createRoleInput: CreateRoleInput!): Role!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): RemoveRoleResult!
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): RemoveUserResult!
   createTown(createTownInput: CreateTownInput!): Town!
   updateTown(updateTownInput: UpdateTownInput!): Town!
   removeTown(id: Int!): RemoveTownResult!
@@ -456,6 +466,31 @@ input UpdateColonyInput {
   id: Int!
 }
 
+input CreateUserInput {
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: String!
+  email: String!
+  password: String!
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+}
+
+input UpdateUserInput {
+  name: String
+  surnames: String
+  idCard: String
+  phoneNumber: String
+  email: String
+  password: String
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  id: Int!
+}
+
 input CreateColonyAnnotationInput {
   colonyId: Int!
   annotation: String!
@@ -522,31 +557,6 @@ input UpdateRoleInput {
   id: Int!
 }
 
-input CreateUserInput {
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: String!
-  email: String!
-  password: String!
-  authorizesWhatsApp: Boolean
-  ceasedAt: DateTime
-  ceaseCauseId: Int
-}
-
-input UpdateUserInput {
-  name: String
-  surnames: String
-  idCard: String
-  phoneNumber: String
-  email: String
-  password: String
-  authorizesWhatsApp: Boolean
-  ceasedAt: DateTime
-  ceaseCauseId: Int
-  id: Int!
-}
-
 input CreateTownInput {
   name: String!
 }
@@ -589,6 +599,9 @@ type Subscription {
   colonyAdded: Colony!
   colonyUpdated: Colony!
   colonyRemoved: Colony!
+  userAdded: User!
+  userUpdated: User!
+  userRemoved: User!
   colonyAnnotationAdded: ColonyAnnotation!
   colonyAnnotationUpdated: ColonyAnnotation!
   colonyAnnotationRemoved: ColonyAnnotation!
@@ -607,9 +620,6 @@ type Subscription {
   patternAdded: Role!
   patternUpdated: Role!
   patternRemoved: Role!
-  userAdded: User!
-  userUpdated: User!
-  userRemoved: User!
   townAdded: Town!
   townUpdated: Town!
   townRemoved: Town!
