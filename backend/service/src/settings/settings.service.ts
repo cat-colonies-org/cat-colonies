@@ -25,6 +25,10 @@ export class Settings {
     };
   };
 
+  documents: {
+    bucket: string;
+  };
+
   storage: {
     endPoint: string;
     port: number;
@@ -82,6 +86,10 @@ export class SettingsService extends Settings {
         width: getNumber('THUMBNAIL_WIDTH', 160),
         height: getNumber('THUMBNAIL_HEIGHT', 108),
       },
+    };
+
+    this.documents = {
+      bucket: getString('DOCUMENTS_BUCKET', 'documents'),
     };
 
     this.storage = {

@@ -199,16 +199,16 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
   const onPicturesSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
+    setUploadModalOpen(false);
+
     if (!cat.id) {
       toast.warn('No es posible asignar imágenes a un gato que todavía no tiene ID');
       return;
     }
 
-    setUploadModalOpen(false);
-
     const data = new FormData(event.target as HTMLFormElement);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/file-upload/${cat.id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/picture-upload/${cat.id}`, {
       method: 'POST',
       headers: {
         Authorization: authToken.authorizationString,

@@ -39,15 +39,15 @@ const UploadModal = ({ id, isOpen, onClose, onReturn }: UploadModalProps) => {
         <form onSubmit={onReturn}>
           <div className="row">
             <div className="col">
-              <h4>Subir imágenes</h4>
+              <h4>Subir ficheros</h4>
               <hr />
-              <input type="file" name="pictures" className="form-control" />
+              <input type="file" name="files" className="form-control" />
               <br />
-              <input type="file" name="pictures" className="form-control" />
+              <input type="file" name="files" className="form-control" />
               <br />
-              <input type="file" name="pictures" className="form-control" />
+              <input type="file" name="files" className="form-control" />
               <br />
-              <input type="file" name="pictures" className="form-control" />
+              <input type="file" name="files" className="form-control" />
               <hr />
             </div>
           </div>

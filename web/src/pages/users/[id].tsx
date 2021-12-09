@@ -5,7 +5,7 @@ import { createUserAnnotation, UserAnnotation } from '../../services/user-annota
 import { createUserCeaseCause, getUserCeaseCausesList, UserCeaseCause } from '../../services/user-cease-causes';
 import { NextPageContext } from 'next';
 import { toast } from 'react-toastify';
-import { User, getUser, updateUser, createUser } from '../../services/users';
+import { User, getUser, updateUser, createUser, UserDocument } from '../../services/users';
 import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
@@ -14,6 +14,7 @@ import PropertySelector from '../../components/property-selector';
 import React, { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import withPrivateRoute from '../../components/with-private-route';
+import UploadModal from '../../components/upload-modal';
 
 registerLocale('es', es);
 
@@ -49,10 +50,24 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     { name: 'Anotación', selector: (row) => row.annotation },
   ];
 
+  const documentsColumns: TableColumn<UserDocument>[] = [
+    { name: 'Id', selector: (row) => row.id, width: '100px' },
+    { name: 'Fecha', selector: (row) => new Date(row.createdAt).toLocaleDateString(), width: '100px' },
+    {
+      name: 'Fichero',
+      cell: (row) => (
+        <a download={`${row.originalFilename}`} href={`${process.env.NEXT_PUBLIC_DOCUMENTS_BASE_URL}/${row.document}`}>
+          {row.originalFilename}
+        </a>
+      ),
+    },
+  ];
+
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({} as User);
   const [userCeaseCauses, setUserCeaseCauses] = useState([] as UserCeaseCause[]);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
 
   const descriptionSorter = (a: { description: string }, b: { description: string }): number => {
     return a.description.localeCompare(b.description);
@@ -140,6 +155,35 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     toast.success(`Creada nueva causa de baja "${item.description}" con id "${item.id}"`);
   };
 
+  const onDocumentsSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    setUploadModalOpen(false);
+
+    if (!user.id) {
+      toast.warn('No es posible asignar documentos a un usuario que todavía no tiene ID');
+      return;
+    }
+
+    const data = new FormData(event.target as HTMLFormElement);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_REST_BASE_URL}/document-upload/${user.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: authToken.authorizationString,
+      },
+      body: data,
+    });
+
+    const { uploaded } = await response.json();
+    if (uploaded) {
+      const updatedUser = await getUser(user.id);
+
+      setUser((prev) => ({ ...prev, documents: [...updatedUser.documents] }));
+
+      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imagenes` : 'Añadida 1 nueva imagen');
+    }
+  };
+
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -172,6 +216,13 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
         onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
       />
+
+      <UploadModal
+        id="UploadModal"
+        isOpen={isUploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onReturn={onDocumentsSubmit}
+      ></UploadModal>
 
       <div className="container">
         <div className="row mb-4">
@@ -334,11 +385,9 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
         <div className="row mb-4">
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
-              <p className="d-flex justify-content-between">
-                <div>
-                  <i className="fas fa-home mr-2" aria-hidden="true"></i>
-                  Colonias
-                </div>
+              <p>
+                <i className="fas fa-home mr-2" aria-hidden="true"></i>
+                Colonias
               </p>
 
               <DataTable
@@ -358,10 +407,39 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
           <div className="col-md-12">
             <div className="shadow p-3 bg-body rounded">
               <div className="d-flex justify-content-between">
-                <div>
+                <p>
+                  <i className="far fa-file-pdf mr-2" aria-hidden="true"></i>
+                  Documentos
+                </p>
+                <button
+                  className="btn btn-primary btn-sm mb-3"
+                  onClick={() => setUploadModalOpen(true)}
+                  disabled={!user.id}
+                >
+                  <i className="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <DataTable
+                columns={documentsColumns}
+                data={user.documents || []}
+                dense={true}
+                highlightOnHover={true}
+                progressPending={loading}
+                striped={true}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-4">
+          <div className="col-md-12">
+            <div className="shadow p-3 bg-body rounded">
+              <div className="d-flex justify-content-between">
+                <p>
                   <i className="far fa-sticky-note mr-2" aria-hidden="true"></i>
                   Anotaciones
-                </div>
+                </p>
                 <button className="btn btn-primary btn-sm mb-3" onClick={onAddAnnotation} disabled={!user.id}>
                   <i className="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>

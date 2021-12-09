@@ -19,8 +19,17 @@ export const userDataFragment: string = `
     role { id description }
     colonies { id address createdAt  }
     annotations { id userId date annotation }
+    documents { id userId createdAt originalFilename document }
   }
 `;
+
+export type UserDocument = {
+  id: number;
+  userId: number;
+  createdAt: Date;
+  originalFilename: string;
+  document: string;
+};
 
 export type User = {
   id: number;
@@ -38,6 +47,7 @@ export type User = {
   role: { description: string };
   colonies: Colony[];
   annotations: UserAnnotation[];
+  documents: UserDocument[];
 };
 
 export interface UsersList {

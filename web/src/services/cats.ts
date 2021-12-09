@@ -2,14 +2,14 @@ import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
 import { Color } from './colors';
 
-interface Picture {
+export type Picture = {
   id: number;
   catId: number;
   createdAt: Date;
   originalFilename: string;
   image: string;
   thumbnail: string;
-}
+};
 
 export enum Gender {
   Male = 'Male',

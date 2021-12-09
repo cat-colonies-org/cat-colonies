@@ -3,6 +3,7 @@ import { Colony } from 'src/domain/colonies/entities/colony.entity';
 import { Role } from 'src/domain/roles/entities/role.entity';
 import { UserAnnotation } from 'src/domain/user-annotations/entities/user-annotation.entity';
 import { UserCeaseCause } from 'src/domain/user-cease-causes/entities/user-cease-cause.entity';
+import { Document } from 'src/domain/documents/entities/document.entity';
 import {
   BaseEntity,
   Column,
@@ -87,11 +88,7 @@ export class User extends BaseEntity {
   @Field(() => [UserAnnotation], { nullable: true })
   annotations?: Promise<UserAnnotation[]>;
 
-  // validEmail(email: string): boolean {
-  //   const re = new RegExp(
-  //     "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" +
-  //       '@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?',
-  //   );
-  //   return re.test(email);
-  // }
+  @OneToMany(() => Document, (document) => document.user)
+  @Field(() => [Document], { nullable: true })
+  documents?: Promise<Document[]>;
 }

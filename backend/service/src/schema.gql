@@ -59,6 +59,15 @@ type UserCeaseCause {
   users: [User!]!
 }
 
+type Document {
+  id: Int!
+  userId: Int!
+  createdAt: DateTime!
+  originalFilename: String!
+  document: String!
+  user: User!
+}
+
 type User {
   id: Int!
   name: String!
@@ -76,6 +85,7 @@ type User {
   roleId: Int
   role: Role
   annotations: [UserAnnotation!]
+  documents: [Document!]
 }
 
 type Colony {

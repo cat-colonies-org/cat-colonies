@@ -1,4 +1,6 @@
+import { CreateDocumentInput } from 'src/domain/documents/dto/create-document.input';
 import { CreatePictureInput } from 'src/domain/pictures/dto/create-picture.input';
+import { DocumentsService } from 'src/domain/documents/documents.service';
 import { FileMetadata } from './dto/file-upload.input';
 import { Injectable } from '@nestjs/common';
 import { PicturesService } from 'src/domain/pictures/pictures.service';
@@ -12,7 +14,11 @@ import SettingsService from 'src/settings/settings.service';
 export class FileUploadService {
   minioClient: Minio.Client;
 
-  constructor(private readonly settings: SettingsService, private readonly pictures: PicturesService) {
+  constructor(
+    private readonly settings: SettingsService,
+    private readonly pictures: PicturesService,
+    private readonly documents: DocumentsService,
+  ) {
     this.minioClient = new Minio.Client({
       useSSL: settings.storage.ssl,
       endPoint: settings.storage.endPoint,
@@ -57,5 +63,21 @@ export class FileUploadService {
     ]);
 
     await this.pictures.create(metadata);
+  }
+
+  async uploadDocument(userId: number, file: FileMetadata) {
+    const fileId = uuid();
+    const fileExt = Path.extname(file.originalname).toLowerCase();
+    const filename = `${userId}-${fileId}${fileExt}`;
+
+    await this.minioClient.putObject(this.settings.documents.bucket, filename, file.buffer, file.size);
+
+    const metadata: CreateDocumentInput = {
+      userId,
+      createdAt: new Date(),
+      originalFilename: file.originalname,
+      document: filename,
+    };
+    await this.documents.create(metadata);
   }
 }

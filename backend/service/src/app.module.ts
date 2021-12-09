@@ -23,6 +23,7 @@ import { UserAnnotationsModule } from './domain/user-annotations/user-annotation
 import { UsersModule } from './domain/users/users.module';
 import SettingsService from './settings/settings.service';
 import { UserCeaseCausesModule } from './domain/user-cease-causes/user-cease-causes.module';
+import { DocumentsModule } from './domain/documents/documents.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserCeaseCausesModule } from './domain/user-cease-causes/user-cease-cau
     ColoniesModule,
     ColonyAnnotationsModule,
     ColorsModule,
+    DocumentsModule,
     EnvironmentsModule,
     EyeColorsModule,
     FileUploadModule,
@@ -60,6 +62,7 @@ import { UserCeaseCausesModule } from './domain/user-cease-causes/user-cease-cau
         ColoniesModule,
         ColonyAnnotationsModule,
         ColorsModule,
+        DocumentsModule,
         EnvironmentsModule,
         EyeColorsModule,
         LocationTypesModule,
