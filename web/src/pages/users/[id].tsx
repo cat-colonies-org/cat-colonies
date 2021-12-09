@@ -180,7 +180,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
 
       setUser((prev) => ({ ...prev, documents: [...updatedUser.documents] }));
 
-      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imagenes` : 'Añadida 1 nueva imagen');
+      toast.success(uploaded > 1 ? `Añadidos ${uploaded} nuevos documentos` : 'Añadido 1 nuevo documento');
     }
   };
 

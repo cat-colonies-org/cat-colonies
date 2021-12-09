@@ -221,7 +221,7 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
       const updatedCat = await getCat(cat.id);
       setCat((cat) => ({ ...cat, pictures: [...updatedCat.pictures] }));
 
-      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imagenes` : 'Añadida 1 nueva imagen');
+      toast.success(uploaded > 1 ? `Añadidas ${uploaded} nuevas imágenes` : 'Añadida 1 nueva imagen');
     }
   };
 
