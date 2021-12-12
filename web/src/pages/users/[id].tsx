@@ -183,7 +183,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
       toast.success(uploaded > 1 ? `Añadidos ${uploaded} nuevos documentos` : 'Añadido 1 nuevo documento');
     }
   };
-
+/*
   const onSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -200,6 +200,43 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
 
     saved && setUser(saved);
   };
+*/
+
+const onSubmit = async (event: FormEvent): Promise<void> => {
+  event.preventDefault();
+
+  const user = await toast.promise(save(), {
+    pending: 'Conectando con el servidor...',
+    success: 'Datos actualizados',
+    error: 'Error actualizando datos',
+  });
+
+  setUser(user);
+};
+
+const save = () => {
+  if (user.id) {
+    return updateUser(+user.id, {
+      ...{ name: user.name },
+      ...{ surnames: user.surnames },
+      ...{ idCard: user.idCard },
+      ...{ email: user.email },
+      ...{ phoneNumber: user.phoneNumber},
+      ...{ authorizesWhatsApp: user.authorizesWhatsApp},
+     // ...{ ceasedAt: user.ceasedAt}, // TODO See how to mark user as ceased
+     // ...{ ceasedCauseId: +user.ceaseCauseId},
+    });
+  } else {
+    return createUser({
+      ...{ name: user.name },
+      ...{ surnames: user.surnames },
+      ...{ idCard: user.idCard },
+      ...{ email: user.email },
+      ...{ phoneNumber: user.phoneNumber},
+      ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
+    });
+  }
+};
 
   useEffect((): void => {
     fetchData();

@@ -1,4 +1,4 @@
-import { apiCall, getCriteriaString } from '../common/util';
+import { apiCall, getCriteriaString, objToListString } from '../common/util';
 import { Colony } from './colonies';
 import { UserAnnotation } from './user-annotations';
 
@@ -117,82 +117,38 @@ export async function getUser(id: number): Promise<User> {
   });
 }
 
-export async function createUser(user: Partial<User>): Promise<User> {
+export async function createUser(data: any): Promise<User> {
+  const toCreateString = objToListString(data);
+
   const query = `
     ${userDataFragment}
 
-    mutation (
-      $id: Int,
-      $name: String,
-      $surnames: String,
-      $idCard: String,
-      $phoneNumber: String,
-      $email: String,
-      $createdAt: DateTime,
-      $authorizesWhatsApp: Boolean,
-      $roleId: Number,
-      $colonies: [InputColony!],
-      ceaseAt: DateTime,
-      ceaseCauseId: Int
-    ) {
-      createUser(createUserInput: {
-        id: $id,
-        name: $name,
-        surnames: $surnames,
-        idCard: $idCard,
-        phoneNumber: $phoneNumber,
-        email: $email,
-        createdAt: $createdAt,
-        authorizesWhatsApp: $authorizesWhatsApp,
-        roleId: $roleId,
-        colonies: $colonies
-        ceaseAt: $ceaseAt,
-        ceaseCauseId: $ceaseCauseId
-      }) {
+    mutation {
+      createUser (createUserInput: {${toCreateString}}) {
         ...userData
       }
     }
   `;
 
-  return await apiCall(query, user).then((response): User => {
+  return await apiCall(query).then((response): User => {
     return getUserFromGraphQlResult(response?.data?.createUser);
   });
 }
 
-export async function updateUser(user: Partial<User>): Promise<User> {
+export async function updateUser(id: number, data: any): Promise<User> {
+  const toUpdateString = objToListString(data);
+
   const query = `
-    ${userDataFragment}
-
-    mutation (
-      $id: Int!,
-      $name: String,
-      $surnames: String,
-      $idCard: String,
-      $phoneNumber: String,
-      $email: String,
-      $authorizesWhatsApp: Boolean,
-      $ceasedAt: DateTime,
-      $ceaseCauseId: Int
-    ) {
-      updateUser(updateUserInput: {
-        id: $id,
-        name: $name,
-        surnames: $surnames,
-        idCard: $idCard,
-        phoneNumber: $phoneNumber,
-        email: $email,
-        authorizesWhatsApp: $authorizesWhatsApp,
-        ceasedAt: $ceasedAt,
-        ceaseCauseId: $ceaseCauseId
-      }) {
-        ...userData
+      ${userDataFragment}
+  
+      mutation {
+        updateUser (updateUserInput: {id: ${id}, ${toUpdateString}}) {
+          ...userData
+        }
       }
-    }
-  `;
+    `;
 
-  return await apiCall(query, user).then((response): User => {
-    let user = response?.data?.updateUser;
-    user = user ? getUserFromGraphQlResult(user) : undefined;
-    return user;
+  return await apiCall(query).then((response): User => {
+    return getUserFromGraphQlResult(response?.data?.updateUser);
   });
 }
