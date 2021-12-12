@@ -183,24 +183,6 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
       toast.success(uploaded > 1 ? `Añadidos ${uploaded} nuevos documentos` : 'Añadido 1 nuevo documento');
     }
   };
-/*
-  const onSubmit = async (event: FormEvent): Promise<void> => {
-    event.preventDefault();
-
-    let promise: Promise<User>;
-
-    if (user.id) promise = updateUser(user);
-    else promise = createUser(user);
-
-    const saved = await toast.promise(promise, {
-      pending: 'Conectando con el servidor...',
-      success: 'Datos actualizados',
-      error: 'Error actualizando datos',
-    });
-
-    saved && setUser(saved);
-  };
-*/
 
 const onSubmit = async (event: FormEvent): Promise<void> => {
   event.preventDefault();
