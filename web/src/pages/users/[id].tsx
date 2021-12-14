@@ -130,14 +130,14 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     });
   };
 
-  const onDateChange = (date: Date, field: string): void => {
+  const onDateChange = (date: any, field: string): void => {
     setUser((prev: User) => {
       return { ...prev, [field]: date };
     });
   };
 
-  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
-    setUser((prev: any) => ({ ...prev, [meta.name]: data?.value }));
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {    
+    setUser((prev: any) => ({ ...prev, [meta.name]: data? data.value : null }));
   };
 
   const onCreateCeaseCause = async (description: string) => {
@@ -204,9 +204,10 @@ const save = () => {
       ...{ idCard: user.idCard },
       ...{ email: user.email },
       ...{ phoneNumber: user.phoneNumber},
-      ...{ authorizesWhatsApp: user.authorizesWhatsApp},
-     // ...{ ceasedAt: user.ceasedAt}, // TODO See how to mark user as ceased
-     // ...{ ceasedCauseId: +user.ceaseCauseId},
+      ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
+      ...{ ceasedAt: user.ceasedAt },
+      ...{ ceaseCauseId: user.ceaseCauseId},
+      ...{ password: user.password },
     });
   } else {
     return createUser({
@@ -370,8 +371,10 @@ const save = () => {
                         id="ceasedAt"
                         className="form-control"
                         locale="es"
-                        value={user?.ceasedAt?.toLocaleDateString()}
+                        value={user?.ceasedAt?.toLocaleDateString()}                                           
                         onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                        isClearable={true}
+                        todayButton="Hoy"                        
                       />
                     </div>
                     <div className="col-md-4">

@@ -43,6 +43,7 @@ export type User = {
   email: string;
   roleId: number;
   idCard: string;
+  password: string;
   authorizesWhatsApp: boolean;
   role: { description: string };
   colonies: Colony[];
