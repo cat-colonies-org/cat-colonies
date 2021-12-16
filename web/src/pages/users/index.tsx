@@ -34,6 +34,10 @@ const UsersList = () => {
     setLoading(false);
   };
 
+  const addManager = () => {
+    router.push(`/users/new`);
+  };
+
   const handlePageChange = (page: number) => {
     fetchData(page);
   };
@@ -79,7 +83,12 @@ const UsersList = () => {
 
   return (
     <>
-      <p>Listado de gestoras</p>
+      <p className="d-flex justify-content-between">
+        <div>Listado de Gestoras</div>
+        <button className="btn btn-primary btn-sm" onClick={addManager}>
+          <i className="fa fa-plus-circle" aria-hidden="true"></i>
+        </button>
+      </p>
 
       <form onSubmit={onSearchSubmit}>
         <div className="col-lg-12 mb-3">

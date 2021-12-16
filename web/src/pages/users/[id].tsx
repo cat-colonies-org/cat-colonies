@@ -31,8 +31,12 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     name: '',
     surnames: '',
     phoneNumber: '',
+    authorizesWhatsApp: false,    
     email: '',
     roleId: 0,
+    password: '',
+    ceaseCauseId: undefined,
+    ceasedAt: undefined,
   });
 
   const coloniesColumns: TableColumn<Colony>[] = [
@@ -197,7 +201,7 @@ const onSubmit = async (event: FormEvent): Promise<void> => {
 };
 
 const save = () => {
-  if (user.id) {
+    if (user.id) {
     return updateUser(+user.id, {
       ...{ name: user.name },
       ...{ surnames: user.surnames },
@@ -205,8 +209,8 @@ const save = () => {
       ...{ email: user.email },
       ...{ phoneNumber: user.phoneNumber},
       ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
-      ...{ ceasedAt: user.ceasedAt },
-      ...{ ceaseCauseId: user.ceaseCauseId},
+      ...{ ceasedAt: user.ceasedAt ? user.ceasedAt : null},
+      ...{ ceaseCauseId:user.ceaseCauseId ? user.ceaseCauseId : null},
       ...{ password: user.password },
     });
   } else {
@@ -217,6 +221,9 @@ const save = () => {
       ...{ email: user.email },
       ...{ phoneNumber: user.phoneNumber},
       ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
+      ...{ ceasedAt:  user.ceasedAt ? user.ceasedAt : null },
+      ...{ ceaseCauseId: user.ceaseCauseId ? user.ceaseCauseId : null },      
+      ...{ password: user.password},
     });
   }
 };
@@ -264,7 +271,7 @@ const save = () => {
                         type="text"
                         className="form-control"
                         value={user?.id ? `GES${user.id}` : ''}
-                        placeholder="Nueva colonia"
+                        placeholder="Nueva gestora"
                         readOnly
                       />
                     </div>
