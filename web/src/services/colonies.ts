@@ -1,4 +1,4 @@
-import { apiCall, objToListString } from '../common/util';
+import { apiCall, getCriteriaString, objToListString } from '../common/util';
 import { Cat, catDataFragment } from './cats';
 import { ColonyAnnotation } from './colony-annotations';
 import { User } from './users';
@@ -55,15 +55,22 @@ const getColonyFromGraphQlResult = (colony: Record<string, any>): Colony => {
   } as Colony;
 };
 
-export async function getColoniesList(page: number, perPage: number): Promise<ColoniesList> {
-  const skip = Math.max(page - 1, 0) * perPage;
-  const take = perPage;
+export async function getColoniesList({
+  filter,
+  page,
+  perPage,
+}: {
+  filter?: Record<string, any>;
+  page?: number;
+  perPage?: number;
+}): Promise<ColoniesList> {
+  const criteria = getCriteriaString({ filter, page, perPage });
 
   const query = `
     ${colonyDataFragment}
 
     query {
-      colonies (order: "id", descending: false, skip: ${skip}, take: ${take}) {
+      colonies (${criteria}) {
         total
         items {
           ...colonyData

@@ -3,7 +3,7 @@ import { Colony } from './entities/colony.entity';
 import { Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { omit } from 'src/util';
-import { Repository, SelectQueryBuilder, getConnection } from 'typeorm';
+import { Repository, SelectQueryBuilder, getConnection, ILike } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Roles } from '../roles/entities/role.entity';
 import { User } from '../users/entities/user.entity';
@@ -32,8 +32,13 @@ export class ColoniesService extends BaseCrudService<Colony> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
+    // Allow searching for partial strings ignoring case
+    const conditions = Object.entries(filter).map(([field, value]) => {
+      return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
+    });
+
     return this.GetSecuredQueryBuilder()
-      .andWhere(filter)
+      .andWhere(conditions)
       .orderBy(order ? 'Colony.' + order : undefined, descending ? 'DESC' : 'ASC')
       .skip(skip)
       .take(take)

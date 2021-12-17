@@ -1,6 +1,6 @@
 import { Colony, getColoniesList } from '../../services/colonies';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import withPrivateRoute from '../../components/with-private-route';
 
@@ -9,13 +9,19 @@ const Colonies = () => {
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
 
-  const fetchData = async (page: number, newPerPage?: number) => {
+  const fetchData = async (page: number=1, newPerPage: number=perPage) => {
     setLoading(true);
 
-    const colonies = await getColoniesList(page, newPerPage || perPage);
+    const filter = {
+      address: search,      
+    };
+
+    const colonies = await getColoniesList( {
+      filter, page, perPage: newPerPage } );
 
     setData(colonies.items);
     setTotalRows(colonies.total);
@@ -45,6 +51,18 @@ const Colonies = () => {
     }, 0);
   };
 
+  const onSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    fetchData();
+  };
+
+  const onInputChange = (event: FormEvent<HTMLInputElement>): void => {
+    const target = (event.target || event.currentTarget) as any;
+
+    setSearch(target.value);
+  };
+
+
   const columns: TableColumn<Colony>[] = [
     { name: 'Id', selector: (row) => row.id },
     { name: 'Registro', selector: (row) => row.createdAt.toLocaleDateString() },
@@ -55,6 +73,8 @@ const Colonies = () => {
     { name: 'Activos', selector: (row) => getActiveCats(row) },
   ];
 
+
+
   return (
     <>
       <p className="d-flex justify-content-between">
@@ -63,6 +83,30 @@ const Colonies = () => {
           <i className="fa fa-plus-circle" aria-hidden="true"></i>
         </button>
       </p>
+
+      <form onSubmit={onSearchSubmit}>
+        <div className="col-lg-12 mb-3">
+          <div className="shadow-sm p-3 bg-body rounded">
+            <div className="row mt-3">
+              <div className="col-md-10">
+                <input
+                  id="surnames"
+                  type="search"
+                  placeholder="Indicar filtro"
+                  className="form-control"
+                  value={search}
+                  onChange={onInputChange}
+                />
+              </div>
+              <div className="col-md-2">
+                <button className="btn btn-primary" type="submit">
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
 
       <DataTable
         columns={columns}
