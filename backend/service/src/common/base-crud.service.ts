@@ -7,6 +7,7 @@ export interface ICrudService<T> {
   update(id: number, updateInput: Record<string, any>): Promise<T>;
   remove(id: number): Promise<boolean>;
 }
+
 export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
   constructor(protected readonly repository: Repository<T>) {}
 
@@ -30,14 +31,10 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
       return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
     });
 
-    const filterClause = { where: conditions };
-    const orderClause = order ? JSON.parse(JSON.stringify({ order: { [order]: descending ? -1 : 1 } })) : undefined;
-    const paginationClause = skip !== undefined && take !== undefined ? { skip, take } : undefined;
-
     return this.repository.findAndCount({
-      ...filterClause,
-      ...orderClause,
-      ...paginationClause,
+      ...(conditions && { where: conditions }),
+      ...(order && { [order]: descending ? -1 : 1 }),
+      ...(skip && take && { skip, take }),
     });
   }
 
