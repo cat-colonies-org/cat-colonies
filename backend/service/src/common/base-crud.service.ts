@@ -1,4 +1,4 @@
-import { BaseEntity, Repository, ILike, Like } from 'typeorm';
+import { BaseEntity, Repository, ILike, Like, FindManyOptions } from 'typeorm';
 import { omit } from '../util';
 export interface ICrudService<T> {
   create(createInput: Record<string, any>): Promise<T>;
@@ -32,9 +32,10 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     });
 
     return this.repository.findAndCount({
-      ...(conditions && { where: conditions }),
-      ...(order && { [order]: descending ? -1 : 1 }),
-      ...(skip && take && { skip, take }),
+      where: conditions,
+      order: JSON.parse(`{ "${order}": ${descending ? -1 : 1} }`),
+      skip,
+      take,
     });
   }
 
