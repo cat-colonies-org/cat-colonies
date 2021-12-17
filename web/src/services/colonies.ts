@@ -4,14 +4,12 @@ import { ColonyAnnotation } from './colony-annotations';
 import { User } from './users';
 
 export const colonyDataFragment: string = `
-  ${catDataFragment}
-
   fragment colonyData on Colony {
     id
     createdAt
     address
     managers { id name createdAt }
-    cats { ...catData }
+    cats { ceasedAt ceaseCauseId }
     locationTypeId
     locationType { description }
     environmentId
