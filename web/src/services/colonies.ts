@@ -3,13 +3,32 @@ import { Cat, catDataFragment } from './cats';
 import { ColonyAnnotation } from './colony-annotations';
 import { User } from './users';
 
-export const colonyDataFragment: string = `
+export const colonyListDataFragment: string = `
   fragment colonyData on Colony {
     id
     createdAt
     address
     managers { id name createdAt }
     cats { ceasedAt ceaseCauseId }
+    locationTypeId
+    locationType { description }
+    environmentId
+    environment { description }
+    townId
+    town { name }
+    annotations { id colonyId date annotation }
+  }
+`;
+
+export const colonyDataFragment: string = `
+  ${catDataFragment}
+
+  fragment colonyData on Colony {
+    id
+    createdAt
+    address
+    managers { id name createdAt }
+    cats { ...catData }
     locationTypeId
     locationType { description }
     environmentId
@@ -65,7 +84,7 @@ export async function getColoniesList({
   const criteria = getCriteriaString({ filter, page, perPage });
 
   const query = `
-    ${colonyDataFragment}
+    ${colonyListDataFragment}
 
     query {
       colonies (${criteria}) {
