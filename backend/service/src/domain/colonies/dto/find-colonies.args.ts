@@ -17,4 +17,7 @@ export class FindColoniesArgs extends FindArgs {
 
   @Field(() => Int, { nullable: true })
   townId?: number;
+
+  @Field(() => String, { nullable: true })
+  townName?: string;
 }

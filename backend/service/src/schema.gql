@@ -319,7 +319,7 @@ type Query {
   cat(id: Int!): Cat
   ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
   ceaseCause(id: Int!): CeaseCause
-  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int): FindColoniesResult
+  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int, townName: String): FindColoniesResult
   colony(id: Int!): Colony
   users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
   user(id: Int!): User

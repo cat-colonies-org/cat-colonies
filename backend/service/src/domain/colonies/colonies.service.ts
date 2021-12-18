@@ -29,8 +29,12 @@ export class ColoniesService extends BaseCrudService<Colony> {
   }
 
   override find(opts: Record<string, any>): Promise<[Colony[], number]> {
-    const { skip, take, order, descending } = opts;
-    const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
+    const { townName, skip, take, order, descending } = opts;
+    let filter = omit(opts, ['townName', 'skip', 'take', 'order', 'descending']);
+
+    if (townName) {
+      filter = { ...filter, 'town.name': townName };
+    }
 
     // Allow searching for partial strings ignoring case
     const conditions = Object.entries(filter).map(([field, value]) => {
@@ -38,6 +42,7 @@ export class ColoniesService extends BaseCrudService<Colony> {
     });
 
     return this.GetSecuredQueryBuilder()
+      .innerJoin('Colony.town', 'town')
       .andWhere(conditions)
       .orderBy(order ? 'Colony.' + order : undefined, descending ? 'DESC' : 'ASC')
       .skip(skip)

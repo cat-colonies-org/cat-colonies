@@ -17,7 +17,8 @@ const Colonies = () => {
     setLoading(true);
 
     const filter = {
-      address: search,      
+      address: search, 
+      townName: search,     
     };
 
     const colonies = await getColoniesList( {
