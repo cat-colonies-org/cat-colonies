@@ -17,7 +17,7 @@ export const userDataFragment: string = `
     authorizesWhatsApp
     password
     role { id description }
-    colonies { id address createdAt  }
+    colonies { id address createdAt town { name } environment {description} locationType {description} }
     annotations { id userId date annotation }
     documents { id userId createdAt originalFilename document }
   }
