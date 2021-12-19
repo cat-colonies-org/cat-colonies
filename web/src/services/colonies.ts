@@ -8,15 +8,10 @@ export const colonyListDataFragment: string = `
     id
     createdAt
     address
-    managers { id name createdAt }
     cats { ceasedAt ceaseCauseId }
-    locationTypeId
     locationType { description }
-    environmentId
     environment { description }
-    townId
     town { name }
-    annotations { id colonyId date annotation }
   }
 `;
 
