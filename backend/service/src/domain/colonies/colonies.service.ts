@@ -28,22 +28,26 @@ export class ColoniesService extends BaseCrudService<Colony> {
     return qb;
   }
 
-  override find(opts: Record<string, any>): Promise<[Colony[], number]> {
+  override async find(opts: Record<string, any>): Promise<[Colony[], number]> {
     const { townName, skip, take, order, descending } = opts;
-    let filter = omit(opts, ['townName', 'skip', 'take', 'order', 'descending']);
-
-    if (townName) {
-      filter = { ...filter, 'town.name': townName };
-    }
+    const filter = omit(opts, ['townName', 'skip', 'take', 'order', 'descending']);
 
     // Allow searching for partial strings ignoring case
     const conditions = Object.entries(filter).map(([field, value]) => {
       return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
     });
 
-    return this.GetSecuredQueryBuilder()
-      .innerJoin('Colony.town', 'town')
-      .andWhere(conditions)
+    const queryBuilder = this.GetSecuredQueryBuilder();
+
+    if (townName) {
+      queryBuilder
+        .innerJoin('Colony.town', 'town')
+        .where('town.name ILIKE :townName')
+        .setParameter('townName', `%${townName}%`);
+    }
+
+    return queryBuilder
+      .orWhere(conditions)
       .orderBy(order ? 'Colony.' + order : undefined, descending ? 'DESC' : 'ASC')
       .skip(skip)
       .take(take)
