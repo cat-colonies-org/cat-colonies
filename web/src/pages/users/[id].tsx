@@ -31,7 +31,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     name: '',
     surnames: '',
     phoneNumber: '',
-    authorizesWhatsApp: false,    
+    authorizesWhatsApp: false,
     email: '',
     roleId: 0,
     password: '',
@@ -87,7 +87,10 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
       getUserCeaseCausesList({}),
     ]);
 
-    if (user) setUser(user);
+    if (user) {
+      setUser(user);
+    }
+
     if (ceaseCauses) setUserCeaseCauses(ceaseCauses.items.sort(descriptionSorter));
 
     setLoading(false);
@@ -140,8 +143,8 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     });
   };
 
-  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {    
-    setUser((prev: any) => ({ ...prev, [meta.name]: data? data.value : null }));
+  const onSelectChange = (data: any, meta: { action: string; name: string }): void => {
+    setUser((prev: any) => ({ ...prev, [meta.name]: data ? data.value : null }));
   };
 
   const onCreateCeaseCause = async (description: string) => {
@@ -188,45 +191,45 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
     }
   };
 
-const onSubmit = async (event: FormEvent): Promise<void> => {
-  event.preventDefault();
+  const onSubmit = async (event: FormEvent): Promise<void> => {
+    event.preventDefault();
 
-  const user = await toast.promise(save(), {
-    pending: 'Conectando con el servidor...',
-    success: 'Datos actualizados',
-    error: 'Error actualizando datos',
-  });
+    const user = await toast.promise(save(), {
+      pending: 'Conectando con el servidor...',
+      success: 'Datos actualizados',
+      error: 'Error actualizando datos',
+    });
 
-  setUser(user);
-};
+    setUser(user);
+  };
 
-const save = () => {
+  const save = () => {
     if (user.id) {
-    return updateUser(+user.id, {
-      ...{ name: user.name },
-      ...{ surnames: user.surnames },
-      ...{ idCard: user.idCard },
-      ...{ email: user.email },
-      ...{ phoneNumber: user.phoneNumber},
-      ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
-      ...{ ceasedAt: user.ceasedAt ? user.ceasedAt : null},
-      ...{ ceaseCauseId:user.ceaseCauseId ? user.ceaseCauseId : null},
-      ...{ password: user.password },
-    });
-  } else {
-    return createUser({
-      ...{ name: user.name },
-      ...{ surnames: user.surnames },
-      ...{ idCard: user.idCard },
-      ...{ email: user.email },
-      ...{ phoneNumber: user.phoneNumber},
-      ...{ authorizesWhatsApp: user.authorizesWhatsApp},      
-      ...{ ceasedAt:  user.ceasedAt ? user.ceasedAt : null },
-      ...{ ceaseCauseId: user.ceaseCauseId ? user.ceaseCauseId : null },      
-      ...{ password: user.password},
-    });
-  }
-};
+      return updateUser(+user.id, {
+        ...{ name: user.name },
+        ...{ surnames: user.surnames },
+        ...{ idCard: user.idCard },
+        ...{ email: user.email },
+        ...{ phoneNumber: user.phoneNumber },
+        ...{ authorizesWhatsApp: user.authorizesWhatsApp },
+        ...{ ceasedAt: user.ceasedAt ? user.ceasedAt : null },
+        ...{ ceaseCauseId: user.ceaseCauseId ? user.ceaseCauseId : null },
+        ...{ password: user.password },
+      });
+    } else {
+      return createUser({
+        ...{ name: user.name },
+        ...{ surnames: user.surnames },
+        ...{ idCard: user.idCard },
+        ...{ email: user.email },
+        ...{ phoneNumber: user.phoneNumber },
+        ...{ authorizesWhatsApp: user.authorizesWhatsApp },
+        ...{ ceasedAt: user.ceasedAt ? user.ceasedAt : null },
+        ...{ ceaseCauseId: user.ceaseCauseId ? user.ceaseCauseId : null },
+        ...{ password: user.password },
+      });
+    }
+  };
 
   useEffect((): void => {
     fetchData();
@@ -377,11 +380,12 @@ const save = () => {
                       <ReactDatePicker
                         id="ceasedAt"
                         className="form-control"
+                        dateFormat="dd/MM/yyyy"
                         locale="es"
-                        value={user?.ceasedAt?.toLocaleDateString()}                                           
+                        selected={user?.ceasedAt}
                         onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
-                        isClearable={true}
-                        todayButton="Hoy"                        
+                        todayButton="Hoy"
+                        isClearable
                       />
                     </div>
                     <div className="col-md-4">

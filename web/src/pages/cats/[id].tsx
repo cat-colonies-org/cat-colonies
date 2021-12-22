@@ -343,8 +343,11 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                         id="bornAt"
                         className="form-control"
                         locale="es"
-                        value={cat?.bornAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'bornAt')}
+                        selected={cat?.bornAt}
+                        dateFormat="dd/MM/yyyy"
+                        todayButton="Hoy"
+                        isClearable
                       />
                     </div>
                     <div className="col-md-2">
@@ -390,8 +393,11 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                         id="sterilizedAt"
                         className="form-control"
                         locale="es"
-                        value={cat?.sterilizedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'sterilizedAt')}
+                        selected={cat?.sterilizedAt}
+                        dateFormat="dd/MM/yyyy"
+                        todayButton="Hoy"
+                        isClearable
                       />
                     </div>
 
@@ -403,8 +409,11 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                         id="ceasedAt"
                         className="form-control"
                         locale="es"
-                        value={cat?.ceasedAt?.toLocaleDateString()}
                         onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                        selected={cat?.ceasedAt}
+                        dateFormat="dd/MM/yyyy"
+                        todayButton="Hoy"
+                        isClearable
                       />
                     </div>
                     <div className="col-md-4">
