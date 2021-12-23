@@ -7,9 +7,6 @@
   "license": "BSD 3-Clause License",
   "scripts": {
     "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
-    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-database:$npm_package_version .",
-    "docker:push": "docker push daviddq/cat-colonies-database:$npm_package_version",
-    "docker:buildLatest": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-database:latest .",
-    "docker:pushLatest": "docker push daviddq/cat-colonies-database:latest"
+    "docker:build": "docker buildx build -f Dockerfile.prod -t daviddq/cat-colonies-database:$npm_package_version -t daviddq/cat-colonies-database:latest --platform linux/arm64,linux/amd64 --output type=image,push=true ."
   }
 }

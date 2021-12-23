@@ -35,24 +35,17 @@ jobs:
         run: |
           npm run version:setBuild
 
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Build tagged database image
+      - name: Build and push database image
         run: |
           npm run docker:build
-
-      - name: Push tagged database image
-        run: |
-          npm run docker:push
-
-      - name: Build latest database image
-        run: |
-          npm run docker:buildLatest
-
-      - name: Push latest database image
-        run: |
-          npm run docker:pushLatest

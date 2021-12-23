@@ -20,10 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "version:setBuild": "sed -i \"0,/-dev-build/s/-dev-build/-${BUILD_NUMBER:-dev-build}/\" package.json",
-    "docker:build": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service:$npm_package_version .",
-    "docker:push": "docker push daviddq/cat-colonies-service:$npm_package_version",
-    "docker:buildLatest": "docker image build -f Dockerfile.prod -t daviddq/cat-colonies-service:latest .",
-    "docker:pushLatest": "docker push daviddq/cat-colonies-service:latest"
+    "docker:build": "docker buildx build -f Dockerfile.prod -t daviddq/cat-colonies-service:$npm_package_version -t daviddq/cat-colonies-service:latest --platform linux/arm64,linux/amd64 --output type=image,push=true ."
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -35,7 +32,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.2",
     "apollo-server-express": "^2.25.2",
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "graphql": "^15.5.1",
     "graphql-redis-subscriptions": "^2.4.0",
     "minio": "^7.0.19",
@@ -53,7 +50,7 @@
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
-    "@types/bcrypt": "^5.0.0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.24",
     "@types/minio": "^7.0.10",
