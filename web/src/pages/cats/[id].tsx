@@ -276,6 +276,7 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
         isOpen={isAnnotationModalOpen}
         onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
+        placeholder="Inserta aquí la anotación"
       />
 
       <UploadModal

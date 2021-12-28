@@ -245,6 +245,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
         isOpen={isAnnotationModalOpen}
         onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
+        placeholder="Inserta aquí la anotación"
       />
 
       <UploadModal

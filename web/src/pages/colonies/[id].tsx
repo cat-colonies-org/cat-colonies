@@ -369,6 +369,7 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
         isOpen={isAnnotationModalOpen}
         onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
+        placeholder="Inserta aquí la anotación"
       />
 
       <div className="container">
