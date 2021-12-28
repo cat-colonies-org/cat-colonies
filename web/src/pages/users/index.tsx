@@ -63,16 +63,16 @@ const UsersList = () => {
   }, []);
 
   const columns: TableColumn<User>[] = [
-    { name: 'Id', selector: (user) => user.id, width: '60px' },
+    { name: 'Id', selector: (user) => "GES"+user.id, width: '90px' },
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString(), width: '100px' },
     {
       name: 'Rol',
-      width: '150px',
+      width: '120px',
       selector: (user) => user.role?.description,
     },
     { name: 'Nombre', selector: (user) => user.name, width: '150px' },
-    { name: 'Apellidos', selector: (user) => user.surnames, width: '200px' },
-    { name: 'Teléfono', selector: (user) => user.phoneNumber, width: '100px' },
+    { name: 'Apellidos', selector: (user) => user.surnames, width: '180px' },
+    { name: 'Teléfono', selector: (user) => user.phoneNumber, width: '120px' },
     { name: 'Email', selector: (user) => user.email, width: '200px' },
     {
       name: 'Baja',

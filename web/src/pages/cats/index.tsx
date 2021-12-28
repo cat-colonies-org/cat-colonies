@@ -37,13 +37,13 @@ const CatsList = () => {
   }, []);
 
   const columns: TableColumn<Cat>[] = [
-    { name: 'Id', selector: (cat) => cat.id, width: '60px' },
+    { name: 'Id', selector: (cat) => 'CAT'+cat.id, width: '80px' },
     { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
     {
-      name: 'Nacimiento',
-      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
-      width: '100px',
-    },
+      name: 'Capa',
+      width: '180px',
+      selector: coatFromCat,
+    },    
     {
       name: 'Sexo',
       width: '100px',
@@ -61,12 +61,7 @@ const CatsList = () => {
       name: 'Cachorro',
       width: '95px',
       selector: (cat) => (isKitten(cat) ? 'Cachorro' : ''),
-    },
-    {
-      name: 'Capa',
-      width: '300px',
-      selector: coatFromCat,
-    },
+    },    
     {
       name: 'Fotos',
       width: '100px',
@@ -78,6 +73,11 @@ const CatsList = () => {
       width: '100px',
     },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
+    {
+      name: 'Nacimiento',
+      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
   ];
 
   // const columns: TableColumn<Cat>[] = [

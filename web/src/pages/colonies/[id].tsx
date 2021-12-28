@@ -54,12 +54,12 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
   });
 
   const catsColumns: TableColumn<Cat>[] = [
-    { name: 'Id', selector: (cat) => cat.id, width: '60px' },
-    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
+    { name: 'Id', selector: (cat) => 'CAT'+cat.id, width: '100px' },
+    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },    
     {
-      name: 'Nacimiento',
-      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
-      width: '100px',
+      name: 'Capa',
+      width: '150px',
+      selector: coatFromCat,
     },
     {
       name: 'Sexo',
@@ -78,12 +78,7 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
       name: 'Cachorro',
       width: '95px',
       selector: (cat) => (isKitten(cat) ? 'Cachorro' : ''),
-    },
-    {
-      name: 'Capa',
-      width: '200px',
-      selector: coatFromCat,
-    },
+    },    
     {
       name: 'Baja',
       selector: (cat) => (cat.ceasedAt ? new Date(cat.ceasedAt).toLocaleDateString() : ''),
@@ -91,10 +86,15 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
     },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
     { name: 'Fotos', selector: (cat) => cat?.pictures?.length, width: '90px' },
+    {
+      name: 'Nacimiento',
+      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
+      width: '100px',
+    },
   ];
 
   const managersColumns: TableColumn<User>[] = [
-    { name: 'Id', selector: (user) => user.id, width: '60px' },
+    { name: 'Id', selector: (user) => "GES"+user.id, width: '100px' },
     { name: 'Nombre', selector: (user) => user.name, width: '200px' },
     { name: 'Alta', selector: (user) => new Date(user.createdAt).toLocaleDateString(), width: '100px' },
     {

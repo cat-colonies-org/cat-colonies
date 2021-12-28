@@ -65,7 +65,7 @@ const Colonies = () => {
 
 
   const columns: TableColumn<Colony>[] = [
-    { name: 'Id', selector: (row) => row.id },
+    { name: 'Id', selector: (row) => 'CO'+row.id },
     { name: 'Registro', selector: (row) => row.createdAt.toLocaleDateString() },
     { name: 'Dirección', selector: (row) => row.address },
     { name: 'Tipo ubicación', selector: (row) => row.locationType.description },
