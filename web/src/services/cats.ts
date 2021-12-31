@@ -1,6 +1,7 @@
 import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
 import { Color } from './colors';
+import { Town } from './towns';
 
 export type Picture = {
   id: number;
@@ -29,7 +30,7 @@ export const catDataFragment: string = `
     sterilizedAt
     gender
     colonyId
-    colony { address cats { id } }
+    colony { id address town { name } cats { id } }
     eyeColorId
     eyeColor { description }
     patternId
@@ -55,7 +56,7 @@ export type Cat = {
   sterilizedAt: Date;
   gender: Gender;
   colonyId: number;
-  colony: { address: string; cats: CatId[] };
+  colony: { id: number; address: string; town: { name: string }; cats: CatId[] };
   eyeColorId: number;
   eyeColor: { description: string };
   patternId: number;

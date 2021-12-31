@@ -38,12 +38,12 @@ const CatsList = () => {
 
   const columns: TableColumn<Cat>[] = [
     { name: 'Id', selector: (cat) => cat.id, width: '60px' },
-    { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
-    {
-      name: 'Nacimiento',
-      selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
-      width: '100px',
-    },
+    // { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
+    // {
+    //   name: 'Nacimiento',
+    //   selector: (cat) => (cat.bornAt ? new Date(cat.bornAt).toLocaleDateString() : ''),
+    //   width: '100px',
+    // },
     {
       name: 'Sexo',
       width: '100px',
@@ -64,7 +64,7 @@ const CatsList = () => {
     },
     {
       name: 'Capa',
-      width: '300px',
+      width: '150px',
       selector: coatFromCat,
     },
     {
@@ -78,6 +78,12 @@ const CatsList = () => {
       width: '100px',
     },
     { name: 'Causa baja', selector: (cat) => (cat.ceaseCauseId ? cat.ceaseCause?.description : '') },
+    {
+      name: 'Colonia',
+      selector: (cat) => {
+        return cat.colony ? `${cat.colony.address} - ${cat.colony.town?.name} (${cat.colony.id})` : '';
+      },
+    },
   ];
 
   // const columns: TableColumn<Cat>[] = [
