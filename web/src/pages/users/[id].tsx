@@ -40,7 +40,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
   });
 
   const coloniesColumns: TableColumn<Colony>[] = [
-    { name: 'Id', selector: (colony) => colony.id },
+    { name: 'Id', selector: (colony) => "CO"+colony.id },
     { name: 'Alta', selector: (colony) => new Date(colony.createdAt).toLocaleDateString() },
     { name: 'Ciudad', selector: (colony) => (colony.town?.name ? colony.town.name : undefined) },
     { name: 'Calle', selector: (colony) => colony.address },
@@ -245,6 +245,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
         isOpen={isAnnotationModalOpen}
         onClose={() => setAnnotationModalOpen(false)}
         onReturn={onNewAnnotation}
+        placeholder="Inserta aquí la anotación"
       />
 
       <UploadModal

@@ -37,7 +37,7 @@ const CatsList = () => {
   }, []);
 
   const columns: TableColumn<Cat>[] = [
-    { name: 'Id', selector: (cat) => cat.id, width: '60px' },
+    { name: 'Id', selector: (cat) => 'CAT' + cat.id, width: '80px' },
     // { name: 'Alta', selector: (cat) => new Date(cat.createdAt).toLocaleDateString(), width: '100px' },
     // {
     //   name: 'Nacimiento',
@@ -64,7 +64,7 @@ const CatsList = () => {
     },
     {
       name: 'Capa',
-      width: '150px',
+      width: '180px',
       selector: coatFromCat,
     },
     {

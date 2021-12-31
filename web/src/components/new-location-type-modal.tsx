@@ -39,6 +39,7 @@ const NewLocationTypeModal = ({
       onClose={onClose}
       onReturn={onCreateLocationType}
       isOpen={isOpen}
+      placeholder="Nombre de la ubicación"
     />
   );
 };

@@ -38,6 +38,7 @@ const NewEnvironmentModal = ({
       isOpen={isOpen}
       onReturn={onCreateEnvironment}
       onClose={onClose}
+      placeholder="Nombre del entorno"
     />
   );
 };

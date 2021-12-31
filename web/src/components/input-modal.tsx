@@ -9,13 +9,14 @@ interface InputModalProps {
   isOpen: boolean;
   onClose: any;
   onReturn: any;
+  placeholder: string;
 }
 
 export interface InputModalResult {
   value: string;
 }
 
-const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onClose, onReturn }: InputModalProps) => {
+const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onClose, onReturn, placeholder='' }: InputModalProps) => {
   const [state, setState] = useState({ value: '' } as InputModalResult);
   const input = useRef<HTMLInputElement>(null);
 
@@ -82,7 +83,7 @@ const InputModal = ({ id, title, caption, buttonCaption = 'Aceptar', isOpen, onC
               className="form-control"
               value={state.value}
               onChange={onValueChange}
-              placeholder="Nombre de la localidad"
+              placeholder={placeholder}
               ref={input}
             />
             <hr />

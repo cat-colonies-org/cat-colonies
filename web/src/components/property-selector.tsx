@@ -54,6 +54,7 @@ const PropertySelector = ({
         isOpen={isModalOpen}
         onReturn={(result: InputModalResult) => result.value && onCreate(result.value)}
         onClose={onModalClose}
+        placeholder=""
       />
       <div className="input-group mb-3 flex-nowrap">
         <Select
