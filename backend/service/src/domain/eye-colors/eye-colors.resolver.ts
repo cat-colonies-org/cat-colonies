@@ -9,7 +9,7 @@ import { PUB_SUB } from 'src/pubsub.module';
 import { RemoveEyeColorResult } from './dto/remove-eye-color.result';
 import { FindEyeColorsResult } from './dto/find-eye-colors.result';
 import { BaseResolver } from 'src/common/base-resolver';
-import { PubSubEngine } from 'apollo-server-express';
+import { PubSubEngine } from 'graphql-subscriptions';
 import { hasRoles } from 'src/auth/decorators/roles.decorator';
 import { Roles } from '../roles/entities/role.entity';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';

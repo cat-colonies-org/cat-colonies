@@ -311,38 +311,38 @@ type RemoveUserCeaseCauseResult {
 }
 
 type Query {
-  annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
-  annotation(id: Int!): Annotation
-  signin(userCredentials: UserCredentials!): AccessToken!
-  test: Boolean!
-  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, bornAt: DateTime, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender): FindCatsResult
-  cat(id: Int!): Cat
-  ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
-  ceaseCause(id: Int!): CeaseCause
-  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int, townName: String): FindColoniesResult
-  colony(id: Int!): Colony
-  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
-  user(id: Int!): User
-  colonyAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, colonyId: Int, annotation: String): FindColonyAnnotationsResult
-  colonyAnnotation(id: Int!): ColonyAnnotation
-  colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
-  color(id: Int!): Color
-  environments(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEnvironmentsResult
-  environment(id: Int!): Environment
-  eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
-  eyeColor(id: Int!): EyeColor
-  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult
-  locationType(id: Int!): LocationType
-  patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
-  pattern(id: Int!): Pattern
-  roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
-  role(id: Int!): Role
-  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
-  town(id: Int!): Town
-  userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
-  userAnnotation(id: Int!): UserAnnotation
   userCeaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindUserCeaseCausesResult
   userCeaseCause(id: Int!): UserCeaseCause
+  userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
+  userAnnotation(id: Int!): UserAnnotation
+  towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
+  town(id: Int!): Town
+  roles(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindRolesResult
+  role(id: Int!): Role
+  patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
+  pattern(id: Int!): Pattern
+  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult
+  locationType(id: Int!): LocationType
+  eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
+  eyeColor(id: Int!): EyeColor
+  environments(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEnvironmentsResult
+  environment(id: Int!): Environment
+  colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
+  color(id: Int!): Color
+  colonyAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, colonyId: Int, annotation: String): FindColonyAnnotationsResult
+  colonyAnnotation(id: Int!): ColonyAnnotation
+  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
+  user(id: Int!): User
+  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int, townName: String): FindColoniesResult
+  colony(id: Int!): Colony
+  ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
+  ceaseCause(id: Int!): CeaseCause
+  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, bornAt: DateTime, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender): FindCatsResult
+  cat(id: Int!): Cat
+  signin(userCredentials: UserCredentials!): AccessToken!
+  test: Boolean!
+  annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
+  annotation(id: Int!): Annotation
 }
 
 input UserCredentials {
@@ -351,64 +351,197 @@ input UserCredentials {
 }
 
 type Mutation {
-  createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
-  updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
-  removeAnnotation(id: Int!): RemoveAnnotationResult!
-  createCat(createCatInput: CreateCatInput!): Cat!
-  updateCat(updateCatInput: UpdateCatInput!): Cat!
-  removeCat(id: Int!): RemoveCatResult!
-  createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
-  updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
-  removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
-  createColony(createColonyInput: CreateColonyInput!): Colony!
-  updateColony(updateColonyInput: UpdateColonyInput!): Colony!
-  removeColony(id: Int!): RemoveColonyResult!
-  addColonyManager(userId: Int!, colonyId: Int!): AddColonyManagerResult!
-  removeColonyManager(userId: Int!, colonyId: Int!): RemoveColonyManagerResult!
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): RemoveUserResult!
-  createColonyAnnotation(createColonyAnnotationInput: CreateColonyAnnotationInput!): ColonyAnnotation!
-  updateColonyAnnotation(updateColonyAnnotationInput: UpdateColonyAnnotationInput!): ColonyAnnotation!
-  removeColonyAnnotation(id: Int!): RemoveColonyAnnotationResult!
-  createColor(createColorInput: CreateColorInput!): Color!
-  updateColor(updateColorInput: UpdateColorInput!): Color!
-  removeColor(id: Int!): RemoveColorResult!
-  createEnvironment(createEnvironmentInput: CreateEnvironmentInput!): Environment!
-  updateEnvironment(updateEnvironmentInput: UpdateEnvironmentInput!): Environment!
-  removeEnvironment(id: Int!): RemoveEnvironmentResult!
-  createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
-  updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
-  removeEyeColor(id: Int!): EyeColor!
-  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
-  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
-  removeLocationType(id: Int!): RemoveLocationTypeResult!
-  createPattern(createPatternInput: CreatePatternInput!): Pattern!
-  updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
-  removePattern(id: Int!): RemovePatternResult!
-  createRole(createRoleInput: CreateRoleInput!): Role!
-  updateRole(updateRoleInput: UpdateRoleInput!): Role!
-  removeRole(id: Int!): RemoveRoleResult!
-  createTown(createTownInput: CreateTownInput!): Town!
-  updateTown(updateTownInput: UpdateTownInput!): Town!
-  removeTown(id: Int!): RemoveTownResult!
-  createUserAnnotation(createUserAnnotationInput: CreateUserAnnotationInput!): UserAnnotation!
-  updateUserAnnotation(updateUserAnnotationInput: UpdateUserAnnotationInput!): UserAnnotation!
-  removeUserAnnotation(id: Int!): RemoveUserAnnotationResult!
   createUserCeaseCause(createUserCeaseCauseInput: CreateUserCeaseCauseInput!): UserCeaseCause!
   updateUserCeaseCause(updateUserCeaseCauseInput: UpdateUserCeaseCauseInput!): UserCeaseCause!
   removeUserCeaseCause(id: Int!): RemoveUserCeaseCauseResult!
+  createUserAnnotation(createUserAnnotationInput: CreateUserAnnotationInput!): UserAnnotation!
+  updateUserAnnotation(updateUserAnnotationInput: UpdateUserAnnotationInput!): UserAnnotation!
+  removeUserAnnotation(id: Int!): RemoveUserAnnotationResult!
+  createTown(createTownInput: CreateTownInput!): Town!
+  updateTown(updateTownInput: UpdateTownInput!): Town!
+  removeTown(id: Int!): RemoveTownResult!
+  createRole(createRoleInput: CreateRoleInput!): Role!
+  updateRole(updateRoleInput: UpdateRoleInput!): Role!
+  removeRole(id: Int!): RemoveRoleResult!
+  createPattern(createPatternInput: CreatePatternInput!): Pattern!
+  updatePattern(updatePatternInput: UpdatePatternInput!): Pattern!
+  removePattern(id: Int!): RemovePatternResult!
+  createLocationType(createLocationTypeInput: CreateLocationTypeInput!): LocationType!
+  updateLocationType(updateLocationTypeInput: UpdateLocationTypeInput!): LocationType!
+  removeLocationType(id: Int!): RemoveLocationTypeResult!
+  createEyeColor(createEyeColorInput: CreateEyeColorInput!): EyeColor!
+  updateEyeColor(updateEyeColorInput: UpdateEyeColorInput!): EyeColor!
+  removeEyeColor(id: Int!): EyeColor!
+  createEnvironment(createEnvironmentInput: CreateEnvironmentInput!): Environment!
+  updateEnvironment(updateEnvironmentInput: UpdateEnvironmentInput!): Environment!
+  removeEnvironment(id: Int!): RemoveEnvironmentResult!
+  createColor(createColorInput: CreateColorInput!): Color!
+  updateColor(updateColorInput: UpdateColorInput!): Color!
+  removeColor(id: Int!): RemoveColorResult!
+  createColonyAnnotation(createColonyAnnotationInput: CreateColonyAnnotationInput!): ColonyAnnotation!
+  updateColonyAnnotation(updateColonyAnnotationInput: UpdateColonyAnnotationInput!): ColonyAnnotation!
+  removeColonyAnnotation(id: Int!): RemoveColonyAnnotationResult!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): RemoveUserResult!
+  createColony(createColonyInput: CreateColonyInput!): Colony!
+  updateColony(updateColonyInput: UpdateColonyInput!): Colony!
+  removeColony(id: Int!): RemoveColonyResult!
+  addColonyManager(colonyId: Int!, userId: Int!): AddColonyManagerResult!
+  removeColonyManager(colonyId: Int!, userId: Int!): RemoveColonyManagerResult!
+  createCeaseCause(createCeaseCauseInput: CreateCeaseCauseInput!): CeaseCause!
+  updateCeaseCause(updateCeaseCauseInput: UpdateCeaseCauseInput!): CeaseCause!
+  removeCeaseCause(id: Int!): RemoveCeaseCauseResult!
+  createCat(createCatInput: CreateCatInput!): Cat!
+  updateCat(updateCatInput: UpdateCatInput!): Cat!
+  removeCat(id: Int!): RemoveCatResult!
+  createAnnotation(createAnnotationInput: CreateAnnotationInput!): Annotation!
+  updateAnnotation(updateAnnotationInput: UpdateAnnotationInput!): Annotation!
+  removeAnnotation(id: Int!): RemoveAnnotationResult!
 }
 
-input CreateAnnotationInput {
-  catId: Int!
+input CreateUserCeaseCauseInput {
+  description: String!
+}
+
+input UpdateUserCeaseCauseInput {
+  description: String
+  id: Int
+}
+
+input CreateUserAnnotationInput {
+  userId: Int!
   annotation: String!
 }
 
-input UpdateAnnotationInput {
-  catId: Int
+input UpdateUserAnnotationInput {
+  userId: Int
   annotation: String
   id: Int!
+}
+
+input CreateTownInput {
+  name: String!
+}
+
+input UpdateTownInput {
+  name: String
+  id: Int!
+}
+
+input CreateRoleInput {
+  description: String!
+}
+
+input UpdateRoleInput {
+  description: String
+  id: Int!
+}
+
+input CreatePatternInput {
+  description: String!
+}
+
+input UpdatePatternInput {
+  description: String
+  id: Int!
+}
+
+input CreateLocationTypeInput {
+  description: String!
+}
+
+input UpdateLocationTypeInput {
+  description: String
+  id: Int!
+}
+
+input CreateEyeColorInput {
+  id: Int
+  description: String
+}
+
+input UpdateEyeColorInput {
+  id: Int!
+  description: String
+}
+
+input CreateEnvironmentInput {
+  description: String!
+}
+
+input UpdateEnvironmentInput {
+  description: String
+  id: Int!
+}
+
+input CreateColorInput {
+  description: String!
+}
+
+input UpdateColorInput {
+  description: String
+  id: Int!
+}
+
+input CreateColonyAnnotationInput {
+  colonyId: Int!
+  annotation: String!
+}
+
+input UpdateColonyAnnotationInput {
+  colonyId: Int
+  annotation: String
+  id: Int!
+}
+
+input CreateUserInput {
+  name: String!
+  surnames: String!
+  idCard: String!
+  phoneNumber: String!
+  email: String!
+  password: String!
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+}
+
+input UpdateUserInput {
+  name: String
+  surnames: String
+  idCard: String
+  phoneNumber: String
+  email: String
+  password: String
+  authorizesWhatsApp: Boolean
+  ceasedAt: DateTime
+  ceaseCauseId: Int
+  id: Int!
+}
+
+input CreateColonyInput {
+  address: String!
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int!
+}
+
+input UpdateColonyInput {
+  address: String
+  locationTypeId: Int
+  environmentId: Int
+  townId: Int
+  id: Int!
+}
+
+input CreateCeaseCauseInput {
+  description: String!
+}
+
+input UpdateCeaseCauseInput {
+  description: String
+  id: Int
 }
 
 input CreateCatInput {
@@ -452,191 +585,58 @@ input UpdateCatInput {
   id: Int!
 }
 
-input CreateCeaseCauseInput {
-  description: String!
-}
-
-input UpdateCeaseCauseInput {
-  description: String
-  id: Int
-}
-
-input CreateColonyInput {
-  address: String!
-  locationTypeId: Int
-  environmentId: Int
-  townId: Int!
-}
-
-input UpdateColonyInput {
-  address: String
-  locationTypeId: Int
-  environmentId: Int
-  townId: Int
-  id: Int!
-}
-
-input CreateUserInput {
-  name: String!
-  surnames: String!
-  idCard: String!
-  phoneNumber: String!
-  email: String!
-  password: String!
-  authorizesWhatsApp: Boolean
-  ceasedAt: DateTime
-  ceaseCauseId: Int
-}
-
-input UpdateUserInput {
-  name: String
-  surnames: String
-  idCard: String
-  phoneNumber: String
-  email: String
-  password: String
-  authorizesWhatsApp: Boolean
-  ceasedAt: DateTime
-  ceaseCauseId: Int
-  id: Int!
-}
-
-input CreateColonyAnnotationInput {
-  colonyId: Int!
+input CreateAnnotationInput {
+  catId: Int!
   annotation: String!
 }
 
-input UpdateColonyAnnotationInput {
-  colonyId: Int
+input UpdateAnnotationInput {
+  catId: Int
   annotation: String
   id: Int!
-}
-
-input CreateColorInput {
-  description: String!
-}
-
-input UpdateColorInput {
-  description: String
-  id: Int!
-}
-
-input CreateEnvironmentInput {
-  description: String!
-}
-
-input UpdateEnvironmentInput {
-  description: String
-  id: Int!
-}
-
-input CreateEyeColorInput {
-  id: Int
-  description: String
-}
-
-input UpdateEyeColorInput {
-  id: Int!
-  description: String
-}
-
-input CreateLocationTypeInput {
-  description: String!
-}
-
-input UpdateLocationTypeInput {
-  description: String
-  id: Int!
-}
-
-input CreatePatternInput {
-  description: String!
-}
-
-input UpdatePatternInput {
-  description: String
-  id: Int!
-}
-
-input CreateRoleInput {
-  description: String!
-}
-
-input UpdateRoleInput {
-  description: String
-  id: Int!
-}
-
-input CreateTownInput {
-  name: String!
-}
-
-input UpdateTownInput {
-  name: String
-  id: Int!
-}
-
-input CreateUserAnnotationInput {
-  userId: Int!
-  annotation: String!
-}
-
-input UpdateUserAnnotationInput {
-  userId: Int
-  annotation: String
-  id: Int!
-}
-
-input CreateUserCeaseCauseInput {
-  description: String!
-}
-
-input UpdateUserCeaseCauseInput {
-  description: String
-  id: Int
 }
 
 type Subscription {
-  annotationAdded: Annotation!
-  annotationUpdated: Annotation!
-  annotationRemoved: Annotation!
-  catAdded: Cat!
-  catUpdated: Cat!
-  catRemoved: Cat!
-  ceaseCauseAdded: CeaseCause!
-  ceaseCauseUpdated: CeaseCause!
-  ceaseCauseRemoved: CeaseCause!
-  colonyAdded: Colony!
-  colonyUpdated: Colony!
-  colonyRemoved: Colony!
-  userAdded: User!
-  userUpdated: User!
-  userRemoved: User!
-  colonyAnnotationAdded: ColonyAnnotation!
-  colonyAnnotationUpdated: ColonyAnnotation!
-  colonyAnnotationRemoved: ColonyAnnotation!
-  colorAdded: Color!
-  colorUpdated: Color!
-  colorRemoved: Color!
-  environmentAdded: Environment!
-  environmentUpdated: Environment!
-  environmentRemoved: Environment!
-  eyeColorAdded: EyeColor!
-  eyeColorUpdated: EyeColor!
-  eyeColorRemoved: EyeColor!
-  locationTypeAdded: LocationType!
-  locationTypeUpdated: LocationType!
-  locationTypeRemoved: LocationType!
-  patternAdded: Role!
-  patternUpdated: Role!
-  patternRemoved: Role!
-  townAdded: Town!
-  townUpdated: Town!
-  townRemoved: Town!
-  userAnnotationAdded: UserAnnotation!
-  userAnnotationUpdated: UserAnnotation!
-  userAnnotationRemoved: UserAnnotation!
   userCeaseCauseAdded: UserCeaseCause!
   userCeaseCauseUpdated: UserCeaseCause!
   userCeaseCauseRemoved: UserCeaseCause!
+  userAnnotationAdded: UserAnnotation!
+  userAnnotationUpdated: UserAnnotation!
+  userAnnotationRemoved: UserAnnotation!
+  townAdded: Town!
+  townUpdated: Town!
+  townRemoved: Town!
+  patternAdded: Pattern!
+  patternUpdated: Pattern!
+  patternRemoved: Pattern!
+  locationTypeAdded: LocationType!
+  locationTypeUpdated: LocationType!
+  locationTypeRemoved: LocationType!
+  eyeColorAdded: EyeColor!
+  eyeColorUpdated: EyeColor!
+  eyeColorRemoved: EyeColor!
+  environmentAdded: Environment!
+  environmentUpdated: Environment!
+  environmentRemoved: Environment!
+  colorAdded: Color!
+  colorUpdated: Color!
+  colorRemoved: Color!
+  colonyAnnotationAdded: ColonyAnnotation!
+  colonyAnnotationUpdated: ColonyAnnotation!
+  colonyAnnotationRemoved: ColonyAnnotation!
+  userAdded: User!
+  userUpdated: User!
+  userRemoved: User!
+  colonyAdded: Colony!
+  colonyUpdated: Colony!
+  colonyRemoved: Colony!
+  ceaseCauseAdded: CeaseCause!
+  ceaseCauseUpdated: CeaseCause!
+  ceaseCauseRemoved: CeaseCause!
+  catAdded: Cat!
+  catUpdated: Cat!
+  catRemoved: Cat!
+  annotationAdded: Annotation!
+  annotationUpdated: Annotation!
+  annotationRemoved: Annotation!
 }
