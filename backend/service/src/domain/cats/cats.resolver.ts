@@ -21,23 +21,6 @@ export class CatsResolver extends BaseResolver<Cat> {
     super(service, pubSub, Cat.name);
   }
 
-  // #region Subscriptions
-  @Subscription(() => Cat)
-  catAdded() {
-    return this.addedEvent();
-  }
-
-  @Subscription(() => Cat)
-  catUpdated() {
-    return this.updatedEvent();
-  }
-
-  @Subscription(() => Cat)
-  catRemoved() {
-    return this.removedEvent();
-  }
-  // #endregion Subscriptions
-
   // #region Mutations
   @Mutation(() => Cat)
   @hasRoles(Roles.Manager)

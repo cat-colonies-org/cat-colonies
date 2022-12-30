@@ -627,16 +627,7 @@ type Subscription {
   userAdded: User!
   userUpdated: User!
   userRemoved: User!
-  colonyAdded: Colony!
-  colonyUpdated: Colony!
-  colonyRemoved: Colony!
   ceaseCauseAdded: CeaseCause!
   ceaseCauseUpdated: CeaseCause!
   ceaseCauseRemoved: CeaseCause!
-  catAdded: Cat!
-  catUpdated: Cat!
-  catRemoved: Cat!
-  annotationAdded: Annotation!
-  annotationUpdated: Annotation!
-  annotationRemoved: Annotation!
 }

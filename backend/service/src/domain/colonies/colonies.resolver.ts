@@ -28,23 +28,6 @@ export class ColoniesResolver extends BaseResolver<Colony> {
     super(coloniesService, pubSub, Colony.name);
   }
 
-  // #region Subscriptions
-  @Subscription(() => Colony)
-  colonyAdded() {
-    return this.addedEvent();
-  }
-
-  @Subscription(() => Colony)
-  colonyUpdated() {
-    return this.updatedEvent();
-  }
-
-  @Subscription(() => Colony)
-  colonyRemoved() {
-    return this.removedEvent();
-  }
-  // #endregion Subscriptions
-
   // #region Mutations
   @Mutation(() => Colony)
   @hasRoles(Roles.Administrator)
