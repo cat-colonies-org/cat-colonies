@@ -32,7 +32,7 @@
     "graphql": "^15.8.0",
     "graphql-redis-subscriptions": "^2.4.0",
     "graphql-subscriptions": "^2.0.0",
-    "minio": "^7.0.32",
+    "minio": "^7.1.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.7.1",
