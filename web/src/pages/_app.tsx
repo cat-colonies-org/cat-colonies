@@ -4,7 +4,7 @@
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-//import Head from 'next/head';
+import Script from 'next/script'
 import Head from 'next/head'
 import { Auth } from '../common/authToken';
 import { ToastContainer } from 'react-toastify';
@@ -22,6 +22,7 @@ function App({ Component, pageProps }: AppProps) {
     <>
     <Head>
       <title>Gatetes</title>
+      </Head>  
       <Layout authToken={authToken}>
         <ToastContainer
           position="top-right"
@@ -32,9 +33,10 @@ function App({ Component, pageProps }: AppProps) {
           rtl={false}
           pauseOnHover
         />
-      </Layout>    
-      <Component {...pageProps} authToken={authToken} />
-    </Head>
+      </Layout>  
+   
+      <Component {...pageProps} authToken={authToken} />   
+     
     </>
   );
 }

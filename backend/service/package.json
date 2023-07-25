@@ -18,8 +18,8 @@
     "docker:build": "docker buildx build -f Dockerfile.prod -t daviddq/cat-colonies-service:$npm_package_version -t daviddq/cat-colonies-service:latest --platform linux/arm64,linux/amd64 --output type=image,push=true ."
   },
   "dependencies": {
-    "@nestjs/apollo": "^10.0.8",
-    "@nestjs/common": "^8.4.3",
+    "@nestjs/apollo": "^10.2.1",
+    "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^9.0.5",
     "@nestjs/graphql": "^10.0.8",
