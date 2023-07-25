@@ -4,7 +4,6 @@
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Script from 'next/script'
 import Head from 'next/head'
 import { Auth } from '../common/authToken';
 import { ToastContainer } from 'react-toastify';
