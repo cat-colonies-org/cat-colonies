@@ -20,7 +20,7 @@
   "dependencies": {
     "@nestjs/apollo": "^10.2.1",
     "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^3.0.0",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^9.0.5",
     "@nestjs/graphql": "^10.0.8",
     "@nestjs/jwt": "^10.0.3",
