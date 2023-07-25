@@ -1,4 +1,4 @@
-import { PubSubEngine } from 'graphql-subscriptions';
+import { PubSubEngine } from 'apollo-server-express';
 import { BaseEntity } from 'typeorm';
 import { ICrudService } from './base-crud.service';
 

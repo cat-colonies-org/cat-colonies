@@ -1,6 +1,5 @@
-import { BaseEntity, Repository, ILike } from 'typeorm';
+import { BaseEntity, Repository, ILike, Like, FindManyOptions } from 'typeorm';
 import { omit } from '../util';
-
 export interface ICrudService<T> {
   create(createInput: Record<string, any>): Promise<T>;
   find(opts: Record<string, any>): Promise<[T[], number]>;
@@ -27,25 +26,21 @@ export class BaseCrudService<T extends BaseEntity> implements ICrudService<T> {
     const { skip, take, order, descending } = opts;
     const filter = omit(opts, ['skip', 'take', 'order', 'descending']);
 
-    const findOptions = {
+    // Allow searching for partial strings ignoring case
+    const conditions = Object.entries(filter).map(([field, value]) => {
+      return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
+    });
+
+    return this.repository.findAndCount({
+      where: conditions,
       order: JSON.parse(`{ "${order}": ${descending ? -1 : 1} }`),
       skip,
       take,
-    };
-
-    if (Object.entries(filter).length != 0) {
-      // Allow searching for partial strings ignoring case
-      const conditions: any = Object.entries(filter).map(([field, value]) => {
-        return typeof value === 'string' ? { [field]: ILike(`%${value}%`) } : { [field]: value };
-      });
-      Object.entries(findOptions).push(['where', conditions]);
-    }
-
-    return this.repository.findAndCount(findOptions);
+    });
   }
 
   findOne(id: number): Promise<T> {
-    return this.repository.findOne({ id: id } as any);
+    return this.repository.findOne(id);
   }
 
   async update(id: number, updateInput: Record<string, any>): Promise<T> {
