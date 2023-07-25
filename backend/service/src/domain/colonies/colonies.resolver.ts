@@ -20,32 +20,13 @@ import { RemoveColonyManagerResult } from './dto/remove-colony-manager.result';
 
 @Resolver(() => Colony)
 export class ColoniesResolver extends BaseResolver<Colony> {
-  readonly coloniesService: ColoniesService;
-  readonly usersService: UsersService;
-
-  constructor(coloniesService: ColoniesService, usersService: UsersService, @Inject(PUB_SUB) pubSub: PubSubEngine) {
+  constructor(
+    private readonly coloniesService: ColoniesService,
+    private readonly usersService: UsersService,
+    @Inject(PUB_SUB) pubSub: PubSubEngine,
+  ) {
     super(coloniesService, pubSub, Colony.name);
-
-    this.coloniesService = coloniesService;
-    this.usersService = usersService;
   }
-
-  // #region Subscriptions
-  @Subscription(() => Colony)
-  colonyAdded() {
-    return this.addedEvent();
-  }
-
-  @Subscription(() => Colony)
-  colonyUpdated() {
-    return this.updatedEvent();
-  }
-
-  @Subscription(() => Colony)
-  colonyRemoved() {
-    return this.removedEvent();
-  }
-  // #endregion Subscriptions
 
   // #region Mutations
   @Mutation(() => Colony)

@@ -21,23 +21,6 @@ export class AnnotationsResolver extends BaseResolver<Annotation> {
     super(service, pubSub, Annotation.name);
   }
 
-  // #region Subscriptions
-  @Subscription(() => Annotation)
-  annotationAdded() {
-    return this.addedEvent();
-  }
-
-  @Subscription(() => Annotation)
-  annotationUpdated() {
-    return this.updatedEvent();
-  }
-
-  @Subscription(() => Annotation)
-  annotationRemoved() {
-    return this.removedEvent();
-  }
-  // #endregion Subscriptions
-
   // #region Mutations
   @Mutation(() => Annotation)
   @hasRoles(Roles.Manager)

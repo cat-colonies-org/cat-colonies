@@ -1,4 +1,5 @@
 import { AnnotationsModule } from './domain/annotations/annotations.module';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './auth/auth.module';
 import { CatsModule } from './domain/cats/cats.module';
 import { CeaseCausesModule } from './domain/cease-causes/cease-causes.module';
@@ -53,7 +54,7 @@ import { DocumentsModule } from './domain/documents/documents.module';
       inject: [SettingsService],
       useFactory: async (settings: SettingsService) => settings.orm,
     }),
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       include: [
         AnnotationsModule,
         AuthModule,
@@ -73,6 +74,7 @@ import { DocumentsModule } from './domain/documents/documents.module';
         UserCeaseCausesModule,
         UsersModule,
       ],
+      driver: ApolloDriver,
       debug: true,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
