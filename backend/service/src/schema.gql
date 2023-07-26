@@ -152,7 +152,8 @@ type Cat {
   pictures: [Picture!]
 }
 
-""""""
+"""
+"""
 enum Gender {
   Male
   Female
@@ -311,27 +312,108 @@ type RemoveUserCeaseCauseResult {
 }
 
 type Query {
-  annotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, catId: Int, annotation: String): FindAnnotationsResult
+  annotations(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    catId: Int
+    annotation: String
+  ): FindAnnotationsResult
   annotation(id: Int!): Annotation
   signin(userCredentials: UserCredentials!): AccessToken!
   test: Boolean!
-  cats(order: String, descending: Boolean, skip: Int, take: Int, id: Int, bornAt: DateTime, sterilized: Boolean, sterilizedAt: DateTime, colonyId: Int, colorId: Int, patternId: Int, eyesId: Int, gender: Gender): FindCatsResult
+  cats(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    bornAt: DateTime
+    sterilized: Boolean
+    sterilizedAt: DateTime
+    colonyId: Int
+    colorId: Int
+    patternId: Int
+    eyesId: Int
+    gender: Gender
+  ): FindCatsResult
   cat(id: Int!): Cat
-  ceaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindCeaseCausesResult
+  ceaseCauses(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    description: String
+  ): FindCeaseCausesResult
   ceaseCause(id: Int!): CeaseCause
-  colonies(order: String, descending: Boolean, skip: Int, take: Int, id: Int, address: String, locationTypeId: Int, environmentId: Int, townId: Int, townName: String): FindColoniesResult
+  colonies(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    address: String
+    locationTypeId: Int
+    environmentId: Int
+    townId: Int
+    townName: String
+  ): FindColoniesResult
   colony(id: Int!): Colony
-  users(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String, surnames: String, idCard: String, phoneNumber: String, email: String, authorizesWhatsApp: Boolean): FindUsersResult
+  users(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    name: String
+    surnames: String
+    idCard: String
+    phoneNumber: String
+    email: String
+    authorizesWhatsApp: Boolean
+  ): FindUsersResult
   user(id: Int!): User
-  colonyAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, colonyId: Int, annotation: String): FindColonyAnnotationsResult
+  colonyAnnotations(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    colonyId: Int
+    annotation: String
+  ): FindColonyAnnotationsResult
   colonyAnnotation(id: Int!): ColonyAnnotation
   colors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindColorsResult
   color(id: Int!): Color
-  environments(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEnvironmentsResult
+  environments(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    description: String
+  ): FindEnvironmentsResult
   environment(id: Int!): Environment
-  eyeColors(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindEyeColorsResult!
+  eyeColors(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    description: String
+  ): FindEyeColorsResult!
   eyeColor(id: Int!): EyeColor
-  locationTypes(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindLocationTypesResult
+  locationTypes(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    description: String
+  ): FindLocationTypesResult
   locationType(id: Int!): LocationType
   patterns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindPatternsResult
   pattern(id: Int!): Pattern
@@ -339,9 +421,24 @@ type Query {
   role(id: Int!): Role
   towns(order: String, descending: Boolean, skip: Int, take: Int, id: Int, name: String): FindTownsResult
   town(id: Int!): Town
-  userAnnotations(order: String, descending: Boolean, skip: Int, take: Int, id: Int, userId: Int, annotation: String): FindUserAnnotationsResult
+  userAnnotations(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    userId: Int
+    annotation: String
+  ): FindUserAnnotationsResult
   userAnnotation(id: Int!): UserAnnotation
-  userCeaseCauses(order: String, descending: Boolean, skip: Int, take: Int, id: Int, description: String): FindUserCeaseCausesResult
+  userCeaseCauses(
+    order: String
+    descending: Boolean
+    skip: Int
+    take: Int
+    id: Int
+    description: String
+  ): FindUserCeaseCausesResult
   userCeaseCause(id: Int!): UserCeaseCause
 }
 
@@ -606,37 +703,4 @@ type Subscription {
   ceaseCauseAdded: CeaseCause!
   ceaseCauseUpdated: CeaseCause!
   ceaseCauseRemoved: CeaseCause!
-  colonyAdded: Colony!
-  colonyUpdated: Colony!
-  colonyRemoved: Colony!
-  userAdded: User!
-  userUpdated: User!
-  userRemoved: User!
-  colonyAnnotationAdded: ColonyAnnotation!
-  colonyAnnotationUpdated: ColonyAnnotation!
-  colonyAnnotationRemoved: ColonyAnnotation!
-  colorAdded: Color!
-  colorUpdated: Color!
-  colorRemoved: Color!
-  environmentAdded: Environment!
-  environmentUpdated: Environment!
-  environmentRemoved: Environment!
-  eyeColorAdded: EyeColor!
-  eyeColorUpdated: EyeColor!
-  eyeColorRemoved: EyeColor!
-  locationTypeAdded: LocationType!
-  locationTypeUpdated: LocationType!
-  locationTypeRemoved: LocationType!
-  patternAdded: Role!
-  patternUpdated: Role!
-  patternRemoved: Role!
-  townAdded: Town!
-  townUpdated: Town!
-  townRemoved: Town!
-  userAnnotationAdded: UserAnnotation!
-  userAnnotationUpdated: UserAnnotation!
-  userAnnotationRemoved: UserAnnotation!
-  userCeaseCauseAdded: UserCeaseCause!
-  userCeaseCauseUpdated: UserCeaseCause!
-  userCeaseCauseRemoved: UserCeaseCause!
 }
