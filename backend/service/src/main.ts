@@ -6,6 +6,7 @@ import SettingsService from './settings/settings.service';
 const CR_PATH = '/etc/letsencrypt/live/colonias.cincohocicos.com/fullchain.pem';
 const PK_PATH = '/etc/letsencrypt/live/colonias.cincohocicos.com/privkey.pem';
 
+
 (async function bootstrap() {
   const options: any = {
     cors: true,
