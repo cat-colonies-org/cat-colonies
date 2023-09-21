@@ -29,7 +29,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "apollo-server-express": "^3.6.7",
     "bcryptjs": "^2.4.3",
-    "graphql": "^16.0.0",
+    "graphql": "^16.8.1",
     "graphql-redis-subscriptions": "^2.4.0",
     "graphql-subscriptions": "^2.0.0",
     "minio": "^7.1.1",
