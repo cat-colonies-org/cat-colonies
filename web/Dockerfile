@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20.16.0-alpine3.20
 
 WORKDIR /usr/local/app
 
