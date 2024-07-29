@@ -20,7 +20,7 @@ const Sidebar = ({ authToken }: any) => {
       <ul className="list-unstyled components">
         <li>
           <Link href="/">
-            <a>Inicio</a>
+            Inicio
           </Link>
         </li>
 
@@ -31,17 +31,17 @@ const Sidebar = ({ authToken }: any) => {
           <ul className="collapse list-unstyled" id="pageSubmenu">
             <li>
               <Link href="/colonies">
-                <a>Colonias</a>
+                Colonias
               </Link>
             </li>
             <li>
               <Link href="/cats">
-                <a>Gatos</a>
+                Gatos
               </Link>
             </li>
             <li>
               <Link href="/users">
-                <a>Usuarios</a>
+                Usuarios
               </Link>
             </li>
             {/* <li>

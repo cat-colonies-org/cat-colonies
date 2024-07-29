@@ -364,8 +364,8 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                     <div className="col-md-1">
                       <label className="form-label">Colonia</label>
                       <div>
-                        <Link href={`/colonies/${cat?.colonyId}`}>
-                          <a className="btn btn-secondary">{cat?.colonyId}</a>
+                        <Link href={`/colonies/${cat?.colonyId}`} className="btn btn-secondary">
+                          {cat?.colonyId}
                         </Link>
                       </div>
                     </div>
