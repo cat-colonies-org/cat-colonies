@@ -14,7 +14,7 @@ ALTER SEQUENCE location_type_id_seq RESTART WITH 5;
 -- environment --------------------------------------------
 INSERT INTO environment ("id", "description") VALUES ( 0, 'Desconocido' );
 INSERT INTO environment ("id", "description") VALUES ( 1, 'Urbano' );
-INSERT INTO environment ("id", "description") VALUES ( 2, 'Perifería' );
+INSERT INTO environment ("id", "description") VALUES ( 2, 'Periferia' );
 INSERT INTO environment ("id", "description") VALUES ( 3, 'Selecciona' );
 
 ALTER SEQUENCE environment_id_seq RESTART WITH 4;
