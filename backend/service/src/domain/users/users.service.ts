@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { BaseCrudService } from 'src/common/base-crud.service';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { User } from './entities/user.entity';
 import SettingsService from 'src/settings/settings.service';
 
@@ -19,4 +19,9 @@ export class UsersService extends BaseCrudService<User> {
     user.password = await bcrypt.hash(user.password, this.settings.auth.saltRounds);
     return await user.save();
   }
+
+  override findOne(id: number): Promise<User> {
+    return this.repository.findOneBy( {id});
+  }
+   
 }
