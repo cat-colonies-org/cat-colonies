@@ -1,7 +1,6 @@
 import { apiCall, getCriteriaString } from '../common/util';
 import { Annotation } from './annotations';
 import { Color } from './colors';
-import { Town } from './towns';
 
 export type Picture = {
   id: number;
@@ -12,10 +11,14 @@ export type Picture = {
   thumbnail: string;
 };
 
-export enum Gender {
+// Used in /src/pages/cats/[id].tsx
+export enum Gender {  
+  // eslint-disable-next-line no-unused-vars
   Male = 'Male',
+  // eslint-disable-next-line no-unused-vars  
   Female = 'Female',
-  Unknown = 'Unknown',
+  // eslint-disable-next-line no-unused-vars  
+  Unknown = 'Unknown',  
 }
 
 export const catDataFragment: string = `

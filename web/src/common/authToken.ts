@@ -1,8 +1,12 @@
 import Cookie from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 
+// Used in src/pages/cats/[id].tsc
+// eslint-disable-next-line no-unused-vars
 enum Roles {
+  // eslint-disable-next-line no-unused-vars
   Administrator = 1,
+  // eslint-disable-next-line no-unused-vars
   Manager = 2,
 }
 
@@ -51,10 +55,6 @@ export class Auth {
 
   get isAdmin(): boolean {
     return this.roleId === Roles.Administrator;
-  }
-
-  get isManager(): boolean {
-    return this.roleId === Roles.Manager;
   }
 
   static async getToken() {

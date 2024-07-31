@@ -15,7 +15,7 @@ import ImageGallery from 'react-image-gallery';
 import InputModal from '../../components/input-modal';
 import Link from 'next/link';
 import PropertySelector from '../../components/property-selector';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import UploadModal from '../../components/upload-modal';
 import withPrivateRoute from '../../components/with-private-route';
@@ -171,8 +171,9 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
     setCat((prev: any) => ({ ...prev, [event.currentTarget.id]: event.currentTarget.value }));
   };
 
-  const onDateChange = (date: Date, field: string): void => {
-    setCat((prev: any) => ({ ...prev, [field]: date }));
+  const onDateChange = (date: Date | null, field: string): void => {
+    if (date)
+      setCat((prev: any) => ({ ...prev, [field]: date }));
   };
 
   const onNavigateCat = (id: number) => {
@@ -337,14 +338,14 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label htmlFor="bornAt" className="form-label">
+                      <label htmlFor="bornAt" className="form-label ">
                         Nacimiento
                       </label>
                       <ReactDatePicker
                         id="bornAt"
                         className="form-control"
                         locale="es"
-                        onChange={(date: Date) => onDateChange(date, 'bornAt')}
+                        onChange={(date: Date | null) => onDateChange(date, 'bornAt')}
                         selected={cat?.bornAt}
                         dateFormat="dd/MM/yyyy"
                         todayButton="Hoy"
@@ -394,7 +395,7 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                         id="sterilizedAt"
                         className="form-control"
                         locale="es"
-                        onChange={(date: Date) => onDateChange(date, 'sterilizedAt')}
+                        onChange={(date: Date | null) => onDateChange(date, 'sterilizedAt')}
                         selected={cat?.sterilizedAt}
                         dateFormat="dd/MM/yyyy"
                         todayButton="Hoy"
@@ -410,7 +411,7 @@ const CatDetails = ({ id, colonyId, authToken }: CatDetailsProps) => {
                         id="ceasedAt"
                         className="form-control"
                         locale="es"
-                        onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                        onChange={(date: Date | null) => onDateChange(date, 'ceasedAt')}
                         selected={cat?.ceasedAt}
                         dateFormat="dd/MM/yyyy"
                         todayButton="Hoy"

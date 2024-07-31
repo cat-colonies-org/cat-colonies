@@ -18,7 +18,7 @@ export const objToListString = (obj: Record<string, any>): string => {
 };
 
 export const coatFromCat = (cat: Cat) => {
-  let pattern = cat.patternId !== 0 ? cat.pattern?.description : '';
+  const pattern = cat.patternId !== 0 ? cat.pattern?.description : '';
   return (
     pattern +
     (pattern ? ' ' : '') +
@@ -43,7 +43,7 @@ export const getCriteriaString = ({
 
   if (filter) criteria.push(objToListString(filter));
 
-  if (true) criteria.push('order: "id"');
+  criteria.push('order: "id"');
 
   if (page && perPage) {
     const skip = Math.max(page - 1, 0) * perPage;

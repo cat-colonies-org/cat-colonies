@@ -11,7 +11,7 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import es from 'date-fns/locale/es';
 import InputModal from '../../components/input-modal';
 import PropertySelector from '../../components/property-selector';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import withPrivateRoute from '../../components/with-private-route';
 import UploadModal from '../../components/upload-modal';
@@ -384,7 +384,7 @@ const UserDetails = ({ id, authToken }: UserDetailsProps) => {
                         dateFormat="dd/MM/yyyy"
                         locale="es"
                         selected={user?.ceasedAt}
-                        onChange={(date: Date) => onDateChange(date, 'ceasedAt')}
+                        onChange={(date: Date | null) => onDateChange(date, 'ceasedAt')}
                         todayButton="Hoy"
                         isClearable
                       />

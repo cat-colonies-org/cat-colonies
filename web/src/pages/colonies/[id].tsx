@@ -21,7 +21,7 @@ import { useRouter } from 'next/router';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import InputModal from '../../components/input-modal';
 import PropertySelector from '../../components/property-selector';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Select from 'react-select';
 import withPrivateRoute from '../../components/with-private-route';
 
@@ -252,7 +252,7 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
       return;
     }
 
-    if (!!(await addColonyManager(colony.id, selectedUser.id))) {
+    if (await addColonyManager(colony.id, selectedUser.id)) {
       toast.success(`Añadido gestor "${selectedUser.name}"`);
       setColony(await getColony(colony.id));
     } else {
@@ -267,7 +267,7 @@ const ColonyDetails = ({ id, authToken }: ColonyDetailsProps) => {
       return;
     }
 
-    if (!!(await removeColonyManager(colony.id, userId))) {
+    if (await removeColonyManager(colony.id, userId)) {
       toast.success(`Eliminado gestor "${existingUser.name}"`);
       setColony(await getColony(colony.id));
     } else {
