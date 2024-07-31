@@ -15,7 +15,7 @@ const Sidebar = ({ authToken }: any) => {
   return (
     <nav>
       <div className="sidebar-header">
-        <Image alt="Logo Cinco Hocicos" src="/logo.jpg" width="250px" height="250px"></Image>
+        <Image alt="Logo Cinco Hocicos" src="/logo.jpg" width="250" height="250"></Image>
       </div>
       <ul className="list-unstyled components">
         <li>
